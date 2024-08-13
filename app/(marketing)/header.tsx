@@ -6,11 +6,10 @@ import Link from "next/link"
 
 export const Header = () => {
     return (
-        <header className="h-20 w-full border-b-2 border-slate-200 px-4 sticky top-0 bg-white">
+        <header className="h-16 w-full border-b-2 border-slate-200 px-4 sticky top-0 bg-white">
             <div className=" mx-auto flex items-center justify-between h-full">
-                <Link href={"/"} className="flex flex-row align-middle">
+                <Link href={"/"} className=" flex-row align-middle hidden md:block">
                     <div className="pt-8 pl-4 pb-7 flex items-center gap-x-3">
-
                         <Image src="/logo.svg" alt="Logo" width={40} height={40} />
                         <span className="hidden md:block font-extrabold text-2xl tracking-wide text-center">InSync</span>
 
@@ -26,7 +25,7 @@ export const Header = () => {
                 </ClerkLoading>
                 <ClerkLoaded>
                     <SignedIn >
-                        <div className="flex align-middle gap-2">
+                        <div className="md:block flex align-middle gap-2 items-center justify-between md:w-fit w-full">
                             <Button variant={"ghost"}>
                                 <SignOutButton>Sign out</SignOutButton>
                             </Button>
@@ -37,12 +36,12 @@ export const Header = () => {
                         </div>
                     </SignedIn>
                     <SignedOut>
-                        <div className="flex align-middle gap-2">
+                        <div className="md:block flex align-middle gap-2 items-center justify-between md:w-fit w-full">
                             <SignInButton mode="modal" fallbackRedirectUrl="/dashboard">
-                                <Button variant={"ghost"}>Sign In</Button>
+                                <Button variant={"ghost"}>Login</Button>
                             </SignInButton>
                             <SignUpButton mode="modal" fallbackRedirectUrl="/dashboard">
-                                <Button >Register</Button>
+                                <Button >Get InSync for free</Button>
                             </SignUpButton>
                         </div>
                     </SignedOut>
