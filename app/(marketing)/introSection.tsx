@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function IntroSection() {
 
     return (
-        <section className="flex items-center justify center flex-col pt-4">
+        <section className="flex items-center justify center flex-col">
             <div className="flex items-center justify-center flex-col">
                 <div className="mb-4 flex items-center border shadow-sm p-1 bg-amber-100 text-amber-700 rounded-full uppercase">
                     <Medal className="h-6 w-6 mr-2" />
@@ -21,12 +21,12 @@ export default function IntroSection() {
                 </div>
             </div>
             <div>
-                <Image src="/hero.svg" width={400} height={400} alt="hero" />
+                <Image src="/hero1.svg" width={400} height={400} alt="hero" />
             </div>
             <div className="text-sm md:text-lg text-neutral-400 mt-4 max-w-xs md:max-w-2xl text-center mx-auto">
-                Automate, optimize, and elevate your Android experience with InSync. Whether you&apos;re refining app tests or streamlining daily tasks, InSync adapts to your needs—bringing seamless automation right to your fingertips.
+                Automate, optimize, and elevate your Android experience with InSync. Whether you&apos;re <span className="text-black">refining app tests or streamlining daily tasks,</span> InSync adapts to your needs—bringing seamless automation right to your fingertips.
             </div>
-            <div className="p-10 w-full">
+            <div className="p-10 flex flex-col">
                 <ClerkLoading >
                     <Loader className="h-5 w-5 text-muted-foreground animate-spin" />
                 </ClerkLoading>
