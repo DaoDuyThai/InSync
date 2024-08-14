@@ -3,9 +3,10 @@ import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignOutBu
 import { ArrowRight, Loader, Medal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import IntroSection from "./introSection";
+import IntroSection from "./introsection";
 import WhyChooseSection from "./whychoosesection";
 import WhatIsSection from "./whatissection";
+import CustomerSection from "./customersection";
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
       <IntroSection />
       <WhatIsSection />
       <WhyChooseSection />
-
+      <CustomerSection />
     </main>
 
   );
