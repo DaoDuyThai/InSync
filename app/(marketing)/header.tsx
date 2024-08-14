@@ -3,6 +3,12 @@ import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignOutBu
 import { ArrowRight, Loader } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export const Header = () => {
     return (
@@ -16,7 +22,29 @@ export const Header = () => {
                     </div>
                 </Link>
 
-                <div>
+                <div className="gap-12 hidden md:flex">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>Resources</DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem>InSync Client</DropdownMenuItem>
+                            <DropdownMenuItem>Tutorials</DropdownMenuItem>
+                            <DropdownMenuItem>Learn</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>About</DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem>About InSync</DropdownMenuItem>
+                            <DropdownMenuItem>Frequent Asked Questions</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>Legal</DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem>Privacy Policy</DropdownMenuItem>
+                            <DropdownMenuItem>Terms</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
                 </div>
 
