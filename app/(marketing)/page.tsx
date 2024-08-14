@@ -7,6 +7,7 @@ import IntroSection from "./introsection";
 import WhyChooseSection from "./whychoosesection";
 import WhatIsSection from "./whatissection";
 import CustomerSection from "./customersection";
+import PricingPlanSection from "./pricingplansection";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <WhatIsSection />
       <WhyChooseSection />
       <CustomerSection />
+      <PricingPlanSection />
     </main>
 
   );

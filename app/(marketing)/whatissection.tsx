@@ -3,7 +3,6 @@ import Image from "next/image";
 
 export default function WhatIsSection() {
     return (
-        
             <section className="w-full h-full container md:px-40 my-10">
                 <div className="text-2xl md:text-4xl font-bold text-center lg:text-left ">
                     What is InSync?&nbsp;

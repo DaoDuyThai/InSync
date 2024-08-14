@@ -5,10 +5,11 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
 import { Github } from "lucide-react";
+import { SignInButton } from "@clerk/nextjs";
 
 export const Footer = () => {
     return (
-        <footer className="p-10 pb-5 w-full border-t-2 border-slate-200 bg-white ">
+        <footer className="p-10 w-full border-t-2 border-slate-200 bg-neutral-50 ">
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pb-5">
                 <div className="flex items-start gap-x-3">
                     <Image src="/logo.svg" alt="Logo" width={40} height={40} />
@@ -18,10 +19,10 @@ export const Footer = () => {
                     <div className="font-bold pb-2">RESOURCES</div>
                     <Link href="/client">InSync Client</Link>
                     <Link href="/tutorials">Tutorials</Link>
-                    <Link href="/learn">Learn</Link>
                 </div>
                 <div className="flex flex-col gap-4">
                     <div className="font-bold pb-2">ABOUT</div>
+                    <Link href="/pricing">Pricing</Link>
                     <Link href="/aboutus">About InSync</Link>
                     <Link href="/faq">Frequent Asked Questions</Link>
                 </div>
@@ -36,7 +37,7 @@ export const Footer = () => {
                     <Textarea className="w-full" placeholder="Type your message here" />
                 </div>
             </div>
-            <div className="w-full bg-white flex justify-center">
+            <div className="w-full h-full bg-neutral-50 flex justify-center">
                 <div className="text-neutral-400">
                     @{new Date().getFullYear()} InSync. All rights reserved.
                 </div>

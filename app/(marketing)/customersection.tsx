@@ -24,7 +24,7 @@ export default function CustomerSection() {
                     }}
                     className="w-full h-full"
                 >
-                    <CarouselContent>
+                    <CarouselContent >
                         <CarouselItem className="md:basis-1/4 lg:basis-1/5">
                             <div className="p-1">
                                 <Card>
@@ -33,7 +33,7 @@ export default function CustomerSection() {
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>John D.</CardTitle>
                                                 <CardDescription>Lead Developer</CardDescription>
@@ -48,17 +48,16 @@ export default function CustomerSection() {
                             <div className="p-1">
                                 <Card>
                                     <CardContent className="flex aspect-square items-center justify-center p-6">
-                                        <span className="text-xl font-normal">“A must-have tool for automation!”</span>
+                                       <span className="text-xl font-normal">“A must-have tool for automation!”</span>
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>Emily R.</CardTitle>
                                                 <CardDescription>QA Engineer</CardDescription>
                                             </div>
                                         </div>
-
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -72,7 +71,7 @@ export default function CustomerSection() {
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>Michael B.</CardTitle>
                                                 <CardDescription>Product Manager</CardDescription>
@@ -92,7 +91,7 @@ export default function CustomerSection() {
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>Sarah K.</CardTitle>
                                                 <CardDescription>UX Designer</CardDescription>
@@ -112,7 +111,7 @@ export default function CustomerSection() {
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>David L.</CardTitle>
                                                 <CardDescription>Software Engineer</CardDescription>
@@ -132,7 +131,7 @@ export default function CustomerSection() {
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>Anna T.</CardTitle>
                                                 <CardDescription>Freelance Developer</CardDescription>
@@ -152,7 +151,7 @@ export default function CustomerSection() {
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>Chris W.</CardTitle>
                                                 <CardDescription>Tech Consultant</CardDescription>
@@ -172,7 +171,7 @@ export default function CustomerSection() {
                                     </CardContent>
                                     <CardHeader>
                                         <div className="flex gap-2 align-middle">
-                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <Image className="rounded-full h-fit" src="/test.png" width={40} height={40} alt="hero" />
                                             <div>
                                                 <CardTitle>Linda P.</CardTitle>
                                                 <CardDescription>CTO</CardDescription>

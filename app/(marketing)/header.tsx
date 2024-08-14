@@ -12,13 +12,12 @@ import {
 
 export const Header = () => {
     return (
-        <header className="h-16 w-full border-b-2 border-slate-200 px-4 sticky top-0 bg-white">
+        <header className="h-16 w-full border-b-2 border-slate-200 px-4 sticky top-0 bg-white z-10">
             <div className=" mx-auto flex items-center justify-between h-full">
                 <Link href={"/"} className=" flex-row align-middle hidden md:block">
                     <div className="pt-8 pl-4 pb-7 flex items-center gap-x-3">
                         <Image src="/logo.svg" alt="Logo" width={40} height={40} />
                         <span className="hidden md:block font-extrabold text-2xl tracking-wide text-center">InSync</span>
-
                     </div>
                 </Link>
 
@@ -28,12 +27,12 @@ export const Header = () => {
                         <DropdownMenuContent>
                             <DropdownMenuItem>InSync Client</DropdownMenuItem>
                             <DropdownMenuItem>Tutorials</DropdownMenuItem>
-                            <DropdownMenuItem>Learn</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <DropdownMenu>
                         <DropdownMenuTrigger>About</DropdownMenuTrigger>
                         <DropdownMenuContent>
+                            <DropdownMenuItem>Pricing</DropdownMenuItem>
                             <DropdownMenuItem>About InSync</DropdownMenuItem>
                             <DropdownMenuItem>Frequent Asked Questions</DropdownMenuItem>
                         </DropdownMenuContent>
