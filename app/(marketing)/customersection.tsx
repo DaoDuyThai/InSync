@@ -6,6 +6,7 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
+import Image from "next/image";
 
 export default function CustomerSection() {
     return (
@@ -31,8 +32,13 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“InSync transformed our app testing process!”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>John D.</CardTitle>
-                                        <CardDescription>Lead Developer</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>John D.</CardTitle>
+                                                <CardDescription>Lead Developer</CardDescription>
+                                            </div>
+                                        </div>
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -45,8 +51,14 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“A must-have tool for automation!”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>Emily R.</CardTitle>
-                                        <CardDescription>QA Engineer</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>Emily R.</CardTitle>
+                                                <CardDescription>QA Engineer</CardDescription>
+                                            </div>
+                                        </div>
+
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -59,8 +71,14 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“Saved us countless hours on repetitive tasks.”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>Michael B.</CardTitle>
-                                        <CardDescription>Product Manager</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>Michael B.</CardTitle>
+                                                <CardDescription>Product Manager</CardDescription>
+                                            </div>
+                                        </div>
+
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -73,8 +91,14 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“InSync’s interface is incredibly intuitive.”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>Sarah K.</CardTitle>
-                                        <CardDescription>UX Designer</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>Sarah K.</CardTitle>
+                                                <CardDescription>UX Designer</CardDescription>
+                                            </div>
+                                        </div>
+
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -87,8 +111,14 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“The real-time logs are a game-changer!”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>David L.</CardTitle>
-                                        <CardDescription>Software Engineer</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>David L.</CardTitle>
+                                                <CardDescription>Software Engineer</CardDescription>
+                                            </div>
+                                        </div>
+
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -101,8 +131,14 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“Efficient and easy to use—highly recommended!”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>Anna T.</CardTitle>
-                                        <CardDescription>Freelance Developer</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>Anna T.</CardTitle>
+                                                <CardDescription>Freelance Developer</CardDescription>
+                                            </div>
+                                        </div>
+
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -115,8 +151,14 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“InSync is a top-notch automation solution.”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>Chris W.</CardTitle>
-                                        <CardDescription>Tech Consultant</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>Chris W.</CardTitle>
+                                                <CardDescription>Tech Consultant</CardDescription>
+                                            </div>
+                                        </div>
+
                                     </CardHeader>
                                 </Card>
                             </div>
@@ -129,8 +171,14 @@ export default function CustomerSection() {
                                         <span className="text-xl font-normal">“Unparalleled performance and flexibility in automation.”</span>
                                     </CardContent>
                                     <CardHeader>
-                                        <CardTitle>Linda P.</CardTitle>
-                                        <CardDescription>CTO</CardDescription>
+                                        <div className="flex gap-2 align-middle">
+                                            <Image className="rounded-full" src="/test.png" width={40} height={40} alt="hero" />
+                                            <div>
+                                                <CardTitle>Linda P.</CardTitle>
+                                                <CardDescription>CTO</CardDescription>
+                                            </div>
+                                        </div>
+
                                     </CardHeader>
                                 </Card>
                             </div>
