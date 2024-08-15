@@ -26,40 +26,29 @@ import React from "react"
 
 const components: { title: string; href: string; description: string }[] = [
     {
-        title: "Alert Dialog",
-        href: "/docs/primitives/alert-dialog",
+        title: "About InSync",
+        href: "/about",
         description:
-            "A modal dialog that interrupts the user with important content and expects a response.",
+            "The genius minds behind InSync and the story of how it all started.",
     },
     {
-        title: "Hover Card",
-        href: "/docs/primitives/hover-card",
+        title: "Term of Service",
+        href: "/terms",
         description:
-            "For sighted users to preview content available behind a link.",
+            "The terms and conditions that govern the use of InSync.",
     },
     {
-        title: "Progress",
-        href: "/docs/primitives/progress",
+        title: "FAQs",
+        href: "/faq",
         description:
-            "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+            "Frequently asked questions about InSync and its features.",
     },
     {
-        title: "Scroll-area",
-        href: "/docs/primitives/scroll-area",
-        description: "Visually or semantically separates content.",
+        title: "Privacy Policy",
+        href: "/privacypolicy",
+        description: "How we handle your data and protect your privacy.",
     },
-    {
-        title: "Tabs",
-        href: "/docs/primitives/tabs",
-        description:
-            "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-    },
-    {
-        title: "Tooltip",
-        href: "/docs/primitives/tooltip",
-        description:
-            "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-    },
+
 ]
 
 
@@ -75,7 +64,7 @@ export const Header = () => {
                         </div>
                     </Link>
 
-                    <div className="gap-12 hidden md:flex">
+                    <div className="hidden lg:flex">
                         <NavigationMenu>
                             <NavigationMenuList>
                                 <NavigationMenuItem>
@@ -88,32 +77,32 @@ export const Header = () => {
                                                         className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                                                         href="/"
                                                     >
-                                                        <Image src={"/logo.svg"} width={"100"} height={"100"} alt="Logo" className="h-6 w-6" />
-                                                        <div className="mb-2 mt-4 text-lg font-medium">
-                                                            shadcn/ui
-                                                        </div>
+                                                        <center>
+                                                            <Image src={"/logo.svg"} width={"75"} height={"75"} alt="Logo" />
+                                                            <div className="mb-2 mt-4 text-lg font-bold">
+                                                                InSync
+                                                            </div>
+                                                        </center>
                                                         <p className="text-sm leading-tight text-muted-foreground">
-                                                            Beautifully designed components that you can copy and
-                                                            paste into your apps. Accessible. Customizable. Open
-                                                            Source.
+                                                            Streamline and optimize the process of Mobile applications today.
                                                         </p>
                                                     </a>
                                                 </NavigationMenuLink>
                                             </li>
-                                            <ListItem href="/docs" title="Introduction">
-                                                Re-usable components built using Radix UI and Tailwind CSS.
+                                            <ListItem href="/introduction" title="Introduction">
+                                                Custom scenario execution, real-time logging and many more.
                                             </ListItem>
                                             <ListItem href="/docs/installation" title="Installation">
-                                                How to install dependencies and structure your app.
+                                                How to install Mobile Client to start automating.
                                             </ListItem>
-                                            <ListItem href="/docs/primitives/typography" title="Typography">
-                                                Styles for headings, paragraphs, lists...etc
+                                            <ListItem href="/docs/examples" title="Examples">
+                                                How InSync can be used in different scenarios.
                                             </ListItem>
                                         </ul>
                                     </NavigationMenuContent>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
-                                    <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                                    <NavigationMenuTrigger>About</NavigationMenuTrigger>
                                     <NavigationMenuContent>
                                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                                             {components.map((component) => (
@@ -127,6 +116,13 @@ export const Header = () => {
                                             ))}
                                         </ul>
                                     </NavigationMenuContent>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <Link href="/price" legacyBehavior passHref>
+                                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                                            Pricing
+                                        </NavigationMenuLink>
+                                    </Link>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <Link href="/docs" legacyBehavior passHref>
