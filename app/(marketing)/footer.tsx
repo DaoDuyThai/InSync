@@ -4,13 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea";
-import { Github } from "lucide-react";
-import { SignInButton } from "@clerk/nextjs";
 
 export const Footer = () => {
     return (
         <footer className="p-10 w-full border-t-2 border-slate-200 bg-neutral-50 ">
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pb-5">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pb-5">
                 <div className="flex items-start gap-x-3">
                     <Image src="/logo.svg" alt="Logo" width={40} height={40} />
                     <span className="font-extrabold text-2xl tracking-wide text-center">InSync</span>
