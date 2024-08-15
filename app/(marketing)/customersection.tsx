@@ -77,7 +77,7 @@ export default function CustomerSection() {
                 </div>
                 <div className="text-md md:text-xl font-medium lg:text-left ">What people using InSync are saying?</div>
             </div>
-            <div className="container">
+            <div className="container px-14">
                 <Carousel
                     opts={{ align: "start", }}
                     className="w-full h-full"
@@ -107,7 +107,7 @@ export default function CustomerSection() {
                         }
                     </CarouselContent>
                     <CarouselPrevious />
-                    <CarouselNext />
+                    <CarouselNext/>
                 </Carousel>
             </div>
 

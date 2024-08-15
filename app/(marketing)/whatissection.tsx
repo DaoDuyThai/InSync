@@ -35,7 +35,5 @@ export default function WhatIsSection() {
                 </div>
             </div>
         </section>
-
-
     )
 }
