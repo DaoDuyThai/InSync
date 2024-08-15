@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     Table,
     TableBody,
@@ -16,7 +17,7 @@ interface PricingPlan {
     attributes: { [key: string]: string };
 }
 
-const pricingPlans: PricingPlan[] = [
+const pricingPlans: PricingPlan[] | null = [
     {
         id: 0,
         name: "Templates & Plan Features",
@@ -57,10 +58,12 @@ const pricingPlans: PricingPlan[] = [
         },
     },
     // Additional plans can be added here in the same format
-
 ]
 
 export default function PricingPlanSection() {
+    if (pricingPlans == null) return <PricingPlanSkeleton />;
+
+
     const attributeKeys = Object.keys(pricingPlans[0].attributes);
 
     return (
@@ -112,6 +115,66 @@ export default function PricingPlanSection() {
                             ))}
                         </TableRow>
                     ))}
+                </TableBody>
+            </Table>
+        </section>
+    )
+}
+
+
+export const PricingPlanSkeleton = function PricingPlanSkeleton() {
+    return (
+        <section className="w-full h-full container my-10 hidden md:flex flex-col justify-center py-10 gap-5">
+            <Table className="h-full">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-1/3">
+                            <div className="text-3xl md:text-4xl font-bold text-left text-primary pb-5">
+                                Plan & Pricing
+                            </div>
+                            <div className="hidden md:block font-normal text-base text-left md:text-xl text-neutral-500">
+                                Get started in complete confidence. Our 30-day money-back guarantee means it&apos;s risk-free.
+                            </div>
+                        </TableHead>
+
+                        <TableHead className="w-1/3">
+                            <Skeleton className="h-full w-full" />
+                        </TableHead>
+
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow >
+                        <TableCell className="h-20 ">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                        <TableCell className="h-20 ">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                    </TableRow>
+
+                    <TableRow >
+                        <TableCell className="h-20 ">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                        <TableCell className="h-20 ">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                    </TableRow>
+
+                    <TableRow >
+                        <TableCell className="h-20 ">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                        <TableCell className="h-20 ">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                    </TableRow>
+
+
+
+
+
                 </TableBody>
             </Table>
         </section>
