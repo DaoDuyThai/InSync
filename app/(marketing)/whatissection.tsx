@@ -32,7 +32,6 @@ export default function WhatIsSection() {
                             By leveraging a powerful web-based interface and an intuitive Android client, InSync allows developers and testers to automate complex scenarios without relying on traditional ADB methods.
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
