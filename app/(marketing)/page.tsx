@@ -3,11 +3,12 @@ import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignOutBu
 import { ArrowRight, Loader, Medal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import IntroSection from "./introsection";
+
 import WhyChooseSection from "./whychoosesection";
 import WhatIsSection from "./whatissection";
 import CustomerSection from "./customersection";
 import PricingPlanSection from "./pricingplansection";
+import IntroSection from "./introsection";
 
 export default function Home() {
   return (
