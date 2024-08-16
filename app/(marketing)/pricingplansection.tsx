@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Table,
@@ -7,64 +7,52 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
-// Define an interface for the pricing plan that allows any string keys in the attributes
-interface PricingPlan {
-    id: number;
-    name: string;
-    price: string;
-    attributes: { [key: string]: string };
-}
-
-const pricingPlans: PricingPlan[] | null = [
+// Pricing plans without a strict interface, allowing for flexible attributes
+const pricingPlans: Array<Record<string, string | number>> | null = [
     {
         id: 0,
         name: "Templates & Plan Features",
         price: "Price",
-        attributes: {
-            Projects: "Projects",
-            Scenarios: "Number of Scenarios",
-            Support: "Support",
-            Storage: "Storage",
-            Users: "Number of Users",
-            ApiAccess: "API Access",
-        },
+        projects: "Projects",
+        scenarios: "Number of Scenarios",
+        support: "Support",
+        storage: "Storage",
+        users: "Number of Users",
+        apiAccess: "API Access",
     },
     {
         id: 1,
         name: "Starters",
         price: "Free",
-        attributes: {
-            Projects: "3",
-            Scenarios: "3",
-            Support: "Weekdays",
-            Storage: "5GB",
-            Users: "1",
-            ApiAccess: "No",
-        },
+        projects: "3",
+        scenarios: "3",
+        support: "Weekdays",
+        storage: "5GB",
+        users: "1",
+        apiAccess: "No",
     },
     {
         id: 2,
         name: "Professional",
         price: "100$/Month",
-        attributes: {
-            Projects: "Unlimited",
-            Scenarios: "Unlimited",
-            Support: "24/7",
-            Storage: "Unlimited",
-            Users: "10",
-            ApiAccess: "Yes",
-        },
+        projects: "Unlimited",
+        scenarios: "Unlimited",
+        support: "24/7",
+        storage: "Unlimited",
+        users: "10",
+        apiAccess: "Yes",
     },
     // Additional plans can be added here in the same format
-]
+];
 
 export default function PricingPlanSection() {
     if (pricingPlans == null) return <PricingPlanSkeleton />;
 
-
-    const attributeKeys = Object.keys(pricingPlans[0].attributes);
+    const attributeKeys = Object.keys(pricingPlans[0]).filter(
+        (key) => key !== "id" && key !== "name" && key !== "price"
+    );
 
     return (
         <section className="w-full h-full container my-10 hidden md:flex flex-col justify-center py-10 gap-5">
@@ -80,14 +68,18 @@ export default function PricingPlanSection() {
                             </div>
                         </TableHead>
                         {pricingPlans.slice(1).map((plan) => (
-                            <TableHead key={plan.id} className="w-1/3">
+                            <TableHead key={plan.id as string} className="w-1/3">
                                 <div className="text-2xl md:text-3xl font-bold text-left text-primary">
                                     {plan.name}
                                 </div>
                                 <div className="hidden md:block font-normal text-base text-left md:text-xl text-neutral-500">
                                     {/* You can add a brief description of the plan here */}
                                 </div>
-                                <Button size={"lg"} className="my-3" variant={plan.name === "Professional" ? "premium" : "default"}>
+                                <Button
+                                    size={"lg"}
+                                    className="my-3"
+                                    variant={plan.name === "Professional" ? "premium" : "default"}
+                                >
                                     {plan.name === "Professional" ? "Buy Professional" : "Get Started"}
                                 </Button>
                             </TableHead>
@@ -98,7 +90,7 @@ export default function PricingPlanSection() {
                     <TableRow>
                         <TableCell className="w-1/3 text-left font-bold text-xl">Price</TableCell>
                         {pricingPlans.slice(1).map((plan) => (
-                            <TableCell key={plan.id} className="w-1/3 text-left text-xl">
+                            <TableCell key={plan.id as string} className="w-1/3 text-left text-xl">
                                 {plan.price}
                             </TableCell>
                         ))}
@@ -106,11 +98,11 @@ export default function PricingPlanSection() {
                     {attributeKeys.map((key) => (
                         <TableRow key={key}>
                             <TableCell className="w-1/3 text-left font-bold text-xl">
-                                {pricingPlans[0].attributes[key]}
+                                {pricingPlans[0][key] as string}
                             </TableCell>
                             {pricingPlans.slice(1).map((plan) => (
-                                <TableCell key={plan.id} className="w-1/3 text-left text-xl">
-                                    {plan.attributes[key]}
+                                <TableCell key={plan.id as string} className="w-1/3 text-left text-xl">
+                                    {plan[key] as string}
                                 </TableCell>
                             ))}
                         </TableRow>
@@ -118,9 +110,8 @@ export default function PricingPlanSection() {
                 </TableBody>
             </Table>
         </section>
-    )
+    );
 }
-
 
 export const PricingPlanSkeleton = function PricingPlanSkeleton() {
     return (
@@ -140,43 +131,37 @@ export const PricingPlanSkeleton = function PricingPlanSkeleton() {
                         <TableHead className="w-1/3">
                             <Skeleton className="h-full w-full" />
                         </TableHead>
-
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow >
-                        <TableCell className="h-20 ">
+                    <TableRow>
+                        <TableCell className="h-20">
                             <Skeleton className="h-full w-full" />
                         </TableCell>
-                        <TableCell className="h-20 ">
-                            <Skeleton className="h-full w-full" />
-                        </TableCell>
-                    </TableRow>
-
-                    <TableRow >
-                        <TableCell className="h-20 ">
-                            <Skeleton className="h-full w-full" />
-                        </TableCell>
-                        <TableCell className="h-20 ">
+                        <TableCell className="h-20">
                             <Skeleton className="h-full w-full" />
                         </TableCell>
                     </TableRow>
 
-                    <TableRow >
-                        <TableCell className="h-20 ">
+                    <TableRow>
+                        <TableCell className="h-20">
                             <Skeleton className="h-full w-full" />
                         </TableCell>
-                        <TableCell className="h-20 ">
+                        <TableCell className="h-20">
                             <Skeleton className="h-full w-full" />
                         </TableCell>
                     </TableRow>
 
-
-
-
-
+                    <TableRow>
+                        <TableCell className="h-20">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                        <TableCell className="h-20">
+                            <Skeleton className="h-full w-full" />
+                        </TableCell>
+                    </TableRow>
                 </TableBody>
             </Table>
         </section>
-    )
-}
+    );
+};
