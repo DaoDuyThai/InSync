@@ -10,6 +10,7 @@ import CustomerSection from "./customersection";
 import PricingPlanSection from "./pricingplansection";
 import IntroSection from "./introsection";
 
+
 export default function Home() {
   return (
     <main>
