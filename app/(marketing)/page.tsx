@@ -8,7 +8,7 @@ import WhyChooseSection from "./whychoosesection";
 import WhatIsSection from "./whatissection";
 import CustomerSection from "./customersection";
 import PricingPlanSection from "./pricingplansection";
-import IntroSection from "./introsection";
+import IntroSection from "./introSection";
 
 
 export default function Home() {
