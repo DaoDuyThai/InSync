@@ -4,11 +4,11 @@ import { ArrowRight, Loader, Medal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import WhyChooseSection from "./whychoosesection";
-import WhatIsSection from "./whatissection";
-import CustomerSection from "./customersection";
-import PricingPlanSection from "./pricingplansection";
+import CustomerSection from "./customerSection";
 import IntroSection from "./introSection";
+import PricingPlanSection from "./pricingPlanSection";
+import WhatIsSection from "./whatIsSection";
+import WhyChooseSection from "./whyChooseSection";
 
 
 export default function Home() {
