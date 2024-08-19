@@ -12,41 +12,41 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
+
 export default function PricingPlanSection() {
-    const [pricingPlans, setPricingPlans] = useState<Array<Record<string, string | number>> | null>(null);
+    const [pricingPlans, setPricingPlans] = useState<Array<Record<string, any>> | null>(null);
 
     useEffect(() => {
         const fetchPricingPlans = async () => {
             try {
-                const response = await fetch("https://dockerhub-insyncapi.onrender.com/weatherforecast");
-    
-                // Log the raw response to see what is returned
-                console.log("Response:", response);
-    
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/SubscriptionPlans`);
+                console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/SubscriptionPlans`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-    
+
                 const data = await response.json();
-    
-                // Log the data to ensure it’s being parsed correctly
-                console.log("Data:", data);
-    
                 setPricingPlans(data);
             } catch (error) {
-                // Log any error that occurs during fetch or parsing
                 console.error("Error fetching pricing plans:", error);
             }
         };
-    
+
         fetchPricingPlans();
     }, []);
 
     if (pricingPlans == null) return <PricingPlanSkeleton />;
 
-    const attributeKeys = Object.keys(pricingPlans[0]).filter(
-        (key) => key !== "id" && key !== "name" && key !== "price"
-    );
+    // Define the keys and their display labels
+    const displayKeys: Record<string, string> = {
+        maxProjects: "Maximum Projects",
+        maxAssets: "Maximum Assets",
+        maxScenarios: "Maximum Scenarios",
+        maxUsersAccess: "Maximum User Access",
+        storageLimit: "Storage Limit",
+        supportLevel: "Support Level",
+        customFeaturesDescription: "Custom Features Description"
+    };
 
     return (
         <section className="w-full h-full container my-10 hidden md:flex flex-col justify-center py-10 gap-5">
@@ -61,20 +61,20 @@ export default function PricingPlanSection() {
                                 Get started in complete confidence. Our 30-day money-back guarantee means it&apos;s risk-free.
                             </div>
                         </TableHead>
-                        {pricingPlans.slice(1).map((plan) => (
+                        {pricingPlans.map((plan) => (
                             <TableHead key={plan.id} className="w-1/3">
                                 <div className="text-2xl md:text-3xl font-bold text-left text-primary">
-                                    {plan.name}
+                                    {plan.subscriptionsName}
                                 </div>
                                 <div className="hidden md:block font-normal text-base text-left md:text-xl text-neutral-500">
-                                    {/* You can add a brief description of the plan here */}
+                                    {plan.content}
                                 </div>
                                 <Button
                                     size={"lg"}
                                     className="my-3"
-                                    variant={plan.name === "Professional" ? "premium" : "default"}
+                                    variant={plan.subscriptionsName === "Professional" ? "premium" : "default"}
                                 >
-                                    {plan.name === "Professional" ? "Buy Professional" : "Get Started"}
+                                    {plan.subscriptionsName === "Professional" ? `Buy ${plan.subscriptionsName}` : "Get Started"}
                                 </Button>
                             </TableHead>
                         ))}
@@ -83,20 +83,20 @@ export default function PricingPlanSection() {
                 <TableBody>
                     <TableRow>
                         <TableCell className="w-1/3 text-left font-bold text-xl">Price</TableCell>
-                        {pricingPlans.slice(1).map((plan) => (
+                        {pricingPlans.map((plan) => (
                             <TableCell key={plan.id} className="w-1/3 text-left text-xl">
-                                {plan.price}
+                                ${plan.price}
                             </TableCell>
                         ))}
                     </TableRow>
-                    {attributeKeys.map((key) => (
+                    {Object.entries(displayKeys).map(([key, label]) => (
                         <TableRow key={key}>
                             <TableCell className="w-1/3 text-left font-bold text-xl">
-                                {pricingPlans[0][key]}
+                                {label}
                             </TableCell>
-                            {pricingPlans.slice(1).map((plan) => (
+                            {pricingPlans.map((plan) => (
                                 <TableCell key={plan.id} className="w-1/3 text-left text-xl">
-                                    {plan[key]}
+                                    {String(plan[key])}
                                 </TableCell>
                             ))}
                         </TableRow>
@@ -162,38 +162,49 @@ export const PricingPlanSkeleton = function PricingPlanSkeleton() {
 
 
 
-const temp: Array<Record<string, string | number>> | null = [
+const temp: Array<Record<string, string | number | boolean | null | Array<any>>> | null = [
     {
-        id: 0,
-        name: "Templates & Plan Features",
-        price: "Price",
-        projects: "Projects",
-        scenarios: "Number of Scenarios",
-        support: "Support",
-        storage: "Storage",
-        users: "Number of Users",
-        apiAccess: "API Access",
+        "id": "e366c43e-a634-442b-a654-3aeecf6ffc24",
+        "subscriptionsName": "Starter",
+        "status": true,
+        "price": 549,
+        "userId": "933b6f98-8853-46aa-bafc-1b55709c1b8f",
+        "content": "Basic plan for individual users.",
+        "dateCreated": "2024-08-01T08:00:00",
+        "dateUpdated": "2024-08-01T08:00:00",
+        "maxProjects": 5,
+        "maxAssets": 100,
+        "maxScenarios": 10,
+        "maxUsersAccess": 1,
+        "storageLimit": 5000,
+        "supportLevel": "Standard",
+        "customFeaturesDescription": "Access to standard features with limited customization.",
+        "dataRetentionPeriod": 365,
+        "prioritySupport": false,
+        "monthlyReporting": false,
+        "user": null,
+        "userSubscriptions": []
     },
     {
-        id: 1,
-        name: "Starters",
-        price: "Free",
-        projects: "3",
-        scenarios: "3",
-        support: "Weekdays",
-        storage: "5GB",
-        users: "1",
-        apiAccess: "No",
-    },
-    {
-        id: 2,
-        name: "Professional",
-        price: "100$/Month",
-        projects: "Unlimited",
-        scenarios: "Unlimited",
-        support: "24/7",
-        storage: "Unlimited",
-        users: "10",
-        apiAccess: "Yes",
-    },
-];
+        "id": "cbab902f-779e-4013-8121-a3dc8f70c454",
+        "subscriptionsName": "Professional",
+        "status": true,
+        "price": 49.99,
+        "userId": "933b6f98-8853-46aa-bafc-1b55709c1b8f",
+        "content": "Advanced plan for small teams.",
+        "dateCreated": "2024-08-02T09:15:00",
+        "dateUpdated": "2024-08-02T09:15:00",
+        "maxProjects": 20,
+        "maxAssets": 500,
+        "maxScenarios": 50,
+        "maxUsersAccess": 5,
+        "storageLimit": 20000,
+        "supportLevel": "Enhanced",
+        "customFeaturesDescription": "Includes additional features and priority support.",
+        "dataRetentionPeriod": 730,
+        "prioritySupport": true,
+        "monthlyReporting": true,
+        "user": null,
+        "userSubscriptions": []
+    }
+]
