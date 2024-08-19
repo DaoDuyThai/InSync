@@ -11,6 +11,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { loadEnvConfig } from "@next/env";
 
 
 export default function PricingPlanSection() {
@@ -19,12 +20,10 @@ export default function PricingPlanSection() {
     useEffect(() => {
         const fetchPricingPlans = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/SubscriptionPlans`);
-                console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/SubscriptionPlans`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/SubscriptionPlans`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-
                 const data = await response.json();
                 setPricingPlans(data);
             } catch (error) {
