@@ -95,6 +95,7 @@ export const ProjectSidebar = () => {
                 </Button>
                 <Button disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                     <Banknote className="h-4 w-4 mr-2" />
+                    Upgrade to Pro
                     {/* {isSubscribed ? "Payment Settings" : "Upgrade to Pro"} */}
                 </Button>
             </div>

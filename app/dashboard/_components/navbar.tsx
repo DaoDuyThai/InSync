@@ -1,6 +1,6 @@
 "use client";
 
-import { UserButton, OrganizationSwitcher, useOrganization } from "@clerk/nextjs";
+import { UserButton, useOrganization } from "@clerk/nextjs";
 
 import React from "react";
 // import { SearchInput } from "./search-input";
@@ -11,6 +11,7 @@ export const Navbar = () => {
     return (
         <div className="flex items-center gap-x-4 p-5 ">
             <div className="hidden lg:flex-1 lg:flex ">
+                {/* TODO: Search Input */}
                 {/* <SearchInput /> */}
             </div>
             <div className="block lg:hidden flex-1">
