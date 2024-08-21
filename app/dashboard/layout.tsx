@@ -1,3 +1,5 @@
+import { Navbar } from "./_components/navbar";
+import { ProjectSidebar } from "./_components/project-sidebar";
 
 type Props = {
     children: React.ReactNode
@@ -6,13 +8,16 @@ type Props = {
 
 const DashboardLayout = ({ children }: Props) => {
     return (
-        <div className="min-h-screen flex flex-col">
-            
-            <main className="flex-1 flex flex-col items-center justify-center">
-                {children}
-            </main>
-            
-        </div>
+        <main className="h-full">
+
+            <div className="flex gap-x-3 h-full">
+                <ProjectSidebar />
+                <div className="h-full flex-1">
+                    <Navbar />
+                    {children}
+                </div>
+            </div>
+        </main>
     )
 }
 
