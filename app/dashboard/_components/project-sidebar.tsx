@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Banknote, LayoutDashboard, Star,Check, ChevronsUpDown, Folder } from "lucide-react";
+import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
