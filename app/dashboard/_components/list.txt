@@ -3,7 +3,6 @@ empty-scenario
 empty-favorites
 empty-project 
 empty-search 
-invite-button 
 navbar 
 new-scenario-button 
 project-sidebar 
