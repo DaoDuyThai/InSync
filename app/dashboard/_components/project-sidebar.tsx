@@ -72,7 +72,7 @@ export const ProjectSidebar = () => {
                     <span className={cn(
                         "font-semibold text-2xl",
                         font.className,
-                    )}>MemoZ</span>
+                    )}>INSYNC</span>
                     <Badge variant="secondary">
                         Free
                         {/* TODO: is subscribed */}
