@@ -5,8 +5,8 @@ empty-project
 empty-search 
 navbar 
 new-scenario-button 
-project-sidebar 
-search-input 
+project-sidebar         V
+search-input            V
 
 scenario-card: footer, index, overlay 
 sidebar: index, item, list, new-button

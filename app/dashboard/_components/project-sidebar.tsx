@@ -32,6 +32,8 @@ const font = Poppins({
 });
 
 export const ProjectSidebar = () => {
+    // TODO: Fetch and display projects
+
     // Projects ComboBox
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
