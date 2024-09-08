@@ -120,7 +120,7 @@ export default function ImagePage() {
             canvas?.addEventListener('click', (e) => {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
+                const mouseY = e.clientY - rect.top;w
 
                 selectedRectIndex = null; // Reset selected rectangle
                 rectangles.forEach((rect, index) => {
@@ -165,16 +165,13 @@ export default function ImagePage() {
             mount.current = true;
         }
 
-
-
-
     }, [])
 
     return (
-        <>
+        <div>
             <canvas ref={canvasRef} width="900" height="600" className="border-2 border-red-300"></canvas>
-            <div ref={canvasAreaRef}></div>
-        </>
+            <div ref={canvasAreaRef} className="flex flex-wrap"></div>
+        </div>
 
     )
 }
