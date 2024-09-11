@@ -25,6 +25,7 @@
     "dotenv": "^16.4.5",
     "embla-carousel-react": "^8.1.8",
     "env": "^0.0.2",
+    "insync": "file:",
     "lucide-react": "^0.419.0",
     "next": "14.2.5",
     "next-themes": "^0.3.0",

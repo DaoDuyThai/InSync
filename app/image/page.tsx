@@ -1,9 +1,5 @@
 'use client'
-import { cva } from "class-variance-authority";
-import { log } from "console";
 import { useEffect, useRef } from "react";
-import { useState, useCallback } from 'react'
-import Cropper from 'react-easy-crop'
 export default function ImagePage() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const croppedRef = useRef<HTMLCanvasElement>(null);
@@ -13,7 +9,7 @@ export default function ImagePage() {
     useEffect(() => {
 
         if (mount.current === false) {
-            // Get the canvas and its context
+            // Get the canvas and its contextF
             const canvas = canvasRef.current;
             const ctx = canvas?.getContext('2d');
             const croppedCanvas = croppedRef.current;
@@ -120,7 +116,7 @@ export default function ImagePage() {
             canvas?.addEventListener('click', (e) => {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;w
+                const mouseY = e.clientY - rect.top;
 
                 selectedRectIndex = null; // Reset selected rectangle
                 rectangles.forEach((rect, index) => {
