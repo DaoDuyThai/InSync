@@ -4,27 +4,39 @@
 // import { api } from "@/convex/_generated/api";
 
 import { EmptyFavorites } from "./empty-favorites";
+import { EmptyScenario } from "./empty-scenario";
 import { EmptySearch } from "./empty-search";
-import { EmptyBoards } from "./empty-boards";
-import { BoardCard } from "./board-card";
-import { NewBoardButton } from "./new-board-button";
+import { NewScenarioButton } from "./new-scenario-button";
+import { ScenarioCard } from "./scenario-card";
+// import { EmptyBoards } from "./empty-boards";
+// import { BoardCard } from "./board-card";
+// import { NewBoardButton } from "./new-board-button";
 
-interface BoardListProps {
-    orgId: string;
+interface ScenarioListProps {
+    projectId: string;
     query: {
         search?: string;
         favorites?: string;
     }
 }
 
-export const BoardList = ({
-    orgId,
+export const ScenarioList = ({
+    projectId,
     query
-}: BoardListProps) => {
-    const data = useQuery(api.boards.get, {
-        orgId,
-        ...query,
-    });
+}: ScenarioListProps) => {
+
+
+    // const data = useQuery(api.boards.get, {
+    //     orgId,
+    //     ...query,
+    // });
+
+    const data = [
+        {
+            
+        },
+        {}
+    ]
 
     if (data === undefined) {
         return (
@@ -33,8 +45,9 @@ export const BoardList = ({
                     {query.favorites ? "Favorites boards" : "Team Boards"}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-10">
-                    <NewBoardButton orgId={orgId} disabled />
-                    <BoardCard.Skeleton />
+                    {/* <NewBoardButton orgId={orgId} disabled /> */}
+                    <NewScenarioButton projectId={projectId} disabled />
+                    <ScenarioCard.Skeleton />
                 </div>
             </div >
         )
@@ -54,7 +67,7 @@ export const BoardList = ({
 
     if (!data?.length) {
         return (
-            <EmptyBoards />
+            <EmptyScenario />
         )
     }
 
@@ -64,18 +77,18 @@ export const BoardList = ({
                 {query.favorites ? "Favorites boards" : "Team Boards"}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-10">
-                <NewBoardButton orgId={orgId} />
-                {data?.map((board) => (
-                    <BoardCard
-                        key={board._id}
-                        id={board._id}
-                        title={board.title}
-                        imageUrl={board.imageUrl}
-                        authorId={board.authorId}
-                        authorName={board.authorName}
-                        createdAt={board._creationTime}
-                        orgId={board.orgId}
-                        isFavorite={board.isFavorite} />
+                <NewScenarioButton projectId={projectId} disabled />
+                {data?.map((scenario) => (
+                    <ScenarioCard
+                        key={scenario._id}
+                        id={scenario._id}
+                        title={scenario.title}
+                        imageUrl={scenario.imageUrl}
+                        authorId={scenario.authorId}
+                        authorName={scenario.authorName}
+                        createdAt={scenario._creationTime}
+                        projectId={scenario.orgId}
+                        isFavorite={scenario.isFavorite} />
                 ))}
             </div>
         </div>
