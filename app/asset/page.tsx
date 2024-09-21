@@ -166,8 +166,8 @@ export default function ImagePage() {
     return (
         <div>
             <canvas ref={canvasRef} width="900" height="600" className="border-2 border-red-300"></canvas>
-            <div ref={canvasAreaRef} className="flex flex-wrap"></div>
-        </div>
+            <div ref={canvasAreaRef} className="flex flex-wrap max-w-md"></div>
+        </div> 
 
     )
 }
