@@ -2,6 +2,7 @@
 
 // import { useQueries, useQuery } from "convex/react";
 // import { api } from "@/convex/_generated/api";
+import { getUnixTime } from 'date-fns';
 
 import { EmptyFavorites } from "./empty-favorites";
 import { EmptyScenario } from "./empty-scenario";
@@ -38,7 +39,7 @@ export const ScenarioList = ({
             "imageUrl": "/placeholders/1.svg",
             "authorId": "user123",
             "authorName": "John Doe",
-            "_creationTime": 1721658208806.409,
+            "_creationTime": "2024-08-17 08:00:00.000",
             "orgId": "project001",
             "isFavorite": true
         },
@@ -48,7 +49,7 @@ export const ScenarioList = ({
             "imageUrl": "/placeholders/2.svg",
             "authorId": "user456",
             "authorName": "Jane Smith",
-            "_creationTime": 1721658208806.409,
+            "_creationTime": "2024-08-17 08:00:00.000",
             "orgId": "project002",
             "isFavorite": false
         },
@@ -58,7 +59,7 @@ export const ScenarioList = ({
             "imageUrl": "/placeholders/1.svg",
             "authorId": "user789",
             "authorName": "Emily Johnson",
-            "_creationTime": 1721658208806.409,
+            "_creationTime": "2024-08-17 08:00:00.000",
             "orgId": "project003",
             "isFavorite": true
         },
@@ -68,7 +69,7 @@ export const ScenarioList = ({
             "imageUrl": "/placeholders/1.svg",
             "authorId": "user321",
             "authorName": "Michael Brown",
-            "_creationTime": 1721658208806.409,
+            "_creationTime": "2024-08-17 08:00:00.000",
             "orgId": "project004",
             "isFavorite": false
         }
@@ -136,7 +137,7 @@ export const ScenarioList = ({
                     imageUrl={data[0].imageUrl}
                     authorId={data[0].authorId}
                     authorName={data[0].authorName}
-                    createdAt={data[0]._creationTime}
+                    createdAt={getUnixTime(data[0]._creationTime) * 1000} //milliseconds to seconds
                     projectId={data[0].orgId}
                     isFavorite={data[0].isFavorite} />
             </div>

@@ -25,7 +25,6 @@ const DashboardPage = () => {
           projectId=""
           query={{ search, favorites }}
         />
-        // <>Scenario List</>
       )}
     </div>
   );

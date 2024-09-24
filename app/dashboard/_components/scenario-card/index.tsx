@@ -39,7 +39,6 @@ export const ScenarioCard = ({
     const { userId } = useAuth();
     const authorLabel = userId === authorId ? "You" : authorName;
     const createdAtLabel = formatDistanceToNow(createdAt, { addSuffix: true });
-
     // const {
     //     mutate: onFavorite,
     //     pending: pendingFavorite
