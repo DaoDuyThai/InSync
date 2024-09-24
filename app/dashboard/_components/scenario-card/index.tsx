@@ -63,7 +63,7 @@ export const ScenarioCard = ({
     return (
         <Link href={`/board/${id}`}>
             <div className="group aspect-[100/127] border rounded-lg flex flex-col justify-between overflow-hidden">
-                <div className="relative flex-1 bg-amber-50">
+                <div className="relative flex-1 bg-gray-200">
                     <Image src={imageUrl} fill className="object-fit" alt={title} />
                     <Overlay />
                     {/* <Actions
