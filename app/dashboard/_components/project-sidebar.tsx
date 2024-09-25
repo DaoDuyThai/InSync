@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react"
+import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
 import {
     Command,
     CommandEmpty,
@@ -18,27 +17,53 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
     Popover,
     PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-
+    PopoverTrigger
+} from "@/components/ui/popover";
 
 const font = Poppins({
     subsets: ["latin"],
     weight: ["600"],
 });
 
+
+
 export const ProjectSidebar = () => {
+    // TODO: Fetch and display projects
+
     // Projects ComboBox
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
 
-
     const searchParams = useSearchParams();
     const favorites = searchParams.get("favorites");
+
+    // Set isClient to true when component mounts
+    React.useEffect(() => {
+        const storedProjectId = localStorage.getItem("selectedProjectId");
+        if (storedProjectId) {
+            setValue(storedProjectId);
+        }
+    }, []);
+
+    // Save selected projectId to localStorage
+    const handleSelectProject = (currentValue: string) => {
+        const newValue = currentValue === value ? "" : currentValue;
+        setValue(newValue);
+
+        // Save to localStorage
+        if (newValue) {
+            localStorage.setItem("selectedProjectId", newValue);
+        } else {
+            localStorage.removeItem("selectedProjectId");
+        }
+        setOpen(false);
+    };
+
+
 
     // const { organization } = useOrganization();
     // const isSubscribed = useQuery(api.subscriptions.getIsSubscribed, {
@@ -98,16 +123,13 @@ export const ProjectSidebar = () => {
                     <Command>
                         <CommandInput placeholder="Search Project..." />
                         <CommandList>
-                            <CommandEmpty>No framework found.</CommandEmpty>
+                            <CommandEmpty>No project found.</CommandEmpty>
                             <CommandGroup>
                                 {projects.map((project) => (
                                     <CommandItem
                                         key={project.value}
                                         value={project.value}
-                                        onSelect={(currentValue) => {
-                                            setValue(currentValue === value ? "" : currentValue)
-                                            setOpen(false)
-                                        }}
+                                        onSelect={() => handleSelectProject(project.value)}
                                     >
                                         <Check
                                             className={cn(
@@ -121,7 +143,6 @@ export const ProjectSidebar = () => {
                             </CommandGroup>
                         </CommandList>
                         <CommandSeparator />
-
                         <CommandItem>
                             <Button className="w-full" size={"sm"} variant={"default"}>
                                 New Project
