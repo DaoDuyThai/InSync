@@ -113,7 +113,7 @@ export const ScenarioList = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-10">
                 <NewScenarioButton projectId={projectId} disabled />
 
-                {/* {data?.map((scenario) => (
+                {data.map((scenario) => (
                     <ScenarioCard
                         key={scenario._id}
                         id={scenario._id}
@@ -121,22 +121,11 @@ export const ScenarioList = ({
                         imageUrl={scenario.imageUrl}
                         authorId={scenario.authorId}
                         authorName={scenario.authorName}
-                        createdAt={scenario._creationTime}
+                        createdAt={getUnixTime(scenario._creationTime) * 1000} //milliseconds to seconds
                         projectId={scenario.orgId}
                         isFavorite={scenario.isFavorite} />
-                ))} */}
+                ))}
 
-
-                <ScenarioCard
-                    key={data[0]._id}
-                    id={data[0]._id}
-                    title={data[0].title}
-                    imageUrl={data[0].imageUrl}
-                    authorId={data[0].authorId}
-                    authorName={data[0].authorName}
-                    createdAt={getUnixTime(data[0]._creationTime) * 1000} //milliseconds to seconds
-                    projectId={data[0].orgId}
-                    isFavorite={data[0].isFavorite} />
             </div>
         </div>
     )
