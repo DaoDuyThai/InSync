@@ -9,9 +9,6 @@ import { EmptyScenario } from "./empty-scenario";
 import { EmptySearch } from "./empty-search";
 import { NewScenarioButton } from "./new-scenario-button";
 import { ScenarioCard } from "./scenario-card";
-// import { EmptyBoards } from "./empty-boards";
-// import { BoardCard } from "./board-card";
-// import { NewBoardButton } from "./new-board-button";
 
 interface ScenarioListProps {
     projectId: string;
