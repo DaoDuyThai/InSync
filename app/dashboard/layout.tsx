@@ -1,4 +1,4 @@
-import { Navbar } from "./_components/navbar";
+import { Navbar } from "@/components/navbar";
 import { ProjectSidebar } from "@/components/project-sidebar";
 
 type Props = {
@@ -12,7 +12,7 @@ const DashboardLayout = ({ children }: Props) => {
             <div className="flex gap-x-3 h-full">
                 <ProjectSidebar />
                 <div className="h-full flex-1">
-                    <Navbar />
+                    <Navbar searchEntity="Scenario" searchLink="dashboard"/>
                     {children}
                 </div>
             </div>
