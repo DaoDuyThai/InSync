@@ -1,5 +1,5 @@
 import { Navbar } from "./_components/navbar";
-import { ProjectSidebar } from "./_components/project-sidebar";
+import { ProjectSidebar } from "@/components/project-sidebar";
 import Toolkit from "./_components/toolkit";
 
 type Props = {

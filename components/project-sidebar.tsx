@@ -7,7 +7,7 @@ import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import {
     Command,
@@ -24,45 +24,49 @@ import {
     PopoverTrigger
 } from "@/components/ui/popover";
 
+import { useDispatch, useSelector } from 'react-redux';
+import { selectProject, clearProject } from '@/store/projectSlice';
+import { RootState, AppDispatch } from '@/store/store';
+
 const font = Poppins({
     subsets: ["latin"],
     weight: ["600"],
 });
 
-
-
 export const ProjectSidebar = () => {
+    const router = usePathname();
     // TODO: Fetch and display projects
 
     // Projects ComboBox
     const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
-
     const searchParams = useSearchParams();
     const favorites = searchParams.get("favorites");
 
-    // Set isClient to true when component mounts
+    // Get the current project from Redux
+    const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
+    const dispatch = useDispatch<AppDispatch>();
+
+    // Load selected project from localStorage when component mounts
     React.useEffect(() => {
         const storedProjectId = localStorage.getItem("selectedProjectId");
         if (storedProjectId) {
-            setValue(storedProjectId);
+            dispatch(selectProject(storedProjectId)); // Load project into Redux
         }
-    }, []);
+    }, [dispatch]);
 
-    // Save selected projectId to localStorage
+    // Save selected project to Redux and localStorage
     const handleSelectProject = (currentValue: string) => {
-        const newValue = currentValue === value ? "" : currentValue;
-        setValue(newValue);
+        const newValue = currentValue === selectedProject ? "" : currentValue;
 
-        // Save to localStorage
         if (newValue) {
+            dispatch(selectProject(newValue));
             localStorage.setItem("selectedProjectId", newValue);
         } else {
+            dispatch(clearProject());
             localStorage.removeItem("selectedProjectId");
         }
         setOpen(false);
     };
-
 
 
     // const { organization } = useOrganization();
@@ -107,14 +111,9 @@ export const ProjectSidebar = () => {
             </Link>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-[186px] justify-between"
-                    >
-                        {value
-                            ? projects.find((project) => project.value === value)?.label
+                    <Button variant="outline" role="combobox" aria-expanded={open} className="w-[186px] justify-between">
+                        {selectedProject
+                            ? projects.find((project) => project.value === selectedProject)?.label
                             : "Select Project..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -134,7 +133,7 @@ export const ProjectSidebar = () => {
                                         <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
-                                                value === project.value ? "opacity-100" : "opacity-0"
+                                                selectedProject === project.value ? "opacity-100" : "opacity-0"
                                             )}
                                         />
                                         {project.label}
@@ -154,7 +153,10 @@ export const ProjectSidebar = () => {
 
 
             <div className="space-y-1 w-full">
-                <Button variant={favorites ? "ghost" : "secondary"} asChild size="lg" className="font-normal justify-start px-2 w-full">
+                <Button variant={(router === '/dashboard') && !favorites ? 'secondary' : 'ghost'}
+                    asChild
+                    size="lg"
+                    className="font-normal justify-start px-2 w-full">
                     <Link href="/dashboard">
                         <LayoutDashboard className="h-4 w-4 mr-2" /> Project Scenarios
                     </Link>
@@ -168,8 +170,12 @@ export const ProjectSidebar = () => {
                         <Star className="h-4 w-4 mr-2" /> Favorite Scenarios
                     </Link>
                 </Button>
-                {/* TODO: Add Link to Assets */}
-                <Button variant={"ghost"} asChild size="lg" className="font-normal justify-start px-2 w-full">
+                <Button
+                    variant={router === '/assets' ? 'secondary' : 'ghost'}
+                    asChild
+                    size="lg"
+                    className="font-normal justify-start px-2 w-full"
+                >
                     <Link href="/assets">
                         <Folder className="h-4 w-4 mr-2" /> Project Assets
                     </Link>
@@ -184,6 +190,7 @@ export const ProjectSidebar = () => {
         </div>
     )
 }
+
 
 const projects = [
     {
