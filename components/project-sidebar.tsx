@@ -191,6 +191,7 @@ export const ProjectSidebar = () => {
     )
 }
 
+
 const projects = [
     {
         value: "project-1",
