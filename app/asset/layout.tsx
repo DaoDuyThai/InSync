@@ -13,11 +13,7 @@ const ImageLayout = ({ children }: Props) => {
                 <ProjectSidebar />
                 <div className="h-full flex-1">
                     <Navbar />
-                    <div className="flex justify-center gap-10">
-                        {children}
-                        <Toolkit/>
-                    </div>
-                    
+                    {children}
                 </div>
             </div>
         </main>

@@ -1,20 +1,24 @@
 'use client'
 import { useEffect, useRef } from "react";
+import Toolkit from "./_components/toolkit";
 export default function ImagePage() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const croppedRef = useRef<HTMLCanvasElement>(null);
     const mount = useRef(false);
-    const canvasAreaRef = useRef<HTMLDivElement>(null)
+    const canvasAreaRef = useRef<HTMLDivElement>(null);
+    const pulseAreaRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
 
         if (mount.current === false) {
             // Get the canvas and its contextF
+            document.title = "InSync  - Asset Modification"
             const canvas = canvasRef.current;
             const ctx = canvas?.getContext('2d');
             const croppedCanvas = croppedRef.current;
             const croppedCtx = croppedCanvas?.getContext('2d');
             const canvasArea = canvasAreaRef.current;
+            const pulseArea = pulseAreaRef.current;
             let selectedRectIndex;
             // Create a new image object
             const img = new Image();
@@ -103,12 +107,23 @@ export default function ImagePage() {
                     let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
                     canvas.width = rect.width;
                     canvas.height = rect.height;
+                    canvas.classList.add('shadow-gray-300', 'shadow-xl', 'border-2', 'border-black', 'rounded-md', 'm-2', 'cropped-canvas');
+                    canvas.addEventListener('click', (e) => {
+                        canvas.classList.toggle('border-4');
+                        canvas.classList.toggle('border-green-500');
+                    });
                     if (imageData) {
                         canvasContext?.putImageData(imageData, 0, 0);
                     }
                     canvasArea?.appendChild(canvas);
 
 
+                }
+            });
+
+            pulseArea?.addEventListener('click', (e) => {
+                if (pulseArea) {
+                    pulseArea.style.display = 'none';
                 }
             });
 
@@ -155,19 +170,19 @@ export default function ImagePage() {
                 });
             }
         }
-
-
         return () => {
             mount.current = true;
         }
-
     }, [])
 
     return (
-        <div>
-            <canvas ref={canvasRef} width="900" height="600" className="border-2 border-red-300"></canvas>
-            <div ref={canvasAreaRef} className="flex flex-wrap max-w-md"></div>
-        </div> 
+        <div className="p-5">
+            <div className="flex justify-center">
+                <canvas ref={canvasRef} width="900" height="600" className="shadow-gray-300 shadow-sm border-2 border-black rounded-md relative"></canvas>
+                <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
+            </div>
+            <div ref={canvasAreaRef} className="overflow-x-auto mx-auto max-w-[900px] flex"></div>
+        </div>
 
     )
 }
