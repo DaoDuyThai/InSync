@@ -27,7 +27,7 @@ export default function ImagePage() {
 
     return (
         <div className="container">
-            <div className="text-xl bg-[#f2f6fa] py-2 px-4">
+            <div className="text-lg bg-[#f2f6fa] py-2 px-4">
                 <CalendarFoldIcon size="24" className="inline-block" />
                 <span className="mx-2">20/09/2023</span>
             </div>
