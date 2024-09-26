@@ -1,4 +1,4 @@
-import { Navbar } from "./_components/navbar";
+import { Navbar } from "@/components/navbar";
 import { ProjectSidebar } from "@/components/project-sidebar";
 import Toolkit from "./_components/toolkit";
 
@@ -12,7 +12,7 @@ const ImageLayout = ({ children }: Props) => {
             <div className="flex gap-x-3 h-full">
                 <ProjectSidebar />
                 <div className="h-full flex-1">
-                    <Navbar />
+                    <Navbar searchEntity="Assets" searchLink="assets"/>
                     {children}
                 </div>
             </div>
