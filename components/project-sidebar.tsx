@@ -1,15 +1,14 @@
 "use client";
 
-import * as React from "react"
+import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
 import {
     Command,
     CommandEmpty,
@@ -18,13 +17,16 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
     Popover,
     PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+    PopoverTrigger
+} from "@/components/ui/popover";
 
+import { useDispatch, useSelector } from 'react-redux';
+import { selectProject, clearProject } from '@/store/projectSlice';
+import { RootState, AppDispatch } from '@/store/store';
 
 const font = Poppins({
     subsets: ["latin"],
@@ -32,13 +34,40 @@ const font = Poppins({
 });
 
 export const ProjectSidebar = () => {
+    const router = usePathname();
+    // TODO: Fetch and display projects
+
     // Projects ComboBox
     const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
-
-
     const searchParams = useSearchParams();
     const favorites = searchParams.get("favorites");
+
+    // Get the current project from Redux
+    const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
+    const dispatch = useDispatch<AppDispatch>();
+
+    // Load selected project from localStorage when component mounts
+    React.useEffect(() => {
+        const storedProjectId = localStorage.getItem("selectedProjectId");
+        if (storedProjectId) {
+            dispatch(selectProject(storedProjectId)); // Load project into Redux
+        }
+    }, [dispatch]);
+
+    // Save selected project to Redux and localStorage
+    const handleSelectProject = (currentValue: string) => {
+        const newValue = currentValue === selectedProject ? "" : currentValue;
+
+        if (newValue) {
+            dispatch(selectProject(newValue));
+            localStorage.setItem("selectedProjectId", newValue);
+        } else {
+            dispatch(clearProject());
+            localStorage.removeItem("selectedProjectId");
+        }
+        setOpen(false);
+    };
+
 
     // const { organization } = useOrganization();
     // const isSubscribed = useQuery(api.subscriptions.getIsSubscribed, {
@@ -82,14 +111,9 @@ export const ProjectSidebar = () => {
             </Link>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-[186px] justify-between"
-                    >
-                        {value
-                            ? projects.find((project) => project.value === value)?.label
+                    <Button variant="outline" role="combobox" aria-expanded={open} className="w-[186px] justify-between">
+                        {selectedProject
+                            ? projects.find((project) => project.value === selectedProject)?.label
                             : "Select Project..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -98,21 +122,18 @@ export const ProjectSidebar = () => {
                     <Command>
                         <CommandInput placeholder="Search Project..." />
                         <CommandList>
-                            <CommandEmpty>No framework found.</CommandEmpty>
+                            <CommandEmpty>No project found.</CommandEmpty>
                             <CommandGroup>
                                 {projects.map((project) => (
                                     <CommandItem
                                         key={project.value}
                                         value={project.value}
-                                        onSelect={(currentValue) => {
-                                            setValue(currentValue === value ? "" : currentValue)
-                                            setOpen(false)
-                                        }}
+                                        onSelect={() => handleSelectProject(project.value)}
                                     >
                                         <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
-                                                value === project.value ? "opacity-100" : "opacity-0"
+                                                selectedProject === project.value ? "opacity-100" : "opacity-0"
                                             )}
                                         />
                                         {project.label}
@@ -121,7 +142,6 @@ export const ProjectSidebar = () => {
                             </CommandGroup>
                         </CommandList>
                         <CommandSeparator />
-
                         <CommandItem>
                             <Button className="w-full" size={"sm"} variant={"default"}>
                                 New Project
@@ -133,7 +153,10 @@ export const ProjectSidebar = () => {
 
 
             <div className="space-y-1 w-full">
-                <Button variant={favorites ? "ghost" : "secondary"} asChild size="lg" className="font-normal justify-start px-2 w-full">
+                <Button variant={(router === '/dashboard') && !favorites ? 'secondary' : 'ghost'}
+                    asChild
+                    size="lg"
+                    className="font-normal justify-start px-2 w-full">
                     <Link href="/dashboard">
                         <LayoutDashboard className="h-4 w-4 mr-2" /> Project Scenarios
                     </Link>
@@ -147,8 +170,12 @@ export const ProjectSidebar = () => {
                         <Star className="h-4 w-4 mr-2" /> Favorite Scenarios
                     </Link>
                 </Button>
-                {/* TODO: Add Link to Assets */}
-                <Button variant={"ghost"} asChild size="lg" className="font-normal justify-start px-2 w-full">
+                <Button
+                    variant={router === '/assets' ? 'secondary' : 'ghost'}
+                    asChild
+                    size="lg"
+                    className="font-normal justify-start px-2 w-full"
+                >
                     <Link href="/assets">
                         <Folder className="h-4 w-4 mr-2" /> Project Assets
                     </Link>
