@@ -1,17 +1,23 @@
 'use client'
 import { useEffect, useRef } from "react";
-import Toolkit from "./_components/toolkit";
-export default function ImagePage() {
+import { UploadCloudIcon } from "lucide-react";
+import { useParams } from "next/navigation";
+
+
+export default function ImageCroppedPage() {
+    const {id} = useParams();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const croppedRef = useRef<HTMLCanvasElement>(null);
     const mount = useRef(false);
     const canvasAreaRef = useRef<HTMLDivElement>(null);
     const pulseAreaRef = useRef<HTMLDivElement>(null);
+    const uploadImageButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
 
         if (mount.current === false) {
-            // Get the canvas and its contextF
+            // Get the canvas and its context
+            // Declare global variables
             document.title = "InSync  - Asset Modification"
             const canvas = canvasRef.current;
             const ctx = canvas?.getContext('2d');
@@ -19,10 +25,12 @@ export default function ImagePage() {
             const croppedCtx = croppedCanvas?.getContext('2d');
             const canvasArea = canvasAreaRef.current;
             const pulseArea = pulseAreaRef.current;
+            const uploadImageButton = uploadImageButtonRef.current;
+            let seletedCroppedImage: Array<HTMLCanvasElement>;
             let selectedRectIndex;
             // Create a new image object
             const img = new Image();
-            img.src = 'https://static.chotot.com/storage/chotot-kinhnghiem/c2c/2019/10/nuoi-meo-can-gi-0-1024x713.jpg'; // Update with the path to your image
+            img.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
 
             // Array to store rectangles
             const rectangles: Array<any> = [];
@@ -108,10 +116,20 @@ export default function ImagePage() {
                     canvas.width = rect.width;
                     canvas.height = rect.height;
                     canvas.classList.add('shadow-gray-300', 'shadow-xl', 'border-2', 'border-black', 'rounded-md', 'm-2', 'cropped-canvas');
+                    // add event listener to choose cropped image
                     canvas.addEventListener('click', (e) => {
                         canvas.classList.toggle('border-4');
                         canvas.classList.toggle('border-green-500');
+                        canvas.classList.toggle('selected-cropped-image');
+                        seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
+                        if (seletedCroppedImage.length >= 1) {
+                            uploadImageButton?.classList.remove('hidden');
+                        } else {
+                            uploadImageButton?.classList.add('hidden');
+                        }
+
                     });
+
                     if (imageData) {
                         canvasContext?.putImageData(imageData, 0, 0);
                     }
@@ -159,7 +177,7 @@ export default function ImagePage() {
         function drawImageAndRectangles(ctx: any, canvas: any, img: any, rectangles: Array<any>) {
             if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width, img.height);
 
                 // Draw all rectangles
                 rectangles.forEach(rect => {
@@ -170,6 +188,9 @@ export default function ImagePage() {
                 });
             }
         }
+
+
+
         return () => {
             mount.current = true;
         }
@@ -178,10 +199,15 @@ export default function ImagePage() {
     return (
         <div className="p-5">
             <div className="flex justify-center">
-                <canvas ref={canvasRef} width="900" height="600" className="shadow-gray-300 shadow-sm border-2 border-black rounded-md relative"></canvas>
+                <canvas ref={canvasRef} width="900" height="600" className="shadow-gray-300 shadow-sm border-2 border-black rounded-md relative bg-gray-100"></canvas>
                 <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
             </div>
-            <div ref={canvasAreaRef} className="overflow-x-auto mx-auto max-w-[900px] flex"></div>
+            <div ref={canvasAreaRef} className="overflow-x-auto mx-auto max-w-[900px] flex items-start"></div>
+            <div className="flex justify-center">
+                <button ref={uploadImageButtonRef} className="border-2 bg-green-600 px-10 py-5 text-xl rounded-lg hidden" >
+                    <UploadCloudIcon className="inline-block" size={30} /> <span>Upload Image</span>
+                </button>
+            </div>
         </div>
 
     )
