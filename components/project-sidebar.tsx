@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder } from "lucide-react";
+import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder, FileClock } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -178,6 +178,16 @@ export const ProjectSidebar = () => {
                 >
                     <Link href="/assets">
                         <Folder className="h-4 w-4 mr-2" /> Project Assets
+                    </Link>
+                </Button>
+                <Button
+                    variant={router === '/logs' ? 'secondary' : 'ghost'}
+                    asChild
+                    size="lg"
+                    className="font-normal justify-start px-2 w-full"
+                >
+                    <Link href="/logs">
+                        <FileClock className="h-4 w-4 mr-2" /> Project Logs
                     </Link>
                 </Button>
                 <Button disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
