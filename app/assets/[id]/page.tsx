@@ -1,6 +1,6 @@
 'use client'
-import { useEffect, useRef } from "react";
-import { UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { CropIcon, MoveIcon, Scale, UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { useParams } from "next/navigation";
 
 
@@ -14,6 +14,8 @@ export default function ImageCroppedPage() {
     const canvasAreaRef = useRef<HTMLDivElement>(null);
     const pulseAreaRef = useRef<HTMLDivElement>(null);
     const uploadImageButtonRef = useRef<HTMLButtonElement>(null);
+    const [isMoving, setIsMoving] = useState(false);
+    const [isCropping, setIsCropping] = useState(false);
 
     useEffect(() => {
 
@@ -45,48 +47,25 @@ export default function ImageCroppedPage() {
             // Draw the image on the canvas once it's loaded
             img.crossOrigin = "Anonymous";
             img.onload = function () {
-                drawImageAndRectangles(ctx, canvas, img, rectangles);
+                drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
             };
 
 
             // Function to start drawing
             canvas?.addEventListener('mousedown', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                startX = e.clientX - rect.left;
-                startY = e.clientY - rect.top;
-                isDrawing = true;
+                if (isCropping) {
+                    const rect = canvas.getBoundingClientRect();
+                    startX = e.clientX - rect.left;
+                    startY = e.clientY - rect.top;
+                    isDrawing = true;
+                }
             });
 
             // Function to draw the rectangle while mouse is moving
             canvas?.addEventListener('mousemove', (e) => {
                 if (!isDrawing) return;
-
-                // Calculate the current mouse position
-                const rect = canvas.getBoundingClientRect();
-                const currentX = e.clientX - rect.left;
-                const currentY = e.clientY - rect.top;
-
-                // Calculate width and height of the rectangle
-                const width = currentX - startX;
-                const height = currentY - startY;
-
-                // Clear the canvas and redraw the image and existing rectangles
-                drawImageAndRectangles(ctx, canvas, img, rectangles);
-
-                // Draw the new rectangle being created
-                if (ctx) {
-                    ctx.beginPath();
-                    ctx.rect(startX, startY, width, height);
-                    ctx.lineWidth = 3;
-                    ctx.strokeStyle = 'white';
-                    ctx.stroke();
-                }
-            });
-
-            // Function to finish drawing the rectangle
-            canvas?.addEventListener('mouseup', (e) => {
-
-                if (isDrawing) {
+                if (isCropping) {
+                    // Calculate the current mouse position
                     const rect = canvas.getBoundingClientRect();
                     const currentX = e.clientX - rect.left;
                     const currentY = e.clientY - rect.top;
@@ -95,49 +74,72 @@ export default function ImageCroppedPage() {
                     const width = currentX - startX;
                     const height = currentY - startY;
 
+                    // Clear the canvas and redraw the image and existing rectangles
+                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
+
+                    // Draw the new rectangle being created
+                    if (ctx) {
+                        ctx.beginPath();
+                        ctx.rect(startX, startY, width, height);
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = 'white';
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            // Function to finish drawing the rectangle
+            canvas?.addEventListener('mouseup', (e) => {
+                if (isCropping && isDrawing) {
+                    const rect = canvas.getBoundingClientRect();
+                    const currentX = e.clientX - rect.left;
+                    const currentY = e.clientY - rect.top;
+                    // Calculate width and height of the rectangle
+                    const width = currentX - startX;
+                    const height = currentY - startY;
                     // Add the new rectangle to the array
                     rectangles.push({ startX, startY, width, height });
                     console.log(rectangles);
-
-
                     // Reset drawing state
                     isDrawing = false;
-
                     // Redraw everything
-                    drawImageAndRectangles(ctx, canvas, img, rectangles);
+                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
                 }
             });
 
             // Add an event listener to crop the most recent rectangle
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    let length = rectangles.length
-                    const rect = rectangles[length - 1]
-                    let canvas = document.createElement("canvas");
-                    let canvasContext = canvas.getContext('2d');
-                    let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
-                    canvas.width = rect.width;
-                    canvas.height = rect.height;
-                    canvas.classList.add('shadow-gray-300', 'shadow-xl', 'border-2', 'border-black', 'rounded-md', 'm-2', 'cropped-canvas');
-                    // add event listener to choose cropped image
-                    canvas.addEventListener('click', (e) => {
-                        canvas.classList.toggle('border-4');
-                        canvas.classList.toggle('border-green-500');
-                        canvas.classList.toggle('selected-cropped-image');
-                        seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
-                        if (seletedCroppedImage.length >= 1) {
-                            uploadImageButton?.classList.remove('hidden');
-                        } else {
-                            uploadImageButton?.classList.add('hidden');
+                try {
+                    if (isCropping && e.key === 'Enter') {
+                        let length = rectangles.length
+                        const rect = rectangles[length - 1]
+                        let canvas = document.createElement("canvas");
+                        let canvasContext = canvas.getContext('2d');
+                        let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
+                        canvas.width = rect.width;
+                        canvas.height = rect.height;
+                        canvas.classList.add('shadow-gray-300', 'shadow-xl', 'border-2', 'border-black', 'rounded-md', 'm-2', 'cropped-canvas');
+                        // add event listener to choose cropped image
+                        canvas.addEventListener('click', (e) => {
+                            canvas.classList.toggle('border-4');
+                            canvas.classList.toggle('border-green-500');
+                            canvas.classList.toggle('selected-cropped-image');
+                            seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
+                            if (seletedCroppedImage.length >= 1) {
+                                uploadImageButton?.classList.remove('hidden');
+                            } else {
+                                uploadImageButton?.classList.add('hidden');
+                            }
+
+                        });
+
+                        if (imageData) {
+                            canvasContext?.putImageData(imageData, 0, 0);
                         }
-
-                    });
-
-                    if (imageData) {
-                        canvasContext?.putImageData(imageData, 0, 0);
+                        canvasArea?.appendChild(canvas);
                     }
-                    canvasArea?.appendChild(canvas);
-
+                } catch (error) {
+                    console.error(error);
 
                 }
             });
@@ -150,26 +152,28 @@ export default function ImageCroppedPage() {
 
 
             canvas?.addEventListener('click', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
+                if (isCropping) {
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
 
-                selectedRectIndex = null; // Reset selected rectangle
-                rectangles.forEach((rect, index) => {
-                    if (mouseX >= rect.startX && mouseX < rect.startX + rect.width &&
-                        mouseY >= rect.startY && mouseY < rect.startY + rect.height) {
-                        selectedRectIndex = index;
-                    }
-                });
+                    selectedRectIndex = null; // Reset selected rectangle
+                    rectangles.forEach((rect, index) => {
+                        if (mouseX >= rect.startX && mouseX < rect.startX + rect.width &&
+                            mouseY >= rect.startY && mouseY < rect.startY + rect.height) {
+                            selectedRectIndex = index;
+                        }
+                    });
 
-                if (selectedRectIndex !== null) {
-                    // Confirm removal of the selected rectangle
-                    const confirmed = confirm('Do you want to remove the selected rectangle?');
-                    if (confirmed) {
-                        // Remove the selected rectangle
-                        rectangles.splice(selectedRectIndex, 1);
-                        selectedRectIndex = null;
-                        drawImageAndRectangles(ctx, canvas, img, rectangles);
+                    if (selectedRectIndex !== null) {
+                        // Confirm removal of the selected rectangle
+                        const confirmed = confirm('Do you want to remove the selected rectangle?');
+                        if (confirmed) {
+                            // Remove the selected rectangle
+                            rectangles.splice(selectedRectIndex, 1);
+                            selectedRectIndex = null;
+                            drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
+                        }
                     }
                 }
             });
@@ -179,16 +183,16 @@ export default function ImageCroppedPage() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.save();
                     // ctx.translate(0, 0);
-                    ctx.scale(scale, scale)
+                    ctx.scale(scale, scale);
                     ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width, img.height);
                     ctx.restore();
                 }
             };
 
-
+            //#region declare zoom function
             const zoomInButton = zoomInRef.current;
             const zoomOutButton = zoomOutRef.current;
-
+            // Zoom in Zoom out function
             zoomInButton?.addEventListener('click', (e) => {
                 scale += 0.1;
                 if (ctx && canvas && img)
@@ -200,14 +204,15 @@ export default function ImageCroppedPage() {
                 if (ctx && canvas && img)
                     drawImage(ctx, canvas, img);
             });
+            //#endregion
 
         }
 
         // Function to draw image and rectangles
-        function drawImageAndRectangles(ctx: any, canvas: any, img: any, rectangles: Array<any>) {
+        function drawImageAndRectangles(ctx: any, canvas: any, img: any, rectangles: Array<any>, scale: number) {
             if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width, img.height);
+                ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width * scale, img.height * scale);
 
                 // Draw all rectangles
                 rectangles?.forEach(rect => {
@@ -230,7 +235,7 @@ export default function ImageCroppedPage() {
     return (
         <div className="p-5">
             <div className="flex justify-center">
-                <div className="relative">
+                <div className="relative flex">
                     <canvas
                         ref={canvasRef}
                         width="900"
@@ -244,6 +249,10 @@ export default function ImageCroppedPage() {
                          bg-gray-100"
                     >
                     </canvas>
+                    <div className="absolute top-5 right-5">
+                        <button onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }} className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200 border-r-2 border-black`}><CropIcon size={24} /></button>
+                        <button onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }} className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200`}><MoveIcon size={24} /></button>
+                    </div>
                     <div className="absolute bottom-5 right-5">
                         <button ref={zoomInRef} className="px-5 py-2 bg-gray-200 border-r-2 border-black"><ZoomIn size={24} /></button>
                         <button ref={zoomOutRef} className="px-5 py-2 bg-gray-200"><ZoomOut size={24} /></button>

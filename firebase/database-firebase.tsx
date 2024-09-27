@@ -14,17 +14,6 @@ const firebaseConfig = {
     databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
 };
 
-const firebaseConfig2 = {
-    apiKey: "AIzaSyBvuihuikZjdmwX8miNxI0i3qgfU4uUDMg",
-    authDomain: "projectinsync-f627a.firebaseapp.com",
-    databaseURL: "https://projectinsync-f627a-default-rtdb.firebaseio.com",
-    projectId: "projectinsync-f627a",
-    storageBucket: "projectinsync-f627a.appspot.com",
-    messagingSenderId: "741949395155",
-    appId: "1:741949395155:web:64e87b660fe17c7db48426",
-    measurementId: "G-RKTVGEW85N"
-};
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
