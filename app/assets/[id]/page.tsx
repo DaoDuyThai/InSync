@@ -1,12 +1,14 @@
 'use client'
 import { useEffect, useRef } from "react";
-import { UploadCloudIcon } from "lucide-react";
+import { UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { useParams } from "next/navigation";
 
 
 export default function ImageCroppedPage() {
-    const {id} = useParams();
+    const { id } = useParams();
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const zoomInRef = useRef<HTMLButtonElement>(null);
+    const zoomOutRef = useRef<HTMLButtonElement>(null);
     const croppedRef = useRef<HTMLCanvasElement>(null);
     const mount = useRef(false);
     const canvasAreaRef = useRef<HTMLDivElement>(null);
@@ -28,6 +30,7 @@ export default function ImageCroppedPage() {
             const uploadImageButton = uploadImageButtonRef.current;
             let seletedCroppedImage: Array<HTMLCanvasElement>;
             let selectedRectIndex;
+            let scale = 1;
             // Create a new image object
             const img = new Image();
             img.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
@@ -171,6 +174,33 @@ export default function ImageCroppedPage() {
                 }
             });
 
+            const drawImage = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, img: HTMLImageElement) => {
+                if (ctx && canvas) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.save();
+                    // ctx.translate(0, 0);
+                    ctx.scale(scale, scale)
+                    ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width, img.height);
+                    ctx.restore();
+                }
+            };
+
+
+            const zoomInButton = zoomInRef.current;
+            const zoomOutButton = zoomOutRef.current;
+
+            zoomInButton?.addEventListener('click', (e) => {
+                scale += 0.1;
+                if (ctx && canvas && img)
+                    drawImage(ctx, canvas, img);
+            });
+
+            zoomOutButton?.addEventListener('click', (e) => {
+                scale -= 0.1;
+                if (ctx && canvas && img)
+                    drawImage(ctx, canvas, img);
+            });
+
         }
 
         // Function to draw image and rectangles
@@ -180,7 +210,7 @@ export default function ImageCroppedPage() {
                 ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width, img.height);
 
                 // Draw all rectangles
-                rectangles.forEach(rect => {
+                rectangles?.forEach(rect => {
                     ctx.beginPath();
                     ctx.rect(rect.startX, rect.startY, rect.width, rect.height);
                     ctx.strokeStyle = 'white';
@@ -188,6 +218,7 @@ export default function ImageCroppedPage() {
                 });
             }
         }
+
 
 
 
@@ -199,8 +230,27 @@ export default function ImageCroppedPage() {
     return (
         <div className="p-5">
             <div className="flex justify-center">
-                <canvas ref={canvasRef} width="900" height="600" className="shadow-gray-300 shadow-sm border-2 border-black rounded-md relative bg-gray-100"></canvas>
+                <div className="relative">
+                    <canvas
+                        ref={canvasRef}
+                        width="900"
+                        height="600"
+                        className
+                        ="shadow-gray-300
+                         shadow-sm border-2 
+                         border-black 
+                         rounded-md 
+                         relative 
+                         bg-gray-100"
+                    >
+                    </canvas>
+                    <div className="absolute bottom-5 right-5">
+                        <button ref={zoomInRef} className="px-5 py-2 bg-gray-200 border-r-2 border-black"><ZoomIn size={24} /></button>
+                        <button ref={zoomOutRef} className="px-5 py-2 bg-gray-200"><ZoomOut size={24} /></button>
+                    </div>
+                </div>
                 <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
+
             </div>
             <div ref={canvasAreaRef} className="overflow-x-auto mx-auto max-w-[900px] flex items-start"></div>
             <div className="flex justify-center">
