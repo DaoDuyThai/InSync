@@ -2,8 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CropIcon, MoveIcon, UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { useParams } from "next/navigation";
-import {images} from "next/dist/build/webpack/config/blocks/images";
-
 
 export default function ImageCroppedPage() {
     const { id } = useParams();
@@ -40,6 +38,9 @@ export default function ImageCroppedPage() {
             let seletedCroppedImage: Array<HTMLCanvasElement>;
             let selectedRectIndex;
             let scale = 1;
+            let imageX = 0;
+            let imageY = 0;
+
             // Create a new image object
             const img = new Image();
             img.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
@@ -54,7 +55,7 @@ export default function ImageCroppedPage() {
             // Draw the image on the canvas once it's loaded
             img.crossOrigin = "Anonymous";
             img.onload = function () {
-                drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
+                drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
             };
 
             croppingButton?.addEventListener('click', e => {
@@ -63,6 +64,7 @@ export default function ImageCroppedPage() {
             })
 
             movingButton?.addEventListener('click', (e) => {
+                console.log("IsMovingButtonClicked is listened");
                 isMovingButtonClicked = true;
                 isCroppingButtonClicked = false;
             })
@@ -81,9 +83,11 @@ export default function ImageCroppedPage() {
 
             // Function to draw the rectangle while mouse is moving
             canvas?.addEventListener('mousemove', (e) => {
-                if (!isDrawing) return;
+                // if (!isDrawing) return;
                 if (isCroppingButtonClicked) {
                     // Calculate the current mouse position
+                    console.log("mousemove in Cropping is working!");
+                    
                     const rect = canvas.getBoundingClientRect();
                     const currentX = e.clientX - rect.left;
                     const currentY = e.clientY - rect.top;
@@ -93,7 +97,7 @@ export default function ImageCroppedPage() {
                     const height = currentY - startY;
 
                     // Clear the canvas and redraw the image and existing rectangles
-                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
+                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
 
                     // Draw the new rectangle being created
                     if (ctx) {
@@ -105,7 +109,16 @@ export default function ImageCroppedPage() {
                     }
                 }
                 else if (isMovingButtonClicked) {
+                    console.log("is moving");
+                    const rect = canvas.getBoundingClientRect();
+                    imageX = e.clientX - rect.left - img.width / 2;
+                    imageY = e.clientY - rect.top - img.height / 2;
 
+                    ctx?.clearRect(0, 0, canvas.width, canvas.height);
+                    if(ctx) {
+                        drawImage(ctx, canvas,img);
+                    }
+                    rectangles.length = 0;
                 }
             });
 
@@ -124,7 +137,7 @@ export default function ImageCroppedPage() {
                     // Reset drawing state
                     isDrawing = false;
                     // Redraw everything
-                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
+                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
                 }
             });
 
@@ -193,9 +206,13 @@ export default function ImageCroppedPage() {
                             // Remove the selected rectangle
                             rectangles.splice(selectedRectIndex, 1);
                             selectedRectIndex = null;
-                            drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
+                            drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
                         }
                     }
+                } else if (isMovingButtonClicked) {
+                    isMovingButtonClicked = false;
+                } else if (!isMovingButtonClicked) {
+                    isMovingButtonClicked = true;
                 }
             });
 
@@ -205,7 +222,7 @@ export default function ImageCroppedPage() {
                     ctx.save();
                     // ctx.translate(0, 0);
                     ctx.scale(scale, scale);
-                    ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width, img.height);
+                    ctx.drawImage(img, imageX, imageY, img.width, img.height);
                     ctx.restore();
                 }
             };
@@ -230,10 +247,10 @@ export default function ImageCroppedPage() {
         }
 
         // Function to draw image and rectangles
-        function drawImageAndRectangles(ctx: any, canvas: any, img: any, rectangles: Array<any>, scale: number) {
+        function drawImageAndRectangles(ctx: any, canvas: any, img: any, rectangles: Array<any>, scale: number, imageX: number, imageY: number) {
             if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2, img.width * scale, img.height * scale);
+                ctx.drawImage(img, imageX, imageY, img.width * scale, img.height * scale);
 
                 // Draw all rectangles
                 rectangles?.forEach(rect => {
@@ -272,7 +289,7 @@ export default function ImageCroppedPage() {
                     </canvas>
                     <div className="absolute top-5 right-5">
                         <button ref={croppingButtonRef} onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }} className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200 border-r-2 border-black`}><CropIcon size={24} /></button>
-                        <button ref={movingButtonRef} onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }}   className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200`}><MoveIcon size={24} /></button>
+                        <button ref={movingButtonRef} onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }} className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200`}><MoveIcon size={24} /></button>
                     </div>
                     <div className="absolute bottom-5 right-5">
                         <button ref={zoomInRef} className="px-5 py-2 bg-gray-200 border-r-2 border-black"><ZoomIn size={24} /></button>
