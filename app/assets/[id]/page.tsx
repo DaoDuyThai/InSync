@@ -1,7 +1,8 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
-import { CropIcon, MoveIcon, Scale, UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
+import { CropIcon, MoveIcon, UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { useParams } from "next/navigation";
+import {images} from "next/dist/build/webpack/config/blocks/images";
 
 
 export default function ImageCroppedPage() {
@@ -16,10 +17,12 @@ export default function ImageCroppedPage() {
     const uploadImageButtonRef = useRef<HTMLButtonElement>(null);
     const [isMoving, setIsMoving] = useState(false);
     const [isCropping, setIsCropping] = useState(false);
+    const croppingButtonRef = useRef<HTMLButtonElement>(null);
+    const movingButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
 
-        if (mount.current === false) {
+        if (!mount.current) {
             // Get the canvas and its context
             // Declare global variables
             document.title = "InSync  - Asset Modification"
@@ -30,6 +33,10 @@ export default function ImageCroppedPage() {
             const canvasArea = canvasAreaRef.current;
             const pulseArea = pulseAreaRef.current;
             const uploadImageButton = uploadImageButtonRef.current;
+            const movingButton = movingButtonRef.current;
+            const croppingButton = croppingButtonRef.current;
+            let isMovingButtonClicked = false;
+            let isCroppingButtonClicked = false;
             let seletedCroppedImage: Array<HTMLCanvasElement>;
             let selectedRectIndex;
             let scale = 1;
@@ -50,10 +57,21 @@ export default function ImageCroppedPage() {
                 drawImageAndRectangles(ctx, canvas, img, rectangles, scale);
             };
 
+            croppingButton?.addEventListener('click', e => {
+                isCroppingButtonClicked = true;
+                isMovingButtonClicked = false;
+            })
+
+            movingButton?.addEventListener('click', (e) => {
+                isMovingButtonClicked = true;
+                isCroppingButtonClicked = false;
+            })
+
 
             // Function to start drawing
             canvas?.addEventListener('mousedown', (e) => {
-                if (isCropping) {
+                if (isCroppingButtonClicked) {
+                    console.log("isCroppingButtonClicked")
                     const rect = canvas.getBoundingClientRect();
                     startX = e.clientX - rect.left;
                     startY = e.clientY - rect.top;
@@ -64,7 +82,7 @@ export default function ImageCroppedPage() {
             // Function to draw the rectangle while mouse is moving
             canvas?.addEventListener('mousemove', (e) => {
                 if (!isDrawing) return;
-                if (isCropping) {
+                if (isCroppingButtonClicked) {
                     // Calculate the current mouse position
                     const rect = canvas.getBoundingClientRect();
                     const currentX = e.clientX - rect.left;
@@ -86,11 +104,14 @@ export default function ImageCroppedPage() {
                         ctx.stroke();
                     }
                 }
+                else if (isMovingButtonClicked) {
+
+                }
             });
 
             // Function to finish drawing the rectangle
             canvas?.addEventListener('mouseup', (e) => {
-                if (isCropping && isDrawing) {
+                if (isCroppingButtonClicked && isDrawing) {
                     const rect = canvas.getBoundingClientRect();
                     const currentX = e.clientX - rect.left;
                     const currentY = e.clientY - rect.top;
@@ -110,7 +131,7 @@ export default function ImageCroppedPage() {
             // Add an event listener to crop the most recent rectangle
             document.addEventListener('keydown', (e) => {
                 try {
-                    if (isCropping && e.key === 'Enter') {
+                    if (isCroppingButtonClicked && e.key === 'Enter') {
                         let length = rectangles.length
                         const rect = rectangles[length - 1]
                         let canvas = document.createElement("canvas");
@@ -152,7 +173,7 @@ export default function ImageCroppedPage() {
 
 
             canvas?.addEventListener('click', (e) => {
-                if (isCropping) {
+                if (isCroppingButtonClicked) {
                     const rect = canvas.getBoundingClientRect();
                     const mouseX = e.clientX - rect.left;
                     const mouseY = e.clientY - rect.top;
@@ -250,8 +271,8 @@ export default function ImageCroppedPage() {
                     >
                     </canvas>
                     <div className="absolute top-5 right-5">
-                        <button onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }} className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200 border-r-2 border-black`}><CropIcon size={24} /></button>
-                        <button onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }} className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200`}><MoveIcon size={24} /></button>
+                        <button ref={croppingButtonRef} onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }} className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200 border-r-2 border-black`}><CropIcon size={24} /></button>
+                        <button ref={movingButtonRef} onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }}   className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200`}><MoveIcon size={24} /></button>
                     </div>
                     <div className="absolute bottom-5 right-5">
                         <button ref={zoomInRef} className="px-5 py-2 bg-gray-200 border-r-2 border-black"><ZoomIn size={24} /></button>
