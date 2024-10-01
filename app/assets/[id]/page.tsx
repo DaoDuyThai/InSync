@@ -78,12 +78,15 @@ export default function ImageCroppedPage() {
                     startX = e.clientX - rect.left;
                     startY = e.clientY - rect.top;
                     isDrawing = true;
+                } else if (isMovingButtonClicked) {
+                    console.log("isMovingButtonClicked")
+                    isDrawing = true;
                 }
             });
 
             // Function to draw the rectangle while mouse is moving
             canvas?.addEventListener('mousemove', (e) => {
-                // if (!isDrawing) return;
+                if (!isDrawing) return;
                 if (isCroppingButtonClicked) {
                     // Calculate the current mouse position
                     console.log("mousemove in Cropping is working!");
