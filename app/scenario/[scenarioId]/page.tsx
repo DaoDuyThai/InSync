@@ -2,6 +2,7 @@
 // import { Room } from "@/components/room";
 import { Suspense } from "react";
 import { Loading } from "./_components/loading";
+import Canvas from "./_components/canvas";
 
 interface ScenarioIdPageProps {
     params: {
@@ -14,13 +15,13 @@ const ScenarioIdPage = ({
     params
 }: ScenarioIdPageProps) => {
     return (
-        <Suspense fallback={<Loading />}>
-            {params.scenarioId}
-        </Suspense>
-        // <Room roomId={params.boardId} fallback={<Loading />}>
-        //     <Canvas boardId={params.boardId} />
-        //     <Chat roomId={params.boardId}/>
-        // </Room>
+        <Canvas />
+        // <Suspense fallback={<Loading />}>
+        //     {params.scenarioId}
+        //     {/* TODO: Canvas */}
+            
+        // </Suspense>
+
     )
 }
 
