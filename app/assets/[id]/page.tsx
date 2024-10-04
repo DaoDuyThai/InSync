@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { CropIcon, MoveIcon, UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { useParams } from "next/navigation";
+import uploadImage from "../_components/uploadImage";
+import { log } from "console";
 
 export default function ImageCroppedPage() {
     const { id } = useParams();
@@ -17,7 +19,9 @@ export default function ImageCroppedPage() {
     const [isCropping, setIsCropping] = useState(false);
     const croppingButtonRef = useRef<HTMLButtonElement>(null);
     const movingButtonRef = useRef<HTMLButtonElement>(null);
+    const [selectedImageCanvas, setSelectedImageCanvas] = useState<Array<HTMLCanvasElement | null>>([]);
 
+    //#region useEffect
     useEffect(() => {
 
         if (!mount.current) {
@@ -55,7 +59,7 @@ export default function ImageCroppedPage() {
             // Draw the image on the canvas once it's loaded
             img.crossOrigin = "Anonymous";
             img.onload = function () {
-                drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
+                drawImageAndRectangles(ctx, canvas, img, rectangles);
             };
 
             croppingButton?.addEventListener('click', e => {
@@ -90,7 +94,7 @@ export default function ImageCroppedPage() {
                 if (isCroppingButtonClicked) {
                     // Calculate the current mouse position
                     console.log("mousemove in Cropping is working!");
-                    
+
                     const rect = canvas.getBoundingClientRect();
                     const currentX = e.clientX - rect.left;
                     const currentY = e.clientY - rect.top;
@@ -100,7 +104,9 @@ export default function ImageCroppedPage() {
                     const height = currentY - startY;
 
                     // Clear the canvas and redraw the image and existing rectangles
-                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
+                    console.log("second ImageX: ", imageX, "second ImageY: ", imageY);
+                    
+                    drawImageAndRectangles(ctx, canvas, img, rectangles);
 
                     // Draw the new rectangle being created
                     if (ctx) {
@@ -118,8 +124,8 @@ export default function ImageCroppedPage() {
                     imageY = e.clientY - rect.top - img.height / 2;
 
                     ctx?.clearRect(0, 0, canvas.width, canvas.height);
-                    if(ctx) {
-                        drawImage(ctx, canvas,img);
+                    if (ctx) {
+                        drawImage(ctx, canvas, img);
                     }
                     rectangles.length = 0;
                 }
@@ -140,7 +146,7 @@ export default function ImageCroppedPage() {
                     // Reset drawing state
                     isDrawing = false;
                     // Redraw everything
-                    drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
+                    drawImageAndRectangles(ctx, canvas, img, rectangles);
                 }
             });
 
@@ -164,8 +170,10 @@ export default function ImageCroppedPage() {
                             seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
                             if (seletedCroppedImage.length >= 1) {
                                 uploadImageButton?.classList.remove('hidden');
+                                setSelectedImageCanvas(Array.from(seletedCroppedImage));
                             } else {
                                 uploadImageButton?.classList.add('hidden');
+                                setSelectedImageCanvas([]);
                             }
 
                         });
@@ -209,7 +217,7 @@ export default function ImageCroppedPage() {
                             // Remove the selected rectangle
                             rectangles.splice(selectedRectIndex, 1);
                             selectedRectIndex = null;
-                            drawImageAndRectangles(ctx, canvas, img, rectangles, scale, imageX, imageY);
+                            drawImageAndRectangles(ctx, canvas, img, rectangles);
                         }
                     }
                 } else if (isMovingButtonClicked) {
@@ -226,6 +234,8 @@ export default function ImageCroppedPage() {
                     // ctx.translate(0, 0);
                     ctx.scale(scale, scale);
                     ctx.drawImage(img, imageX, imageY, img.width, img.height);
+                    console.log("ImageX: ", imageX, "ImageY: ", imageY);
+                    
                     ctx.restore();
                 }
             };
@@ -247,14 +257,11 @@ export default function ImageCroppedPage() {
             });
             //#endregion
 
-        }
-
-        // Function to draw image and rectangles
-        function drawImageAndRectangles(ctx: any, canvas: any, img: any, rectangles: Array<any>, scale: number, imageX: number, imageY: number) {
+             // Function to draw image and rectangles
+        const drawImageAndRectangles = (ctx: any, canvas: any, img: any, rectangles: Array<any>) => {
             if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, imageX, imageY, img.width * scale, img.height * scale);
-
+                drawImage(ctx, canvas, img);
                 // Draw all rectangles
                 rectangles?.forEach(rect => {
                     ctx.beginPath();
@@ -265,29 +272,47 @@ export default function ImageCroppedPage() {
             }
         }
 
+        }
 
-
+       
 
         return () => {
             mount.current = true;
         }
     }, [])
+    //#endregion
+
+    //#region handleImageUpload
+    const handleImageUpload = async () => {
+        try {
+            selectedImageCanvas.forEach(async (image) => {
+                const uploadImageString = image?.toDataURL();
+                if (uploadImageString) {
+                    uploadImage(uploadImageString.toString());
+                }
+            }); // <-- Add this closing parenthesis
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    //#endregion
 
     return (
-        <div className="p-5">
+        <div className="p-5 flex justify-center">
             <div className="flex justify-center">
-                <div className="relative flex">
+                <div className="relative flex max-w-[900px] max-h-[680px]">
                     <canvas
                         ref={canvasRef}
                         width="900"
-                        height="600"
+                        height="680"
                         className
                         ="shadow-gray-300
                          shadow-sm border-2 
                          border-black 
                          rounded-md 
                          relative 
-                         bg-gray-100"
+                         bg-gray-100
+                         "
                     >
                     </canvas>
                     <div className="absolute top-5 right-5">
@@ -302,11 +327,14 @@ export default function ImageCroppedPage() {
                 <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
 
             </div>
-            <div ref={canvasAreaRef} className="overflow-x-auto mx-auto max-w-[900px] flex items-start"></div>
-            <div className="flex justify-center">
-                <button ref={uploadImageButtonRef} className="border-2 bg-green-600 px-10 py-5 text-xl rounded-lg hidden" >
-                    <UploadCloudIcon className="inline-block" size={30} /> <span>Upload Image</span>
-                </button>
+            <div className="p-5">
+                <div ref={canvasAreaRef} className="overflow-y-auto mx-auto h-[600px] max-h-[600px] flex flex-col items-start"></div>
+                <div className="flex justify-center">
+                    <button onClick={() => handleImageUpload()} ref={uploadImageButtonRef} className="border-2 bg-green-600 px-5 py-5 text-lg rounded-lg hidden" >
+                        <UploadCloudIcon className="inline-block" size={20} /> <span>Upload Image</span>
+                    </button>
+                </div>
+
             </div>
         </div>
 
