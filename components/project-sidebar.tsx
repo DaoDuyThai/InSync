@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder, FileClock } from "lucide-react";
+import { Banknote, LayoutDashboard, Star, Check, ChevronsUpDown, Folder, FileClock, Smartphone } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -56,7 +56,7 @@ export const ProjectSidebar = () => {
     // Projects ComboBox
     const [open, setOpen] = React.useState(false)
     const searchParams = useSearchParams();
-    const favorites = searchParams.get("favorites");
+    const favorites = searchParams ? searchParams.get("favorites") : null;
 
     // Get the current project from Redux
     const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
@@ -232,6 +232,16 @@ export const ProjectSidebar = () => {
                 >
                     <Link href="/logs">
                         <FileClock className="h-4 w-4 mr-2" /> Project Logs
+                    </Link>
+                </Button>
+                <Button
+                    variant={router === '/devices' ? 'secondary' : 'ghost'}
+                    asChild
+                    size="lg"
+                    className="font-normal justify-start px-2 w-full"
+                >
+                    <Link href="/devices">
+                        <Smartphone className="h-4 w-4 mr-2" /> Devices Management
                     </Link>
                 </Button>
                 <Button disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
