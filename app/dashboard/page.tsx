@@ -8,8 +8,8 @@ import { ScenarioList } from "./_components/scenario-list";
 const DashboardPage = () => {
 
   const searchParams = useSearchParams();
-  const search = searchParams.get("search") || undefined;
-  const favorites = searchParams.get("favorites") || undefined
+  const search = searchParams ? searchParams.get("search") || undefined : undefined;
+  const favorites = searchParams ? searchParams.get("favorites") || undefined : undefined;
 
   const projects = false;
 
