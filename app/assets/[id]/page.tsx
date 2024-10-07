@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 
 
 export default function ImageCroppedPage() {
-    const {id} = useParams();
+    const { id } = useParams() as { id: string };
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const croppedRef = useRef<HTMLCanvasElement>(null);
     const mount = useRef(false);
