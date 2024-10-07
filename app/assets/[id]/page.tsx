@@ -105,16 +105,20 @@ export default function ImageCroppedPage() {
 
                     // Clear the canvas and redraw the image and existing rectangles
                     console.log("second ImageX: ", imageX, "second ImageY: ", imageY);
-                    
+
                     drawImageAndRectangles(ctx, canvas, img, rectangles);
 
                     // Draw the new rectangle being created
                     if (ctx) {
-                        ctx.beginPath();
-                        ctx.rect(startX, startY, width, height);
-                        ctx.lineWidth = 3;
-                        ctx.strokeStyle = 'white';
-                        ctx.stroke();
+                        try {
+                            ctx.beginPath();
+                            ctx.rect(startX, startY, width, height);
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'white';
+                            ctx.stroke();
+                        } catch (error) {
+                            console.error(error);
+                        }
                     }
                 }
                 else if (isMovingButtonClicked) {
@@ -235,7 +239,7 @@ export default function ImageCroppedPage() {
                     ctx.scale(scale, scale);
                     ctx.drawImage(img, imageX, imageY, img.width, img.height);
                     console.log("ImageX: ", imageX, "ImageY: ", imageY);
-                    
+
                     ctx.restore();
                 }
             };
@@ -257,24 +261,24 @@ export default function ImageCroppedPage() {
             });
             //#endregion
 
-             // Function to draw image and rectangles
-        const drawImageAndRectangles = (ctx: any, canvas: any, img: any, rectangles: Array<any>) => {
-            if (ctx && canvas) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawImage(ctx, canvas, img);
-                // Draw all rectangles
-                rectangles?.forEach(rect => {
-                    ctx.beginPath();
-                    ctx.rect(rect.startX, rect.startY, rect.width, rect.height);
-                    ctx.strokeStyle = 'white';
-                    ctx.stroke();
-                });
+            // Function to draw image and rectangles
+            const drawImageAndRectangles = (ctx: any, canvas: any, img: any, rectangles: Array<any>) => {
+                if (ctx && canvas) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawImage(ctx, canvas, img);
+                    // Draw all rectangles
+                    rectangles?.forEach(rect => {
+                        ctx.beginPath();
+                        ctx.rect(rect.startX, rect.startY, rect.width, rect.height);
+                        ctx.strokeStyle = 'white';
+                        ctx.stroke();
+                    });
+                }
             }
-        }
 
         }
 
-       
+
 
         return () => {
             mount.current = true;
