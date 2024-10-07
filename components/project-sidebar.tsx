@@ -28,10 +28,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectProject, clearProject } from '@/store/projectSlice';
 import { RootState, AppDispatch } from '@/store/store';
 
+import { auth, currentUser } from '@clerk/nextjs/server'
+import { useUser } from "@clerk/nextjs";
+
+
+
 const font = Poppins({
     subsets: ["latin"],
     weight: ["600"],
 });
+
+interface Project {
+    id: string;
+    projectName: string;
+    description: string | null;
+    userId: string;
+    displayName: string | null;
+    dateCreated: string | null;
+    dateUpdated: string | null;
+    isPublish: boolean | null;
+}
 
 export const ProjectSidebar = () => {
     const router = usePathname();
@@ -93,6 +109,34 @@ export const ProjectSidebar = () => {
     //     }
     // }
 
+
+
+
+    const { user, isLoaded } = useUser();
+
+    const [projects, setProjects] = React.useState<Project[]>([]);
+
+    // Fetch projects when user is loaded
+    React.useEffect(() => {
+        if (user && isLoaded) {
+            const fetchProjects = async () => {
+                try {
+                    const response = await fetch(`https://dockerhub-insyncapi.onrender.com/api/projects/project-user-clerk-is-publish/${user.id}`);
+                    const data = await response.json();
+                    setProjects(data.data); // Adjust according to the structure of the API response
+                } catch (error) {
+                    console.error("Error fetching projects:", error);
+                }
+            };
+            fetchProjects();
+        }
+    }, [user, isLoaded]);
+
+    console.log(projects);
+
+
+
+
     return (
         <div className=" hidden lg:flex flex-col space-y-6 w-[206px] pl-5 pt-5">
             <Link href="/">
@@ -113,7 +157,7 @@ export const ProjectSidebar = () => {
                 <PopoverTrigger asChild>
                     <Button variant="outline" role="combobox" aria-expanded={open} className="w-[186px] justify-between">
                         {selectedProject
-                            ? projects.find((project) => project.value === selectedProject)?.label
+                            ? projects.find((project) => project.id === selectedProject)?.projectName
                             : "Select Project..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -126,17 +170,17 @@ export const ProjectSidebar = () => {
                             <CommandGroup>
                                 {projects.map((project) => (
                                     <CommandItem
-                                        key={project.value}
-                                        value={project.value}
-                                        onSelect={() => handleSelectProject(project.value)}
+                                        key={project.id}
+                                        value={project.projectName}
+                                        onSelect={() => handleSelectProject(project.id)}
                                     >
                                         <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
-                                                selectedProject === project.value ? "opacity-100" : "opacity-0"
+                                                selectedProject === project.id ? "opacity-100" : "opacity-0"
                                             )}
                                         />
-                                        {project.label}
+                                        {project.projectName}
                                     </CommandItem>
                                 ))}
                             </CommandGroup>
@@ -202,33 +246,3 @@ export const ProjectSidebar = () => {
 }
 
 
-const projects = [
-    {
-        value: "project-1",
-        label: "Project 1",
-    },
-    {
-        value: "project-2",
-        label: "Project 2",
-    },
-    {
-        value: "project-3",
-        label: "Project 3",
-    },
-    {
-        value: "project-4",
-        label: "Project 4",
-    },
-    {
-        value: "project-5",
-        label: "Project 5",
-    },
-    {
-        value: "project-6",
-        label: "Project 6",
-    },
-    {
-        value: "project-7",
-        label: "Project 7",
-    },
-]
