@@ -156,9 +156,13 @@ export const ProjectSidebar = () => {
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button variant="outline" role="combobox" aria-expanded={open} className="w-[186px] justify-between">
-                        {selectedProject
-                            ? projects.find((project) => project.id === selectedProject)?.projectName
-                            : "Select Project..."}
+                        {
+                            selectedProject
+                                ? projects && projects.length > 0
+                                    ? projects.find((project) => project.id === selectedProject)?.projectName
+                                    : "Select Project"
+                                : "Select Project..."
+                        }
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
