@@ -25,7 +25,7 @@ export const EmptyScenario = () => {
     }
     return (
         <div className="h-full flex flex-col items-center justify-center">
-            <Image src="/empty-boards.svg" height={110} width={100} alt="Empty" />
+            <Image src="/empty-scenario.svg" height={110} width={100} alt="Empty" />
             <h2 className="text-2xl font-semibold mt-6">
                 Create your first scenario
             </h2>
