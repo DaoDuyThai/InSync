@@ -14,7 +14,6 @@ import { ConfirmModal } from '@/components/confirm-modal';
 export const ProjectSettings = () => {
     {/* TODO: Add functionality menu for project settings */ }
     return (
-
         <DropdownMenu >
             <DropdownMenuTrigger><Settings size={24} className='inline-block' /></DropdownMenuTrigger>
             <DropdownMenuContent >
