@@ -28,8 +28,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectProject, clearProject } from '@/store/projectSlice';
 import { RootState, AppDispatch } from '@/store/store';
 
-import { auth, currentUser } from '@clerk/nextjs/server'
 import { useUser } from "@clerk/nextjs";
+import { Loading } from "@/app/scenario/[scenarioId]/_components/loading";
+import { toast } from "sonner";
 
 
 
@@ -121,7 +122,7 @@ export const ProjectSidebar = () => {
         if (user && isLoaded) {
             const fetchProjects = async () => {
                 try {
-                    const response = await fetch(`https://dockerhub-insyncapi.onrender.com/api/projects/project-user-clerk-is-publish/${user.id}`);
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
                     const data = await response.json();
                     setProjects(data.data); // Adjust according to the structure of the API response
                 } catch (error) {
@@ -130,10 +131,41 @@ export const ProjectSidebar = () => {
             };
             fetchProjects();
         }
-    }, [user, isLoaded]);
+    }, [user, isLoaded, projects]);
 
-    console.log(projects);
+    // console.log(projects);
 
+    const createProject = async () => {
+        if (user && isLoaded) {
+            const body = {
+                projectName: "Untitled",
+                userIdClerk: user.id,
+                description: "Project added on " + new Date().toLocaleString(),
+                isPublish: true,
+            }
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/byuserclerk`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(body),
+                });
+                const data = await response.json();
+                // console.log(data);
+                // console.log(response)
+                if (response.status === 200) {
+                    toast.success(data.message);
+                } else {
+                    toast.error(data.title);
+                }
+
+                setProjects([...projects]);
+            } catch (error) {
+                console.error("Error creating project:", error);
+            }
+        }
+    }
 
 
 
@@ -175,7 +207,7 @@ export const ProjectSidebar = () => {
                                 {projects.map((project) => (
                                     <CommandItem
                                         key={project.id}
-                                        value={project.projectName}
+                                        value={project.projectName + project.id + project.description}
                                         onSelect={() => handleSelectProject(project.id)}
                                     >
                                         <Check
@@ -191,7 +223,7 @@ export const ProjectSidebar = () => {
                         </CommandList>
                         <CommandSeparator />
                         <CommandItem>
-                            <Button className="w-full" size={"sm"} variant={"default"}>
+                            <Button onClick={createProject} className="w-full" size={"sm"} variant={"default"}>
                                 New Project
                             </Button>
                         </CommandItem>
