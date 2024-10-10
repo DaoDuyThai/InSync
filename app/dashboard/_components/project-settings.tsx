@@ -193,7 +193,7 @@ export const ProjectSettings = () => {
                         onConfirm={handleDelete}
                         disabled={isLoading}
                     >
-                        <Button variant="redBg" size={'sm'} className="flex cursor-pointer text-sm w-full justify-center font-normal">
+                        <Button onClick={getCurrentProject} variant="redBg" size={'sm'} className="flex cursor-pointer text-sm w-full justify-center font-normal">
                             <Trash2 className="h-4 w-4 mr-2" />
                             Delete
                         </Button>
