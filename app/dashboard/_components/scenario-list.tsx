@@ -54,27 +54,7 @@ export const ScenarioList = ({
             "isFavorite": false
         },
         {
-            "_id": "4d5e6f",
-            "title": "Fitness Tracker Automation",
-            "imageUrl": "/placeholders/1.svg",
-            "authorId": "user321",
-            "authorName": "Michael Brown",
-            "_creationTime": "2024-08-17 08:00:00.000",
-            "orgId": "project004",
-            "isFavorite": false
-        },
-        {
-            "_id": "4d5e6f",
-            "title": "Fitness Tracker Automation",
-            "imageUrl": "/placeholders/1.svg",
-            "authorId": "user321",
-            "authorName": "Michael Brown",
-            "_creationTime": "2024-08-17 08:00:00.000",
-            "orgId": "project004",
-            "isFavorite": false
-        },
-        {
-            "_id": "4d5e6f",
+            "_id": "4d5e6ss",
             "title": "Fitness Tracker Automation",
             "imageUrl": "/placeholders/1.svg",
             "authorId": "user321",
