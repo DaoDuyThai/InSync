@@ -8,6 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { selectProject } from "@/store/projectSlice";
+import { Loading } from "@/components/loading";
 
 interface Project {
   id: string;
@@ -23,7 +24,7 @@ interface Project {
 const DashboardPage = () => {
 
   const { user, isLoaded } = useUser();
-
+  const [pending, setPending] = React.useState(true);
   const [projectList, setProjectList] = React.useState<Project[]>([]);
 
   // Fetch projects when user is loaded
@@ -36,6 +37,8 @@ const DashboardPage = () => {
           setProjectList(data.data); // Adjust according to the structure of the API response
         } catch (error) {
           console.error("Error fetching projects:", error);
+        } finally {
+          setPending(false);
         }
       };
       fetchProjects();
@@ -60,21 +63,25 @@ const DashboardPage = () => {
     }
   }, [dispatch]);
 
-  return (
+  if (pending) {
+    return <Loading />;
+  } else {
+    return (
+      <div className="w-full flex flex-col p-6 h-full overflow-y-auto pb-10">
+
+        {!hasProjects ? (
+          <EmptyProject />
+        ) : (
+          <ScenarioList
+            projectId={selectedProjectId || ""}
+            query={{ search, favorites }}
+          />
+        )}
+      </div>
+    );
+  }
 
 
-    <div className="w-full flex flex-col p-6 h-full overflow-y-auto pb-10">
-
-      {!hasProjects ? (
-        <EmptyProject />
-      ) : (
-        <ScenarioList
-          projectId={selectedProjectId || ""}
-          query={{ search, favorites }}
-        />
-      )}
-    </div>
-  );
 };
 
 export default DashboardPage;
