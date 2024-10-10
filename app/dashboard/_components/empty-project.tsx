@@ -8,7 +8,6 @@ import { useState } from "react";
 
 export const EmptyProject = () => {
     const { user, isLoaded } = useUser();
-    const [isProjectCreated, setIsProjectCreated] = useState(false); // Track if project is created
 
     const createProject = async () => {
         if (user && isLoaded) {
@@ -29,7 +28,9 @@ export const EmptyProject = () => {
                 const data = await response.json();
                 if (response.status === 200) {
                     toast.success(data.message);
-                    setIsProjectCreated(true); // Set state to true after successful creation
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
                 } else {
                     toast.error(data.title);
                 }
@@ -39,10 +40,7 @@ export const EmptyProject = () => {
         }
     };
 
-    // If project is created, you can return null or render another component
-    if (isProjectCreated) {
-        return null; // Or replace this with another component (e.g., project dashboard)
-    }
+
 
     return (
         <div className="h-full flex flex-col items-center justify-center ">

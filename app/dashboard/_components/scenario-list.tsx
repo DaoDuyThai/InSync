@@ -1,7 +1,5 @@
 "use client"
 
-// import { useQueries, useQuery } from "convex/react";
-// import { api } from "@/convex/_generated/api";
 import { getUnixTime } from 'date-fns';
 import * as React from "react";
 
@@ -35,16 +33,32 @@ interface ScenarioListProps {
     }
 }
 
+interface Scenario {
+    _id: string;
+    projectId: string;
+    projectName: string;
+    title: string;
+    description: string;
+    createdAt: string;
+    updatedAt: string;
+    stepWeb: string;
+    stepAndroid: string;
+    isFavorite: boolean;
+    imageUrl: string;
+    authorId: string;
+    authorName: string;
+}
+
 export const ScenarioList = ({
     projectId,
     query
 }: ScenarioListProps) => {
 
 
-    // const data = useQuery(api.boards.get, {
-    //     orgId,
-    //     ...query,
-    // });
+    const [scenarioList, setScenarioList] = React.useState<Scenario[]>([]);
+
+
+    
 
     const data = [
         {
