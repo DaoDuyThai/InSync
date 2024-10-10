@@ -16,7 +16,7 @@ const DashboardPage = () => {
   return (
 
 
-    <div className="w-full flex flex-col p-6">
+    <div className="w-full flex flex-col p-6 h-full overflow-y-auto pb-10">
 
       {projects ? (
         <EmptyProject />
