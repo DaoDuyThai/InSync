@@ -24,6 +24,7 @@ import { ProjectSettings } from './project-settings';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
 import { selectProject } from '@/store/projectSlice';
+import { useUser } from '@clerk/nextjs';
 
 interface ScenarioListProps {
     projectId: string;
@@ -43,48 +44,41 @@ interface Scenario {
     updatedAt: string;
     stepWeb: string;
     stepAndroid: string;
-    isFavorite: boolean;
+    isFavorites: boolean;
     imageUrl: string;
     authorId: string;
     authorName: string;
 }
+
 
 export const ScenarioList = ({
     projectId,
     query
 }: ScenarioListProps) => {
 
+    const { user, isLoaded } = useUser();
 
     const [scenarioList, setScenarioList] = React.useState<Scenario[]>([]);
 
-
-    
-
-    const data = [
-        {
-            "_id": "4d5e6f",
-            "title": "Fitness Tracker Automation",
-            "imageUrl": "/placeholders/1.svg",
-            "authorId": "user321",
-            "authorName": "Michael Brown",
-            "_creationTime": "2024-08-17 08:00:00.000",
-            "orgId": "project004",
-            "isFavorite": false
-        },
-        {
-            "_id": "4d5e6ss",
-            "title": "Fitness Tracker Automation",
-            "imageUrl": "/placeholders/1.svg",
-            "authorId": "user321",
-            "authorName": "Michael Brown",
-            "_creationTime": "2024-08-17 08:00:00.000",
-            "orgId": "project004",
-            "isFavorite": false
+    React.useEffect(() => {
+        if (user && isLoaded) {
+            const fetchScenarios = async () => {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${user.id}`);
+                    console.log(projectId)
+                    const data = await response.json();
+                    setScenarioList(data.data); 
+                    console.log(data.data)
+                } catch (error) {
+                    console.error("Error fetching scenarios:", error);
+                }
+            };
+            fetchScenarios();
         }
-    ]
+    }, [projectId, query, user, isLoaded]);
 
 
-    if (data === undefined) {
+    if (scenarioList === undefined) {
         return (
             <div>
                 <div className='flex justify-between align-middle'>
@@ -103,19 +97,19 @@ export const ScenarioList = ({
         )
     }
 
-    if (!data?.length && query.search) {
+    if (!scenarioList?.length && query.search) {
         return (
             <EmptySearch />
         )
     }
 
-    if (!data?.length && query.favorites) {
+    if (!scenarioList?.length && query.favorites) {
         return (
             <EmptyFavorites />
         )
     }
 
-    if (!data?.length) {
+    if (!scenarioList?.length) {
         return (
             <EmptyScenario />
         )
@@ -134,7 +128,7 @@ export const ScenarioList = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-12">
                 <NewScenarioButton projectId={projectId} disabled />
 
-                {data.map((scenario) => (
+                {scenarioList.map((scenario) => (
                     <ScenarioCard
                         key={scenario._id}
                         id={scenario._id}
@@ -142,9 +136,9 @@ export const ScenarioList = ({
                         imageUrl={scenario.imageUrl}
                         authorId={scenario.authorId}
                         authorName={scenario.authorName}
-                        createdAt={getUnixTime(scenario._creationTime) * 1000} //milliseconds to seconds
-                        projectId={scenario.orgId}
-                        isFavorite={scenario.isFavorite} />
+                        createdAt={getUnixTime(scenario.createdAt) * 1000} //milliseconds to seconds
+                        projectId={scenario.projectId}
+                        isFavorite={scenario.isFavorites} />
                 ))}
 
             </div>
