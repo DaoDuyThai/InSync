@@ -46,8 +46,6 @@ export const ProjectSettings = () => {
     const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
     const dispatch = useDispatch<AppDispatch>();
 
-    const { user, isLoaded } = useUser();
-
     // Load selected project from localStorage when component mounts
     React.useEffect(() => {
         const storedProjectId = localStorage.getItem("selectedProjectId");
@@ -134,6 +132,7 @@ export const ProjectSettings = () => {
             toast.error("Failed to delete project.");
         } finally {
             setIsLoading(false);
+            setTimeout(() => window.location.reload(), 1000);
         }
     };
 

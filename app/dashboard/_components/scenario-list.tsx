@@ -3,6 +3,7 @@
 // import { useQueries, useQuery } from "convex/react";
 // import { api } from "@/convex/_generated/api";
 import { getUnixTime } from 'date-fns';
+import * as React from "react";
 
 import { EmptyFavorites } from "./empty-favorites";
 import { EmptyScenario } from "./empty-scenario";
@@ -22,6 +23,9 @@ import { Switch } from "@/components/ui/switch"
 import { Button } from '@/components/ui/button';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { ProjectSettings } from './project-settings';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store/store';
+import { selectProject } from '@/store/projectSlice';
 
 interface ScenarioListProps {
     projectId: string;
