@@ -25,7 +25,7 @@ export const EmptyScenario = () => {
         // })
     }
     return (
-        <div className="w-full h-full">
+        <div className="w-full h-full overflow-y-auto">
             <div className='flex justify-end align-middle'>
                 {/* TODO: Add functionality menu for project settings */}
                 <ProjectSettings />
