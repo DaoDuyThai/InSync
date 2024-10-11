@@ -140,7 +140,7 @@ export const ProjectSettings = () => {
             <DropdownMenuTrigger>
                 <Settings size={24} className='inline-block' />
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent side={"left"}>
                 <DropdownMenuLabel className="p-3"><span className='text-lg'>Project Settings</span></DropdownMenuLabel>
                 <DropdownMenuSeparator />
 

@@ -14,6 +14,7 @@ import { MoreHorizontal } from "lucide-react";
 // import { api } from "@/convex/_generated/api";
 import { on } from "events";
 import { toast } from "sonner";
+import { Actions } from "@/components/actions";
 
 interface ScenarioCardProps {
     id: string;
@@ -25,6 +26,7 @@ interface ScenarioCardProps {
     projectId: string;
     isFavorite: boolean;
     toggleFavorite: () => void;
+    deleteScenario: () => void;
 }
 
 export const ScenarioCard = ({
@@ -36,7 +38,8 @@ export const ScenarioCard = ({
     imageUrl,
     projectId,
     isFavorite,
-    toggleFavorite
+    toggleFavorite,
+    deleteScenario
 }: ScenarioCardProps) => {
     const { userId } = useAuth();
     const authorLabel = userId === authorId ? "You" : authorName;
@@ -62,19 +65,20 @@ export const ScenarioCard = ({
     // }
 
     return (
-        <Link href={`/board/${id}`}>
+        <Link href={`/scenario/${id}`}>
             <div className="group aspect-[100/127] border rounded-lg flex flex-col justify-between overflow-hidden">
                 <div className="relative flex-1 bg-gray-200">
                     <Image src={imageUrl} fill className="object-fit" alt={title} />
                     <Overlay />
-                    {/* <Actions
+                    <Actions
                         id={id}
                         title={title}
-                        side="right">
+                        side="right"
+                        deleteScenario={deleteScenario}>
                         <button className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity px-3 py-2 outline-none">
                             <MoreHorizontal className="text-white opacity-75 hover:opacity-100 transition-opacity" />
                         </button>
-                    </Actions> */}
+                    </Actions>
                 </div>
                 <Footer
                     isFavorite={isFavorite}

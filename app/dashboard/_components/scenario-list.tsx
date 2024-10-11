@@ -128,7 +128,7 @@ export const ScenarioList = ({
         "/placeholders/10.svg",
     ]
 
-    const createProject = async () => {
+    const createScenario = async () => {
         if (!user || !isLoaded) return;
         try {
             const randomImage = images[Math.floor(Math.random() * images.length)]
@@ -162,6 +162,27 @@ export const ScenarioList = ({
         }
     }
 
+    const deleteScenario = async (id: string) => {
+        if (!user || !isLoaded) return;
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            if (response.status === 200) {
+                toast.success(data.message);
+            } else {
+                toast.error(data.title);
+            }
+            setPending(true);
+        } catch (error) {
+            console.error("Error deleting scenario:", error);
+        }
+    }
+
     const toggleFavorite = async (id: string) => {
         if (!user || !isLoaded) return;
         try {
@@ -184,7 +205,7 @@ export const ScenarioList = ({
     }
 
     if (!scenarioList.length) {
-        return <EmptyScenario onClick={createProject} />;
+        return <EmptyScenario onClick={createScenario} />;
     }
 
     return (
@@ -197,7 +218,7 @@ export const ScenarioList = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-12">
-                <NewScenarioButton onClick={createProject} />
+                <NewScenarioButton onClick={createScenario} />
 
                 {filteredScenarios.map((scenario) => (
                     <ScenarioCard
@@ -211,6 +232,7 @@ export const ScenarioList = ({
                         projectId={scenario.projectId}
                         isFavorite={scenario.isFavorites}
                         toggleFavorite={() => toggleFavorite(scenario.id)}
+                        deleteScenario={() => deleteScenario(scenario.id)}
                     />
                 ))}
             </div>
