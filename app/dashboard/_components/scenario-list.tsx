@@ -1,4 +1,4 @@
-import { getUnixTime } from 'date-fns';
+import { getUnixTime, set } from 'date-fns';
 import * as React from "react";
 import { EmptyFavorites } from "./empty-favorites";
 import { EmptyScenario } from "./empty-scenario";
@@ -45,6 +45,7 @@ export const ScenarioList = ({
     const { user, isLoaded } = useUser();
     const [scenarioList, setScenarioList] = React.useState<Scenario[]>([]);
     const [filteredScenarios, setFilteredScenarios] = React.useState<Scenario[]>([]);
+    const [pending, setPending] = React.useState(false);
 
     // Fetch scenarios based on the project ID and user
     React.useEffect(() => {
@@ -61,8 +62,9 @@ export const ScenarioList = ({
                 }
             };
             fetchScenarios();
+            setPending(false);
         }
-    }, [projectId, user, isLoaded]);
+    }, [projectId, user, isLoaded, pending]);
 
     // Filter scenarios based on the query and sorting logic for createdAt and updatedAt
     React.useEffect(() => {
@@ -103,14 +105,63 @@ export const ScenarioList = ({
         return <EmptyFavorites />;
     }
 
-    if (!scenarioList.length) {
-        return <EmptyScenario />;
-    }
+    
 
     if (projectId === "") {
         return (
             <NoProjectSelected />
         );
+    }
+
+    const images = [
+        "/placeholders/1.svg",
+        "/placeholders/2.svg",
+        "/placeholders/3.svg",
+        "/placeholders/4.svg",
+        "/placeholders/5.svg",
+        "/placeholders/6.svg",
+        "/placeholders/7.svg",
+        "/placeholders/8.svg",
+        "/placeholders/9.svg",
+        "/placeholders/10.svg",
+    ]
+
+    const onClick = async () => {
+        if (!user || !isLoaded) return;
+        try {
+            const randomImage = images[Math.floor(Math.random() * images.length)]
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/byuserclerk`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                    {
+                        projectId: projectId,
+                        scenarioName: "Untitled",
+                        userIdClerk: user.id,
+                        description: "Description",
+                        stepsWeb: "Steps Web",
+                        stepsAndroid: "Steps Android",
+                        isFavorites: false,
+                        imageUrl: randomImage,
+                    }
+                ),
+            });
+            const data = await response.json();
+            if (response.status === 200) {
+                toast.success(data.message);
+            } else {
+                toast.error(data.title);
+            }
+            setPending(true);
+        } catch (error) {
+            console.error("Error creating project:", error);
+        }
+    }
+
+    if (!scenarioList.length) {
+        return <EmptyScenario onClick={onClick} />;
     }
 
     return (
@@ -123,7 +174,7 @@ export const ScenarioList = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-12">
-                <NewScenarioButton projectId={projectId} disabled />
+                <NewScenarioButton onClick={onClick} />
 
                 {filteredScenarios.map((scenario) => (
                     <ScenarioCard

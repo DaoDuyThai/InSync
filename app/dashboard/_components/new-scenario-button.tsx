@@ -10,67 +10,18 @@ import { toast } from "sonner"
 // import { useProModal } from "@/store/use-pro-modal"
 
 interface NewScenarioButtonProps {
-    projectId: string,
-    disabled?: boolean
+    onClick: () => void
 }
 
 export const NewScenarioButton = ({
-    projectId,
-    disabled
+    onClick
 }: NewScenarioButtonProps) => {
     // TODO: Pro Mode
     // const { onOpen } = useProModal();
     // TODO: Create board
     // const { mutate, pending } = useApiMutation(api.board.create);
 
-    const { user, isLoaded } = useUser();
-
-    const images = [
-        "/placeholders/1.svg",
-        "/placeholders/2.svg",
-        "/placeholders/3.svg",
-        "/placeholders/4.svg",
-        "/placeholders/5.svg",
-        "/placeholders/6.svg",
-        "/placeholders/7.svg",
-        "/placeholders/8.svg",
-        "/placeholders/9.svg",
-        "/placeholders/10.svg",
-    ]
-
-    const onClick = async () => {
-        if (!user || !isLoaded) return;
-        try {
-            const randomImage = images[Math.floor(Math.random() * images.length)]
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/byuserclerk`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(
-                    {
-                        projectId: projectId,
-                        scenarioName: "Untitled",
-                        userIdClerk: user.id,
-                        description: "Description",
-                        stepsWeb: "Steps Web",
-                        stepsAndroid: "Steps Android",
-                        isFavorites: false,
-                        imageUrl: randomImage,
-                    }
-                ),
-            });
-            const data = await response.json();
-            if (response.status === 200) {
-                toast.success(data.message);
-            } else {
-                toast.error(data.title);
-            }
-        } catch (error) {
-            console.error("Error creating project:", error);
-        }
-
-    }
+    
     return (
         <button
             onClick={onClick}

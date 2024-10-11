@@ -7,23 +7,14 @@ import { useOrganization } from "@clerk/nextjs"
 import { toast } from "sonner"
 import { ProjectSettings } from "./project-settings"
 
-export const EmptyScenario = () => {
-    const { organization } = useOrganization()
-    // const { mutate, pending } = useApiMutation(api.board.create);
-    const onClick = () => {
-        if (!organization) return;
-        // mutate({
-        //     orgId: organization.id,
-        //     title: "untitled"
-        // })
-        // .then((id) =>{
-        //     toast.success("Board created")
-        //     //TODO: redirect to board/{id}
-        // })
-        // .catch(() =>{
-        //     toast.error("Failed to create board")
-        // })
-    }
+interface EmptyScenarioProps {
+    onClick: () => void
+}
+
+export const EmptyScenario = ({
+    onClick
+}: EmptyScenarioProps) => {
+
     return (
         <div className="w-full h-full md-overflow-y-auto">
             <div className='flex justify-end align-middle'>
