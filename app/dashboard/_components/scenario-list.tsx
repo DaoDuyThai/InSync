@@ -95,7 +95,7 @@ export const ScenarioList = ({
 
             setFilteredScenarios(filtered);
         }
-    }, [projectId, scenarioList, query]);
+    }, [projectId, scenarioList, query, pending]);
 
     if (projectId === "") {
         return (

@@ -76,15 +76,6 @@ export const ScenarioCard = ({
                         </button>
                     </Actions> */}
                 </div>
-                {/* <Footer
-                    isFavorite={isFavorite}
-                    title={title}
-                    authorLabel={authorLabel}
-                    createdAtLabel={createdAtLabel}
-                    onClick={toggleFavorite}
-                    disabled={pendingFavorite || pendingUnfavorite}
-                /> */}
-
                 <Footer
                     isFavorite={isFavorite}
                     title={title}
