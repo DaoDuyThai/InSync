@@ -64,9 +64,8 @@ export const Actions = ({
         setIsLoading(true);
         try {
             await renameScenario(id, newTitle);
-            toast.success("Scenario renamed successfully!");
         } catch (error) {
-            toast.error("Failed to rename scenario.");
+            console.error("Failed to rename scenario.");
         } finally {
             setIsLoading(false);
         }
