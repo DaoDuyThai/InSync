@@ -27,6 +27,7 @@ interface ScenarioCardProps {
     isFavorite: boolean;
     toggleFavorite: () => void;
     deleteScenario: () => void;
+    renameScenario: (id: string, newTitle: string) => Promise<void>;
 }
 
 export const ScenarioCard = ({
@@ -39,30 +40,12 @@ export const ScenarioCard = ({
     projectId,
     isFavorite,
     toggleFavorite,
-    deleteScenario
+    deleteScenario,
+    renameScenario
 }: ScenarioCardProps) => {
     const { userId } = useAuth();
     const authorLabel = userId === authorId ? "You" : authorName;
     const createdAtLabel = formatDistanceToNow(createdAt, { addSuffix: true });
-    // const {
-    //     mutate: onFavorite,
-    //     pending: pendingFavorite
-    // } = useApiMutation(api.board.favorite)
-
-    // const {
-    //     mutate: onUnfavorite,
-    //     pending: pendingUnfavorite
-    // } = useApiMutation(api.board.unfavorite)
-
-    // const toggleFavorite = () => {
-    //     // if (isFavorite) {
-    //     //     onUnfavorite({ id })
-    //     //         .catch(() => toast.error("Failed to unfavorite board"))
-    //     // } else {
-    //     //     onFavorite({ id, orgId })
-    //     //         .catch(() => toast.error("Failed to favorite board"))
-    //     // }
-    // }
 
     return (
         <Link href={`/scenario/${id}`}>
@@ -74,7 +57,8 @@ export const ScenarioCard = ({
                         id={id}
                         title={title}
                         side="right"
-                        deleteScenario={deleteScenario}>
+                        deleteScenario={deleteScenario}
+                        renameScenario={renameScenario}>
                         <button className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity px-3 py-2 outline-none">
                             <MoreHorizontal className="text-white opacity-75 hover:opacity-100 transition-opacity" />
                         </button>

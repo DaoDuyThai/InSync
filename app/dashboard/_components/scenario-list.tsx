@@ -111,10 +111,6 @@ export const ScenarioList = ({
         return <EmptyFavorites />;
     }
 
-
-
-
-
     const images = [
         "/placeholders/1.svg",
         "/placeholders/2.svg",
@@ -159,6 +155,32 @@ export const ScenarioList = ({
             setPending(true);
         } catch (error) {
             console.error("Error creating project:", error);
+        }
+    }
+
+    const renameScenario = async (id: string, newTitle: string) => {
+        if (!user || !isLoaded) return;
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/rename-scenario/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    scenarioName: newTitle,
+                }),
+            });
+            const data = await response.json();
+            if (response.status === 200) {
+                toast.success(data.message);
+                setPending(true);
+            } else {
+                toast.error(data.title);
+            }
+            setPending(true);
+        } catch (error) {
+            console.error("Error renaming scenario:", error);
         }
     }
 
@@ -233,6 +255,7 @@ export const ScenarioList = ({
                         isFavorite={scenario.isFavorites}
                         toggleFavorite={() => toggleFavorite(scenario.id)}
                         deleteScenario={() => deleteScenario(scenario.id)}
+                        renameScenario={renameScenario}
                     />
                 ))}
             </div>
