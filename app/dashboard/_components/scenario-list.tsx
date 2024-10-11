@@ -12,7 +12,7 @@ interface ScenarioListProps {
     projectId: string;
     query: {
         search?: string;
-        favorites?: boolean;
+        favorites?: boolean | string;
     };
 }
 

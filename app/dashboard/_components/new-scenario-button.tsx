@@ -1,6 +1,8 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import * as React from "react"
+import { useUser } from "@clerk/nextjs"
 import { Plus } from "lucide-react"
 // import { api } from "@/convex/_generated/api"
 // import { useApiMutation } from "@/hooks/use-api-mutation"
@@ -13,7 +15,6 @@ interface NewScenarioButtonProps {
 }
 
 export const NewScenarioButton = ({
-
     projectId,
     disabled
 }: NewScenarioButtonProps) => {
@@ -22,9 +23,59 @@ export const NewScenarioButton = ({
     // TODO: Create board
     // const { mutate, pending } = useApiMutation(api.board.create);
 
+    const [pending, setPending] = React.useState(true);
+
+    const { user, isLoaded } = useUser();
+
+    const images = [
+        "/placeholders/1.svg",
+        "/placeholders/2.svg",
+        "/placeholders/3.svg",
+        "/placeholders/4.svg",
+        "/placeholders/5.svg",
+        "/placeholders/6.svg",
+        "/placeholders/7.svg",
+        "/placeholders/8.svg",
+        "/placeholders/9.svg",
+        "/placeholders/10.svg",
+    ]
+
+    const onClick = async () => {
+        if (!user || !isLoaded) return;
+        try {
+            const randomImage = images[Math.floor(Math.random() * images.length)]
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/byuserclerk`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(
+                    {
+                        projectId: projectId,
+                        scenarioName: "Untitled",
+                        userIdClerk: user.id,
+                        description: "Description",
+                        stepsWeb: "Steps Web",
+                        stepsAndroid: "Steps Android",
+                        isFavorites: false,
+                        imageUrl: "",
+                    }
+                ),
+            });
+            const data = await response.json();
+            // console.log(data);
+            // console.log(response)
+            if (response.status === 200) {
+                toast.success(data.message);
+            } else {
+                toast.error(data.title);
+            }
 
 
-    const onClick = () => {
+        } catch (error) {
+            console.error("Error creating project:", error);
+        }
+
         // mutate({
         //     orgId,
         //     title: "Untitled"
