@@ -28,7 +28,7 @@ interface Scenario {
     title: string;
     description: string;
     createdAt: string;
-    updatedAt: string;
+    updatedAt: string | null;
     stepWeb: string;
     stepAndroid: string;
     isFavorites: boolean;
@@ -46,8 +46,9 @@ export const ScenarioList = ({
     const [scenarioList, setScenarioList] = React.useState<Scenario[]>([]);
     const [filteredScenarios, setFilteredScenarios] = React.useState<Scenario[]>([]);
 
+    // Fetch scenarios based on the project ID and user
     React.useEffect(() => {
-        if (projectId != "" && user && isLoaded) {
+        if (projectId !== "" && user && isLoaded) {
             const fetchScenarios = async () => {
                 try {
                     const response = await fetch(
@@ -63,8 +64,8 @@ export const ScenarioList = ({
         }
     }, [projectId, user, isLoaded]);
 
+    // Filter scenarios based on the query and sorting logic for createdAt and updatedAt
     React.useEffect(() => {
-        // Filter scenarios based on the query
         if (scenarioList.length > 0) {
             let filtered = scenarioList;
 
@@ -80,6 +81,15 @@ export const ScenarioList = ({
             if (query.favorites) {
                 filtered = filtered.filter((scenario) => scenario.isFavorites);
             }
+
+            // Sort based on createdAt and updatedAt
+            filtered = filtered.sort((a, b) => {
+                // Convert dates to Unix time
+                const dateA = a.updatedAt ? getUnixTime(new Date(a.updatedAt)) : getUnixTime(new Date(a.createdAt));
+                const dateB = b.updatedAt ? getUnixTime(new Date(b.updatedAt)) : getUnixTime(new Date(b.createdAt));
+
+                return dateB - dateA; // Descending order, newest first
+            });
 
             setFilteredScenarios(filtered);
         }
@@ -97,10 +107,10 @@ export const ScenarioList = ({
         return <EmptyScenario />;
     }
 
-    if (projectId == "") {
+    if (projectId === "") {
         return (
             <NoProjectSelected />
-        )
+        );
     }
 
     return (
