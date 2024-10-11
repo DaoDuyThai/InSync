@@ -58,7 +58,7 @@ export const NewScenarioButton = ({
                         stepsWeb: "Steps Web",
                         stepsAndroid: "Steps Android",
                         isFavorites: false,
-                        imageUrl: "",
+                        imageUrl: randomImage,
                     }
                 ),
             });

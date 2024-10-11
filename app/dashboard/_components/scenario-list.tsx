@@ -7,6 +7,10 @@ import { NewScenarioButton } from "./new-scenario-button";
 import { ScenarioCard } from "./scenario-card";
 import { ProjectSettings } from './project-settings';
 import { useUser } from '@clerk/nextjs';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store/store';
+import { selectProject } from '@/store/projectSlice';
+import { toast } from 'sonner';
 
 interface ScenarioListProps {
     projectId: string;
@@ -37,12 +41,24 @@ export const ScenarioList = ({
     query
 }: ScenarioListProps) => {
 
+    // const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
+    // const dispatch = useDispatch<AppDispatch>();
+
+    // // Load selected project from localStorage when component mounts
+    // React.useEffect(() => {
+    //     const storedProjectId = localStorage.getItem("selectedProjectId");
+    //     if (storedProjectId) {
+    //         dispatch(selectProject(storedProjectId));
+    //     }
+    // }, [dispatch]);
+
+
     const { user, isLoaded } = useUser();
     const [scenarioList, setScenarioList] = React.useState<Scenario[]>([]);
     const [filteredScenarios, setFilteredScenarios] = React.useState<Scenario[]>([]);
 
     React.useEffect(() => {
-        if (user && isLoaded) {
+        if (projectId != "" && user && isLoaded) {
             const fetchScenarios = async () => {
                 try {
                     const response = await fetch(
@@ -55,6 +71,8 @@ export const ScenarioList = ({
                 }
             };
             fetchScenarios();
+        } else {
+            toast.error("No project selected");
         }
     }, [projectId, user, isLoaded]);
 
