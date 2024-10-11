@@ -97,6 +97,12 @@ export const ScenarioList = ({
         }
     }, [projectId, scenarioList, query]);
 
+    if (projectId === "") {
+        return (
+            <NoProjectSelected />
+        );
+    }
+
     if (!filteredScenarios.length && query.search) {
         return <EmptySearch />;
     }
@@ -105,13 +111,9 @@ export const ScenarioList = ({
         return <EmptyFavorites />;
     }
 
-    
 
-    if (projectId === "") {
-        return (
-            <NoProjectSelected />
-        );
-    }
+
+
 
     const images = [
         "/placeholders/1.svg",
@@ -126,7 +128,7 @@ export const ScenarioList = ({
         "/placeholders/10.svg",
     ]
 
-    const onClick = async () => {
+    const createProject = async () => {
         if (!user || !isLoaded) return;
         try {
             const randomImage = images[Math.floor(Math.random() * images.length)]
@@ -161,7 +163,7 @@ export const ScenarioList = ({
     }
 
     if (!scenarioList.length) {
-        return <EmptyScenario onClick={onClick} />;
+        return <EmptyScenario onClick={createProject} />;
     }
 
     return (
@@ -174,7 +176,7 @@ export const ScenarioList = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-12">
-                <NewScenarioButton onClick={onClick} />
+                <NewScenarioButton onClick={createProject} />
 
                 {filteredScenarios.map((scenario) => (
                     <ScenarioCard
