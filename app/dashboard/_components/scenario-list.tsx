@@ -22,7 +22,7 @@ interface ScenarioListProps {
 }
 
 interface Scenario {
-    _id: string;
+    id: string;
     projectId: string;
     projectName: string;
     title: string;
@@ -162,6 +162,27 @@ export const ScenarioList = ({
         }
     }
 
+    const toggleFavorite = async (id: string) => {
+        if (!user || !isLoaded) return;
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/toggle-favorite/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            if (response.status === 200) {
+                toast.success(data.message);
+            } else {
+                toast.error(data.title);
+            }
+            setPending(true);
+        } catch (error) {
+            console.error("Error toggling favorite:", error);
+        }
+    }
+
     if (!scenarioList.length) {
         return <EmptyScenario onClick={createProject} />;
     }
@@ -180,8 +201,8 @@ export const ScenarioList = ({
 
                 {filteredScenarios.map((scenario) => (
                     <ScenarioCard
-                        key={scenario._id}
-                        id={scenario._id}
+                        key={scenario.id}
+                        id={scenario.id}
                         title={scenario.title}
                         imageUrl={scenario.imageUrl}
                         authorId={scenario.authorId}
@@ -189,6 +210,7 @@ export const ScenarioList = ({
                         createdAt={getUnixTime(new Date(scenario.createdAt)) * 1000} //milliseconds to seconds
                         projectId={scenario.projectId}
                         isFavorite={scenario.isFavorites}
+                        toggleFavorite={() => toggleFavorite(scenario.id)}
                     />
                 ))}
             </div>

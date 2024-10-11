@@ -24,6 +24,7 @@ interface ScenarioCardProps {
     imageUrl: string;
     projectId: string;
     isFavorite: boolean;
+    toggleFavorite: () => void;
 }
 
 export const ScenarioCard = ({
@@ -34,7 +35,8 @@ export const ScenarioCard = ({
     createdAt,
     imageUrl,
     projectId,
-    isFavorite
+    isFavorite,
+    toggleFavorite
 }: ScenarioCardProps) => {
     const { userId } = useAuth();
     const authorLabel = userId === authorId ? "You" : authorName;
@@ -49,15 +51,15 @@ export const ScenarioCard = ({
     //     pending: pendingUnfavorite
     // } = useApiMutation(api.board.unfavorite)
 
-    const toggleFavorite = () => {
-        // if (isFavorite) {
-        //     onUnfavorite({ id })
-        //         .catch(() => toast.error("Failed to unfavorite board"))
-        // } else {
-        //     onFavorite({ id, orgId })
-        //         .catch(() => toast.error("Failed to favorite board"))
-        // }
-    }
+    // const toggleFavorite = () => {
+    //     // if (isFavorite) {
+    //     //     onUnfavorite({ id })
+    //     //         .catch(() => toast.error("Failed to unfavorite board"))
+    //     // } else {
+    //     //     onFavorite({ id, orgId })
+    //     //         .catch(() => toast.error("Failed to favorite board"))
+    //     // }
+    // }
 
     return (
         <Link href={`/board/${id}`}>
