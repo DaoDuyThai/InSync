@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
 import { selectProject } from '@/store/projectSlice';
 import { toast } from 'sonner';
+import { NoProjectSelected } from './no-project-selected';
 
 interface ScenarioListProps {
     projectId: string;
@@ -41,18 +42,6 @@ export const ScenarioList = ({
     query
 }: ScenarioListProps) => {
 
-    // const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
-    // const dispatch = useDispatch<AppDispatch>();
-
-    // // Load selected project from localStorage when component mounts
-    // React.useEffect(() => {
-    //     const storedProjectId = localStorage.getItem("selectedProjectId");
-    //     if (storedProjectId) {
-    //         dispatch(selectProject(storedProjectId));
-    //     }
-    // }, [dispatch]);
-
-
     const { user, isLoaded } = useUser();
     const [scenarioList, setScenarioList] = React.useState<Scenario[]>([]);
     const [filteredScenarios, setFilteredScenarios] = React.useState<Scenario[]>([]);
@@ -71,8 +60,6 @@ export const ScenarioList = ({
                 }
             };
             fetchScenarios();
-        } else {
-            toast.error("No project selected");
         }
     }, [projectId, user, isLoaded]);
 
@@ -96,18 +83,24 @@ export const ScenarioList = ({
 
             setFilteredScenarios(filtered);
         }
-    }, [scenarioList, query]);
+    }, [projectId, scenarioList, query]);
 
-    if (!scenarioList.length && query.search) {
+    if (!filteredScenarios.length && query.search) {
         return <EmptySearch />;
     }
 
-    if (!scenarioList.length && query.favorites) {
+    if (!filteredScenarios.length && query.favorites) {
         return <EmptyFavorites />;
     }
 
     if (!scenarioList.length) {
         return <EmptyScenario />;
+    }
+
+    if (projectId == "") {
+        return (
+            <NoProjectSelected />
+        )
     }
 
     return (
