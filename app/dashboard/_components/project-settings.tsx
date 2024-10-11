@@ -132,7 +132,6 @@ export const ProjectSettings = () => {
             toast.error("Failed to delete project.");
         } finally {
             setIsLoading(false);
-            setTimeout(() => window.location.reload(), 1000);
         }
     };
 
