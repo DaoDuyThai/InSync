@@ -8,6 +8,7 @@ import { store } from "@/store/store";
 import { Provider } from 'react-redux';
 import { Suspense } from "react";
 import { Loading } from "@/components/loading";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Suspense fallback={<Loading />}>
           <ClerkProvider>
+            <Toaster />
             <Provider store={store}>
               {children}
             </Provider>

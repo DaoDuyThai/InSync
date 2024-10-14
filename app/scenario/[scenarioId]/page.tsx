@@ -7,6 +7,7 @@ import { save, load } from './_components/serialization';
 import { toolbox } from './_components/toolbox';
 import { jsonGenerator } from './_components/generators/json';
 import '@/CSS/blockly.css';
+import Canvas from "./_components/canvas";
 
 interface ScenarioIdPageProps {
     params: {
@@ -76,19 +77,13 @@ const ScenarioIdPage = ({
     }, []);
 
     return (
+        <Canvas />
         // <Suspense fallback={<Loading />}>
-        <div id="pageContainer">
-            <div id="outputPane">
-                <pre id="generatedCode"><code></code></pre>
-                <div id="output"></div>
-            </div>
-            <div id="blocklyDiv"></div>
-        </div>
+        //     {params.scenarioId}
+        //     {/* TODO: Canvas */}
+            
         // </Suspense>
-        // <Room roomId={params.boardId} fallback={<Loading />}>
-        //     <Canvas boardId={params.boardId} />
-        //     <Chat roomId={params.boardId}/>
-        // </Room>
+
     )
 }
 
