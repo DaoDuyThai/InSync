@@ -7,11 +7,11 @@ type Props = {
 
 const DashboardLayout = ({ children }: Props) => {
     return (
-        <main className="h-full w-screen md:w-full">
+        <main className="w-screen md:w-full">
 
-            <div className="flex gap-x-3 h-full">
+            <div className="flex gap-x-3 h-screen overflow-hidden">
                 <ProjectSidebar />
-                <div className="h-full flex-1">
+                <div className="flex-1">
                     <Navbar searchEntity="Scenario" searchLink="dashboard"/>
                     {children}
                 </div>

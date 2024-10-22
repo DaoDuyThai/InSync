@@ -77,6 +77,8 @@ const ScenarioIdPage = ({
 
     return (
         // <Suspense fallback={<Loading />}>
+        //     {params.scenarioId}
+        // </Suspense>
         <div id="pageContainer">
             <div id="outputPane">
                 <pre id="generatedCode"><code></code></pre>
@@ -84,7 +86,6 @@ const ScenarioIdPage = ({
             </div>
             <div id="blocklyDiv"></div>
         </div>
-        // </Suspense>
         // <Room roomId={params.boardId} fallback={<Loading />}>
         //     <Canvas boardId={params.boardId} />
         //     <Chat roomId={params.boardId}/>
