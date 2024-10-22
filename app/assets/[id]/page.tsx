@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { CropIcon, MoveIcon, UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { useParams } from "next/navigation";
 import uploadImage from "../_components/uploadImage";
-import { log } from "console";
 
 export default function ImageCroppedPage() {
     const { id } = useParams();
@@ -303,32 +302,35 @@ export default function ImageCroppedPage() {
 
     return (
         <div className="p-5 flex justify-center">
-            <div className="flex justify-center">
-                <div className="relative flex max-w-[900px] max-h-[680px]">
+            <div className=" border-[1px] 
+                         border-[#e6e6e8] ">
+                <div className="border-b-[1px] text-xl border-[#e6e6e8] p-[10px] font-semibold ">Image Cropper</div>
+                <div className="relative flex max-w-[1000px] max-h-[680px] p-[30px]">
                     <canvas
                         ref={canvasRef}
                         width="900"
                         height="680"
                         className
-                        ="shadow-gray-300
-                         shadow-sm border-2 
-                         border-black 
+                        ="shadow-gray-100
+                         shadow-sm border-[1px] 
+                         border-[#e6e6e8] 
                          rounded-md 
                          relative 
                          bg-gray-100
                          "
                     >
                     </canvas>
-                    <div className="absolute top-5 right-5">
+                    <div className="absolute top-10 right-10">
                         <button ref={croppingButtonRef} onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }} className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200 border-r-2 border-black`}><CropIcon size={24} /></button>
                         <button ref={movingButtonRef} onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }} className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200`}><MoveIcon size={24} /></button>
                     </div>
-                    <div className="absolute bottom-5 right-5">
+                    <div className="absolute bottom-10 right-10">
                         <button ref={zoomInRef} className="px-5 py-2 bg-gray-200 border-r-2 border-black"><ZoomIn size={24} /></button>
                         <button ref={zoomOutRef} className="px-5 py-2 bg-gray-200"><ZoomOut size={24} /></button>
                     </div>
+                    <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
                 </div>
-                <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
+
 
             </div>
             <div className="p-5">
@@ -341,6 +343,5 @@ export default function ImageCroppedPage() {
 
             </div>
         </div>
-
     )
 }
