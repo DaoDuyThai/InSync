@@ -1,6 +1,6 @@
 "use client";
 
-import { UserButton, useOrganization } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -9,8 +9,6 @@ import { ProjectSelector } from "./project-selector";
 import Link from "next/link";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
-// import { SearchInput } from "./search-input";
-// import { InviteButton } from "./invite-button";
 
 interface NavbarProps {
     searchLink?: string;
