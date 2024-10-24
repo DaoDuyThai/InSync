@@ -7,14 +7,8 @@ type Props = {
 
 const LogLayout = ({ children }: Props) => {
     return (
-        <main className="h-full">
-                <div className="flex gap-x-3 h-full">
-                    <ProjectSidebar />
-                    <div className="h-full flex-1">
-                        {/* <Navbar searchEntity="scenario" searchLink="scenario"/> */}
-                        {children}
-                    </div>
-                </div>
+        <main className="h-screen w-screen overflow-hidden">
+            {children}
         </main>
     );
 }

@@ -5,8 +5,9 @@ import * as Blockly from 'blockly';
 import { blocks } from './_components/blocks/json';
 import { save, load } from './_components/serialization';
 import { toolbox } from './_components/toolbox';
-import { jsonGenerator } from './_components/generators/json';
+
 import '@/CSS/blockly.css';
+import { jsonGenerator } from "./_components/generators/json";
 
 interface ScenarioIdPageProps {
     params: {
@@ -79,12 +80,14 @@ const ScenarioIdPage = ({
         // <Suspense fallback={<Loading />}>
         //     {params.scenarioId}
         // </Suspense>
-        <div id="pageContainer">
-            <div id="outputPane">
-                <pre id="generatedCode"><code></code></pre>
-                <div id="output"></div>
-            </div>
+        <div id="pageContainer" className="flex w-full h-full overflow-auto ">
             <div id="blocklyDiv"></div>
+
+            <pre id="generatedCode"><code></code></pre>
+
+            <div id="output"></div>
+
+
         </div>
         // <Room roomId={params.boardId} fallback={<Loading />}>
         //     <Canvas boardId={params.boardId} />
