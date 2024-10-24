@@ -7,7 +7,7 @@ type Props = {
 
 const LogLayout = ({ children }: Props) => {
     return (
-        <main className="h-screen w-screen">
+        <main className="h-screen w-screen overflow-hidden">
             {children}
         </main>
     );

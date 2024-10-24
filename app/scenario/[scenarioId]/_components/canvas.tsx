@@ -1,22 +1,17 @@
-'use client'
-import { Suspense, useEffect, useRef } from "react";
-import { Loading } from "./loading";
+import { useEffect, useRef } from "react";
 import * as Blockly from 'blockly';
 import { blocks } from './blocks/json';
 import { save, load } from './serialization';
 import { toolbox } from './toolbox';
-import { BlocklyWorkspace } from 'react-blockly';
-import '@/CSS/blockly.css';
 import { jsonGenerator } from "./generators/json";
-import { Themes } from 'blockly';
+import '@/CSS/blockly.css';
+
 
 export const Canvas = () => {
-
     const mount = useRef(false);
 
     useEffect(() => {
         if (mount.current == false) {
-
             // Register the blocks and generator with Blockly
             Blockly.common.defineBlocks(blocks);
 
@@ -24,67 +19,77 @@ export const Canvas = () => {
             const codeDiv = document.getElementById('generatedCode')?.firstChild;
             const blocklyDiv = document.getElementById('blocklyDiv');
             if (blocklyDiv && codeDiv) {
-                const ws = Blockly.inject(blocklyDiv, {
+                const workspace = Blockly.inject(blocklyDiv, {
                     toolbox,
                     theme: Blockly.Themes.Zelos,
                     scrollbars: false,
-                    // horizontalLayout: true,
-                    collapse: false,
                     toolboxPosition: "start",
+                    grid: {
+                        spacing: 20,
+                        length: 3,
+                        colour: '#ccc',
+                        snap: true,
+                    },
+                    maxBlocks: Infinity,
+                    move: {
+                        scrollbars: {
+                            horizontal: true,
+                            vertical: true
+                        },
+                        drag: true,
+                        wheel: true
+                    },
+                    trashcan: true,
+                    zoom: {
+                        controls: true,
+                        // wheel: true,
+                        startScale: 1.0,
+                        maxScale: 3,
+                        minScale: 0.3,
+                        scaleSpeed: 1.2,
+                        pinch: true
+                    },
                 });
 
-                /// This function resets the code div and shows the
-                // generated code from the workspace.
+                // Function to generate and display the JSON code
                 const runCode = () => {
-                    const code = jsonGenerator.workspaceToCode(ws);
+                    const code = jsonGenerator.workspaceToCode(workspace);
                     (codeDiv as HTMLElement).innerText = code;
                 };
 
-                // Load the initial state from storage and run the code.
-                load(ws);
+                // Load the initial state from storage and run the code
+                load(workspace);
                 runCode();
 
-                // Every time the workspace changes state, save the changes to storage.
-                ws.addChangeListener((e) => {
-                    // UI events are things like scrolling, zooming, etc.
-                    // No need to save after one of these.
+                // Add listeners for workspace changes
+                workspace.addChangeListener((e) => {
                     if (e.isUiEvent) return;
-                    save(ws);
+                    save(workspace); // Save changes
                 });
 
-                // Whenever the workspace changes meaningfully, run the code again.
-                ws.addChangeListener((e) => {
-                    // Don't run the code when the workspace finishes loading; we're
-                    // already running it once when the application starts.
-                    // Don't run the code during drags; we might have invalid state.
+                workspace.addChangeListener((e) => {
                     if (
                         e.isUiEvent ||
                         e.type == Blockly.Events.FINISHED_LOADING ||
-                        ws.isDragging()
+                        workspace.isDragging()
                     ) {
                         return;
                     }
-                    runCode();
+                    runCode(); // Regenerate and display the code
                 });
             }
         }
 
         return () => {
             mount.current = true;
-        }
-
-
+        };
     }, []);
 
-
     return (
-        <div id="pageContainer" >
-            <div id="blocklyDiv" ></div>
+        <div id="pageContainer" className="relative">
+            <div id="blocklyDiv"></div>
             <div id="toolbox"></div>
-
-            <pre id="generatedCode"><code></code></pre>
-
-            <div id="output"></div>
+            <pre id="generatedCode" className="w-1/4  h-full"><code className=""></code></pre>
         </div>
-    )
-}
+    );
+};

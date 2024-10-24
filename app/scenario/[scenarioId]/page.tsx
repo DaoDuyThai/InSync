@@ -6,7 +6,6 @@ import { blocks } from './_components/blocks/json';
 import { save, load } from './_components/serialization';
 import { toolbox } from './_components/toolbox';
 import { BlocklyWorkspace } from 'react-blockly';
-import '@/CSS/blockly.css';
 import { jsonGenerator } from "./_components/generators/json";
 import { Themes } from 'blockly';
 import { Canvas } from "./_components/canvas";
@@ -20,14 +19,14 @@ interface ScenarioIdPageProps {
 const ScenarioIdPage = ({
     params
 }: ScenarioIdPageProps) => {
-    
+
     return (
         // <Suspense fallback={<Loading />}>
         //     {params.scenarioId}
         // </Suspense>
 
-        
-            <Canvas />
+
+        <Canvas />
 
         // <Room roomId={params.boardId} fallback={<Loading />}>
         //     <Canvas boardId={params.boardId} />
