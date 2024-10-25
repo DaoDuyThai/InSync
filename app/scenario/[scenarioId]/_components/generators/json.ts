@@ -189,13 +189,32 @@ jsonGenerator.forBlock['zoom'] = function (block) {
 
 jsonGenerator.forBlock['swipe'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
-  const code = `{
+  const duration = block.getFieldValue('DURATION');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const defaultLogContent = `Swipe ${direction} for ${duration} ms`;
+
+  let 
+  code = `
+  {
     "actionType": "SWIPE",
-    "on": "${direction}",
-    "logResult": true,
-    "duration": 500,
-    "tries": 1
+    "direction": "${direction}",
+    "duration": ${duration},
+    "isLog": ${isLog},
+    "logContent": ""
   }`;
+
+  if (isLog) {
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `
+  {
+    "actionType": "SWIPE",
+    "direction": "${direction}",
+    "duration": ${duration},
+    "isLog": true,
+    "logContent": "${logContent}"
+  }`;
+  }
+
   return code;
 };
 
