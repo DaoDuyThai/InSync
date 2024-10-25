@@ -143,19 +143,37 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 };
 
 
-
 jsonGenerator.forBlock['for_block'] = function (block, generator) {
-  const times = block.getFieldValue('TIMES');
+  const times = block.getFieldValue('TIMES');           // Number of repetitions
+  const isLog = block.getFieldValue('ISLOG');   
   const actions = generator.statementToCode(block, 'ACTIONS'); // Collect actions inside the loop
-  const code = `{
+  // Get isLog value
+
+  // Default log content if not specified
+  const defaultLogContent = `Repeat ${times} times`;
+  let code = `
+  {
     "actionType": "FOR",
     "executeActions": [${actions}], 
-    "logResult": true,
-    "duration": 500,
-    "tries": ${times}
+    "times": ${times},
+    "isLog": ${isLog === 'TRUE' ? 'true' : 'false'},
+    "logContent": ""
   }`;
+
+  if (isLog === 'TRUE') {
+      const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+      code = `
+  {
+    "actionType": "FOR",
+    "executeActions": [${actions}], 
+    "times": ${times},
+    "isLog": true,
+    "logContent": "${logContent}"
+  }`;
+  }
   return code;
 };
+
 
 jsonGenerator.forBlock['zoom'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
