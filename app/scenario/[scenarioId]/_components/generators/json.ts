@@ -76,7 +76,7 @@ jsonGenerator.forBlock['delay'] = function (block) {
     "actionType": "DELAY",
     "isLog": ${isLog === 'TRUE' ? 'true' : 'false'}, 
     "logContent": "",
-    "duration": ${duration},
+    "duration": ${duration}
   }`;
 
   // If logging is enabled, add log content
@@ -86,7 +86,7 @@ jsonGenerator.forBlock['delay'] = function (block) {
     "actionType": "DELAY",
     "isLog": true,
     "logContent": "${logContent}",
-    "duration": ${duration},
+    "duration": ${duration}
   }`;
   }
 
