@@ -21,7 +21,6 @@ export const Canvas = () => {
             if (blocklyDiv && codeDiv) {
                 const workspace = Blockly.inject(blocklyDiv, {
                     toolbox,
-                    theme: Blockly.Themes.Zelos,
                     scrollbars: false,
                     toolboxPosition: "start",
                     grid: {

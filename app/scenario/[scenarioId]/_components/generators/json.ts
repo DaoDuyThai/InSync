@@ -69,27 +69,25 @@ jsonGenerator.forBlock['scenario'] = function (block, generator) {
 jsonGenerator.forBlock['delay'] = function (block) {
   const duration = block.getFieldValue('DURATION');  // Get the delay duration
   const isLog = block.getFieldValue('ISLOG');  // Get whether logging is enabled
-  
+
   // Generate base JSON for the delay
-  let code = `{
+  let
+    code = `{
     "actionType": "DELAY",
-    "on": "",
-    "logResult": ${isLog === 'TRUE' ? 'true' : 'false'}, 
+    "isLog": ${isLog === 'TRUE' ? 'true' : 'false'}, 
+    "logContent": "",
     "duration": ${duration},
-    "tries": 1
   }`;
 
   // If logging is enabled, add log content
   if (isLog === 'TRUE') {
     const logContent = block.getFieldValue('LOGCONTENT') || 'Log Content';
     code = `{
-      "actionType": "DELAY",
-      "on": "",
-      "logResult": true,
-      "logContent": "${logContent}",
-      "duration": ${duration},
-      "tries": 1
-    }`;
+    "actionType": "DELAY",
+    "isLog": true,
+    "logContent": "${logContent}",
+    "duration": ${duration},
+  }`;
   }
 
   return code;
@@ -108,16 +106,43 @@ jsonGenerator.forBlock['click'] = function (block) {
 };
 
 jsonGenerator.forBlock['open_app'] = function (block) {
-  const on = block.getFieldValue('ON');
-  const code = `{
+  const appChoice = block.getFieldValue('APP_CHOICE');  // Get the selected app or "Other"
+  const isLog = block.getFieldValue('ISLOG');           // Get whether logging is enabled
+
+  let appName = appChoice;
+  if (appChoice === 'OTHER') {
+    appName = block.getFieldValue('CUSTOM_APP_NAME'); // Fetch custom app name
+    if (!appName) {
+      appName = 'Custom App';  // Default to 'Custom App' if the field is empty
+    }
+  }
+
+  // Default log content
+  const defaultLogContent = `Open the app ${appName}`;
+  // Generate base JSON for the open app
+  let
+    code = `{
     "actionType": "OPEN_APP",
-    "on": "${on}",
-    "logResult": true,
-    "duration": 0,
-    "tries": 1
+    "open": "${appName}",
+    "isLog": ${isLog === 'TRUE' ? 'true' : 'false'},
+    "logContent": ""
   }`;
+
+  // If logging is enabled, add log content
+  if (isLog === 'TRUE') {
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
+    "actionType": "OPEN_APP",
+    "open": "${appName}",
+    "isLog": true,
+    "logContent": "${logContent}"
+  }`;
+  }
+
   return code;
 };
+
+
 
 jsonGenerator.forBlock['for_block'] = function (block, generator) {
   const times = block.getFieldValue('TIMES');
@@ -169,12 +194,12 @@ jsonGenerator.forBlock['end_run'] = function () {
 
 jsonGenerator.scrub_ = function (block, code, thisOnly) {
   const nextBlock =
-      block.nextConnection && block.nextConnection.targetBlock();
+    block.nextConnection && block.nextConnection.targetBlock();
   if (nextBlock && !thisOnly) {
-      // Recursively generate code for the next block in the chain
-      const nextCode = jsonGenerator.blockToCode(nextBlock);
-      // Concatenate the current block's code with the next block's code
-      return code + ', ' + nextCode;  // This will ensure each action is separated by a comma in the JSON array
+    // Recursively generate code for the next block in the chain
+    const nextCode = jsonGenerator.blockToCode(nextBlock);
+    // Concatenate the current block's code with the next block's code
+    return code + ', ' + nextCode;  // This will ensure each action is separated by a comma in the JSON array
   }
   return code;
 };
