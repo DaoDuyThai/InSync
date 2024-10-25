@@ -60,10 +60,6 @@ export const toolbox = {
     {
       'kind': 'block',
       'type': 'swipe'
-    },
-    {
-      'kind': 'block',
-      'type': 'end_run'
     }
   ]
 };

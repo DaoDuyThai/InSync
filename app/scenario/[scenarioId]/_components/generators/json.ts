@@ -61,7 +61,10 @@ jsonGenerator.forBlock['object'] = function (block, generator) {
 jsonGenerator.forBlock['scenario'] = function (block, generator) {
   const actions = generator.statementToCode(block, 'ACTIONS');  // Get the actions inside
   const code = `[
-    ${actions}
+    ${actions},
+    {
+        "actionType": "END_RUN"
+    }
   ]`;
   return code;
 };
@@ -233,16 +236,7 @@ jsonGenerator.forBlock['swipe'] = function (block) {
   return code;
 };
 
-jsonGenerator.forBlock['end_run'] = function () {
-  const code = `{
-    "actionType": "END_RUN",
-    "on": "",
-    "logResult": true,
-    "duration": 100,
-    "tries": 1
-  }`;
-  return code;
-};
+
 
 jsonGenerator.scrub_ = function (block, code, thisOnly) {
   const nextBlock =

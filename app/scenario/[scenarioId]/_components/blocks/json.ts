@@ -193,13 +193,6 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "mutator": "swipe_mutator"
     },
     {
-        "type": "end_run",
-        "message0": "end run",
-        "previousStatement": null,
-        "nextStatement": null,
-        "colour": 230
-    },
-    {
         "type": "object",
         "message0": "{ %1 %2 }",
         "args0": [
