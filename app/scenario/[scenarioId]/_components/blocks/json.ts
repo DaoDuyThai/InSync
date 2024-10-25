@@ -44,7 +44,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     },
     {
         "type": "click",
-        "message0": "click on %1 for %2 ms",
+        "message0": "click on %1\nfor %2 ms",
         "args0": [
             {
                 "type": "field_image_drop",
@@ -139,7 +139,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     },
     {
         "type": "zoom",
-        "message0": "zoom %1 for %2 ms",
+        "message0": "zoom %1\nfor %2 ms",
         "args0": [
             {
                 "type": "field_dropdown",
@@ -175,7 +175,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     },
     {
         "type": "swipe",
-        "message0": "swipe %1 for %2 ms",
+        "message0": "swipe %1\nfor %2 ms",
         "args0": [
             {
                 "type": "field_dropdown",
