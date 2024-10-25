@@ -49,7 +49,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             {
                 "type": "field_image_drop",
                 "name": "ON",
-                "src": "default.png",
+                "src": "/drop-image-here.png",
                 "width": 50,
                 "height": 50,
                 "alt": "Drag image here"
@@ -541,3 +541,7 @@ class FieldImageDrop extends Blockly.FieldImage {
 
 // Register the custom field
 Blockly.fieldRegistry.register('field_image_drop', FieldImageDrop);
+
+//Blockly block color
+Blockly.utils.colour.setHsvSaturation(0.8) // 0 (inclusive) to 1 (exclusive), defaulting to 0.45
+Blockly.utils.colour.setHsvValue(0.65) // 0 (inclusive) to 1 (exclusive), defaulting to 0.65
