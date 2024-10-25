@@ -6,13 +6,18 @@ import { toolbox } from './toolbox';
 import { jsonGenerator } from "./generators/json";
 import './blockly.css';
 import { toast } from "sonner";
+import React from "react";
+import { Loading } from "@/components/loading";
 
 
 export const Canvas = () => {
     const mount = useRef(false);
+    const [loading, setLoading] = React.useState(true);
+    console.log(loading);
 
     useEffect(() => {
         if (mount.current == false) {
+
             // Register the blocks and generator with Blockly
             Blockly.common.defineBlocks(blocks);
 
@@ -54,14 +59,15 @@ export const Canvas = () => {
                 // Function to generate and display the JSON code
                 const runCode = () => {
                     const code = jsonGenerator.workspaceToCode(workspace);
-                    if ((!code.startsWith('[') || !code.endsWith(']') ) && code.trim() !== '') {
+                    if ((!code.startsWith('[') || !code.endsWith(']')) && code.trim() !== '') {
                         toast.error('Action blocks must be inside a scenario block')
                     }
-                    console.log(code);
+                    // console.log(code);
                     // (codeDiv as HTMLElement).innerText = code;
                 };
 
                 // Load the initial state from storage and run the code
+
                 load(workspace);
                 runCode();
 
@@ -81,6 +87,8 @@ export const Canvas = () => {
                     }
                     runCode(); // Regenerate and display the code
                 });
+                setLoading(false);
+                console.log(loading);
             }
         }
 
@@ -89,15 +97,19 @@ export const Canvas = () => {
         };
     }, []);
 
-    return (
-        <div id="pageContainer" className="relative">
-            <div id="blocklyDiv"></div>
-            <div id="toolbox"></div>
-            {/* <pre id="generatedCode" className="w-1/4  h-full"><code className=""></code></pre> */}
-            {/* <div>
-                <img src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg" alt="" />
-                <img src="https://gratisography.com/wp-content/uploads/2024/03/gratisography-funflower-800x525.jpg" alt="" />
-            </div> */}
-        </div>
-    );
+    if (loading) {
+        return (
+            <div id="pageContainer" className="relative">
+                <div id="blocklyDiv"><Loading /></div>
+            </div>
+        )
+    } else if(!loading){
+        return (
+            <div id="pageContainer" className="relative">
+                <div id="blocklyDiv"></div>
+            </div>
+        );
+    }
+
+
 };
