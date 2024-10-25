@@ -6,13 +6,13 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "message0": "Scenario %1",
         "args0": [
             {
-                "type": "input_statement",  // Allows multiple blocks (actions) to be nested inside
+                "type": "input_statement",
                 "name": "ACTIONS"
             }
         ],
         "colour": 1,
         "tooltip": "Define a list of actions for the scenario",
-        "helpUrl": "",
+        "helpUrl": ""
     },
     {
         "type": "delay",
@@ -26,10 +26,23 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "precision": 1
             }
         ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
+            }
+        ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 230
+        "colour": 150,
+        "mutator": "delay_mutator"
     },
+
     {
         "type": "click",
         "message0": "click on %1",
@@ -71,14 +84,13 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             },
             {
                 "type": "input_statement",
-                "name": "ACTIONS" // This allows other action blocks to be snapped inside
+                "name": "ACTIONS"
             }
         ],
-        "previousStatement": null,  // Allows the for_block to be part of a larger sequence
-        "nextStatement": null,      // Allows other blocks to chain after the for_block
+        "previousStatement": null,
+        "nextStatement": null,
         "colour": 230
     },
-
     {
         "type": "zoom",
         "message0": "zoom %1",
@@ -135,7 +147,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             }
         ],
         "output": null,
-        "colour": 230,
+        "colour": 230
     },
     {
         "type": "member",
@@ -158,7 +170,43 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 230,
+        "colour": 230
     }
 ]);
 
+// Delay block mutator for showing/hiding log content field and setting default log content
+Blockly.Extensions.registerMutator('delay_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+    },
+    updateShape: function (isLog: boolean) {
+        const duration = this.getFieldValue('DURATION') || 1000;
+        const logMessage = `Delay for ${duration} milliseconds`;
+
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(logMessage), 'LOGCONTENT');
+            } else {
+                // Update the default log content when the delay is updated
+                this.setFieldValue(logMessage, 'LOGCONTENT');
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function (e: Blockly.Events.Abstract) {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});

@@ -67,14 +67,31 @@ jsonGenerator.forBlock['scenario'] = function (block, generator) {
 };
 
 jsonGenerator.forBlock['delay'] = function (block) {
-  const duration = block.getFieldValue('DURATION');
-  const code = `{
+  const duration = block.getFieldValue('DURATION');  // Get the delay duration
+  const isLog = block.getFieldValue('ISLOG');  // Get whether logging is enabled
+  
+  // Generate base JSON for the delay
+  let code = `{
     "actionType": "DELAY",
     "on": "",
-    "logResult": true,
+    "logResult": ${isLog === 'TRUE' ? 'true' : 'false'}, 
     "duration": ${duration},
     "tries": 1
   }`;
+
+  // If logging is enabled, add log content
+  if (isLog === 'TRUE') {
+    const logContent = block.getFieldValue('LOGCONTENT') || 'Log Content';
+    code = `{
+      "actionType": "DELAY",
+      "on": "",
+      "logResult": true,
+      "logContent": "${logContent}",
+      "duration": ${duration},
+      "tries": 1
+    }`;
+  }
+
   return code;
 };
 

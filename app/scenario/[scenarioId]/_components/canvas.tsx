@@ -4,7 +4,7 @@ import { blocks } from './blocks/json';
 import { save, load } from './serialization';
 import { toolbox } from './toolbox';
 import { jsonGenerator } from "./generators/json";
-import '@/CSS/blockly.css';
+import './blockly.css';
 
 
 export const Canvas = () => {
