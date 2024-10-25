@@ -97,14 +97,30 @@ jsonGenerator.forBlock['delay'] = function (block) {
 };
 
 jsonGenerator.forBlock['click'] = function (block) {
-  const on = block.getFieldValue('ON');
-  const code = `{
+  const element = block.getFieldValue('ELEMENT');
+  const duration = block.getFieldValue('DURATION');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const defaultLogContent = `Click on ${element} for ${duration} ms`;
+
+  let code = `{
     "actionType": "CLICK",
-    "on": "${on}",
-    "logResult": true,
-    "duration": 100,
-    "tries": 1
+    "on": "${element}",
+    "duration": ${duration},
+    "isLog": ${isLog},
+    "logContent": ""
   }`;
+
+  if (isLog) {
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
+      "actionType": "CLICK",
+      "on": "${element}",
+      "duration": ${duration},
+      "isLog": true,
+      "logContent": "${logContent}"
+    }`;
+  }
+
   return code;
 };
 
@@ -188,7 +204,8 @@ jsonGenerator.forBlock['zoom'] = function (block) {
     "actionType": "ZOOM",
     "direction": "${direction}",
     "duration": ${duration},
-    "isLog": ${isLog}
+    "isLog": ${isLog},
+    "logContent": ""
   }`;
 
   if (isLog) {

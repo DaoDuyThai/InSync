@@ -44,17 +44,36 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     },
     {
         "type": "click",
-        "message0": "click on %1",
+        "message0": "click on %1 for %2 ms",
         "args0": [
             {
                 "type": "field_input",
-                "name": "ON",
+                "name": "ELEMENT",
                 "text": "element"
+            },
+            {
+                "type": "field_number",
+                "name": "DURATION",
+                "value": 1000,
+                "min": 0,
+                "precision": 1
+            }
+        ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
             }
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 230
+        "colour": 230,
+        "mutator": "click_mutator"
     },
     {
         "type": "open_app",
@@ -268,6 +287,43 @@ Blockly.Extensions.registerMutator('delay_mutator', {
         this.updateShape(isLog);
     }
 });
+
+Blockly.Extensions.registerMutator('click_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+    },
+    updateShape: function (isLog: boolean) {
+        const element = this.getFieldValue('ELEMENT') || "element";
+        const duration = this.getFieldValue('DURATION') || 1000;
+        const logMessage = `Click on ${element} for ${duration} ms`;
+
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(logMessage), 'LOGCONTENT');
+            } else {
+                this.setFieldValue(logMessage, 'LOGCONTENT');
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function (e: Blockly.Events.Abstract) {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});
+
 
 
 Blockly.Extensions.registerMutator('open_app_mutator', {
