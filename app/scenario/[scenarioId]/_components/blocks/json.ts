@@ -1,6 +1,11 @@
 import * as Blockly from 'blockly';
 import { toast } from 'sonner';
 
+//Blockly block color
+Blockly.utils.colour.setHsvSaturation(0.8) // 0 (inclusive) to 1 (exclusive), defaulting to 0.45
+Blockly.utils.colour.setHsvValue(0.65) // 0 (inclusive) to 1 (exclusive), defaulting to 0.65
+
+// Common block definitions
 export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     {
         "type": "scenario",
@@ -11,7 +16,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "ACTIONS"
             }
         ],
-        "colour": 1,
+        "colour": 0,
         "tooltip": "Container for scenario actions",
         "helpUrl": ""
     },
@@ -40,9 +45,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 150,
+        "colour": 50,
         "mutator": "delay_mutator",
-        // "extensions": ["validate_scenario"]
     },
     {
         "type": "click",
@@ -77,11 +81,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 230,
+        "colour": 100,
         "mutator": "click_mutator",
         "tooltip": "Clicks on the specified element and optionally logs a message.",
         "helpUrl": "",
-        // "extensions": ["validate_scenario"]
     },
     {
         "type": "open_app",
@@ -110,9 +113,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 60,
+        "colour": 150,
         "mutator": "open_app_mutator",
-        // "extensions": ["validate_scenario"]
     },
     {
         "type": "for",
@@ -143,9 +145,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 230,
+        "colour": 200,
         "mutator": "for_mutator",
-        // "extensions": ["validate_scenario"]
     },
     {
         "type": "zoom",
@@ -180,9 +181,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 230,
+        "colour": 250,
         "mutator": "zoom_mutator",
-        // "extensions": ["validate_scenario"]
     },
     {
         "type": "swipe",
@@ -219,13 +219,13 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 130,
+        "colour": 300,
         "mutator": "swipe_mutator",
-        // "extensions": ["validate_scenario"]
     }
 ]);
 
-// Delay block mutator for showing/hiding log content field and setting default log content
+
+// Register delay_mutator for dynamic log message field
 Blockly.Extensions.registerMutator('delay_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
@@ -298,8 +298,7 @@ Blockly.Extensions.registerMutator('click_mutator', {
     }
 });
 
-
-
+// Register open_app_mutator for dynamic log message field and custom app name input
 Blockly.Extensions.registerMutator('open_app_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
@@ -352,7 +351,7 @@ Blockly.Extensions.registerMutator('open_app_mutator', {
     }
 });
 
-
+// Register for_mutator for dynamic log message field
 Blockly.Extensions.registerMutator('for_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
@@ -389,6 +388,7 @@ Blockly.Extensions.registerMutator('for_mutator', {
     }
 });
 
+// Register zoom_mutator for dynamic log message field
 Blockly.Extensions.registerMutator('zoom_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
@@ -425,7 +425,7 @@ Blockly.Extensions.registerMutator('zoom_mutator', {
     }
 });
 
-
+// Register swipe_mutator for dynamic log message field
 Blockly.Extensions.registerMutator('swipe_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
@@ -461,7 +461,6 @@ Blockly.Extensions.registerMutator('swipe_mutator', {
         this.updateShape(isLog);
     }
 });
-
 
 
 // Custom FieldImageDrop Class (from previous setup)
@@ -510,43 +509,3 @@ class FieldImageDrop extends Blockly.FieldImage {
 
 // Register the custom field
 Blockly.fieldRegistry.register('field_image_drop', FieldImageDrop);
-
-
-
-Blockly.Extensions.register('validate_scenario', function (this: Blockly.Block) {
-    this.setOnChange((event: Blockly.Events.Abstract) => {
-        // Proceed only if it's a block move event concerning this block
-        if (event.type === Blockly.Events.BLOCK_MOVE && (event as Blockly.Events.BlockMove).blockId === this.id) {
-            let ancestor = this.getSurroundParent();
-            let isValid = false;
-
-            // Traverse through ancestors to find a `scenario` block
-            while (ancestor) {
-                if (ancestor.type === 'scenario') {
-                    isValid = true;
-                    break;
-                }
-                ancestor = ancestor.getSurroundParent();
-            }
-
-            // If no valid ancestor, detach and show a toast message
-            if (!isValid) {
-                const blockType = this.type;
-                const readableName = Blockly.Blocks[blockType]?.message0 || blockType;
-                
-                // Show the toast only if the block was unplugged due to an invalid position
-                setTimeout(() => {
-                    toast.error(`The "${readableName}" block must be inside a "scenario" block!`);
-                }, 0); // Delay to ensure the block is detached first
-
-                // Detach the block if it's not within a valid scenario hierarchy
-                this.unplug(true);
-            }
-        }
-    });
-});
-
-//Blockly block color
-Blockly.utils.colour.setHsvSaturation(0.8) // 0 (inclusive) to 1 (exclusive), defaulting to 0.45
-Blockly.utils.colour.setHsvValue(0.65) // 0 (inclusive) to 1 (exclusive), defaulting to 0.65
-
