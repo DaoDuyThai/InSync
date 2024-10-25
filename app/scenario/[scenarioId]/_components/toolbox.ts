@@ -51,7 +51,7 @@ export const toolbox = {
     },
     {
       'kind': 'block',
-      'type': 'for_block'
+      'type': 'for'
     },
     {
       'kind': 'block',

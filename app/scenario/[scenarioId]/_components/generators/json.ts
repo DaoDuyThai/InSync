@@ -164,7 +164,7 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 };
 
 
-jsonGenerator.forBlock['for_block'] = function (block, generator) {
+jsonGenerator.forBlock['for'] = function (block, generator) {
   const times = block.getFieldValue('TIMES');           // Number of repetitions
   const isLog = block.getFieldValue('ISLOG');
   const actions = generator.statementToCode(block, 'ACTIONS'); // Collect actions inside the loop
