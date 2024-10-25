@@ -13,7 +13,6 @@ import { Loading } from "@/components/loading";
 export const Canvas = () => {
     const mount = useRef(false);
     const [loading, setLoading] = React.useState(true);
-    console.log(loading);
 
     useEffect(() => {
         if (mount.current == false) {
@@ -88,7 +87,6 @@ export const Canvas = () => {
                     runCode(); // Regenerate and display the code
                 });
                 setLoading(false);
-                console.log(loading);
             }
         }
 
@@ -99,14 +97,14 @@ export const Canvas = () => {
 
     if (loading) {
         return (
-            <div id="pageContainer" className="relative">
-                <div id="blocklyDiv"><Loading /></div>
+            <div id="pageContainer" className="w-full h-full">
+                <div id="blocklyDiv" className="w-full h-full basis-full"><Loading /></div>
             </div>
         )
     } else if(!loading){
         return (
-            <div id="pageContainer" className="relative">
-                <div id="blocklyDiv"></div>
+            <div id="pageContainer" className="w-full h-full flex">
+                <div id="blocklyDiv " className="w-full h-full basis-full"></div>
             </div>
         );
     }

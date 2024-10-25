@@ -4,42 +4,13 @@
 .blocklyMenu.blocklyNonSelectable.blocklyContextMenu{
   overflow-y: hidden;
 }
-.blocklyToolboxDiv .blocklyTreeRow {
-  margin-bottom: 20px;  /* Adjust this value to increase the margin between blocks */
-}
 
-pre,
+
+/* pre,
 code {
   overflow: auto;
-}
+} */
 
-#pageContainer {
-  display: flex;
-  width: 100%;
-  max-width: 100vw;
-  height: 100vh;
-}
 
-#blocklyDiv {
-  flex-basis: 100%;
-  height: 100%;
-  min-width: 600px;
-}
 
-#outputPane {
-  display: flex;
-  flex-direction: column;
-  width: 400px;
-  flex: 0 0 400px;
-  overflow: auto;
-  margin: 1rem;
-}
 
-#generatedCode {
-  height: 100%;
-  background-color: rgb(247, 240, 228);
-}
-
-#output {
-  height: 50%;
-}

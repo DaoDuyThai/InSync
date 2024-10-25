@@ -21,9 +21,12 @@ const ScenarioIdPage = ({
 }: ScenarioIdPageProps) => {
 
     return (
-        
+        <div className="w-full h-full">
             <Canvas />
-        
+        </div>
+
+
+
 
 
         // <Room roomId={params.boardId} fallback={<Loading />}>
