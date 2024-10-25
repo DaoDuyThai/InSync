@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { CropIcon, MoveIcon, UploadCloudIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { useParams } from "next/navigation";
 import uploadImage from "../_components/uploadImage";
+import { log } from "console";
 
 export default function ImageCroppedPage() {
     const { id } = useParams();
@@ -28,6 +29,8 @@ export default function ImageCroppedPage() {
             // Declare global variables
             document.title = "InSync  - Asset Modification"
             const canvas = canvasRef.current;
+            const fixedSizeCanvas = document.createElement('canvas');
+            const fixedSizeCtx = fixedSizeCanvas.getContext('2d');
             const ctx = canvas?.getContext('2d');
             const croppedCanvas = croppedRef.current;
             const croppedCtx = croppedCanvas?.getContext('2d');
@@ -46,8 +49,21 @@ export default function ImageCroppedPage() {
 
             // Create a new image object
             const img = new Image();
-            img.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
+            const fixedSizeImage = new Image();
+            //#region declare fixed size image
+            // Cài đặt hình ảnh cố định để cắt ảnh
+            fixedSizeImage.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
+            fixedSizeImage.crossOrigin = "Anonymous";
+            fixedSizeImage.onload = function () {
+                fixedSizeCanvas.width = fixedSizeImage.width;
+                fixedSizeCanvas.height = fixedSizeImage.height;
+                fixedSizeCtx?.drawImage(fixedSizeImage, 0, 0, fixedSizeImage.width, fixedSizeImage.height);
+                fixedSizeCanvas.classList.add('hidden');
+            }
+            canvasArea?.appendChild(fixedSizeCanvas);
+            //#endregion
 
+            img.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
             // Array to store rectangles
             const rectangles: Array<any> = [];
 
@@ -123,8 +139,8 @@ export default function ImageCroppedPage() {
                 else if (isMovingButtonClicked) {
                     console.log("is moving");
                     const rect = canvas.getBoundingClientRect();
-                    imageX = e.clientX - rect.left - img.width / 2;
-                    imageY = e.clientY - rect.top - img.height / 2;
+                    imageX = (e.clientX - rect.left)  ;
+                    imageY = (e.clientY - rect.top)   ;
 
                     ctx?.clearRect(0, 0, canvas.width, canvas.height);
                     if (ctx) {
@@ -141,10 +157,28 @@ export default function ImageCroppedPage() {
                     const currentX = e.clientX - rect.left;
                     const currentY = e.clientY - rect.top;
                     // Calculate width and height of the rectangle
-                    const width = currentX - startX;
-                    const height = currentY - startY;
+                    let width = currentX - startX;
+                    let height = currentY - startY;
+
+                     //
+                     const realStartX = startX  - imageX;
+                     const realStartY = startY - imageY;
+                     console.log(`
+                        currentX: ${currentX},
+                        currentY: ${currentY},
+                        imageX: ${imageX}, 
+                        imageY: ${imageY} ,
+                        startX: ${startX}, 
+                        startY: ${startY}, 
+                        realStartX: ${realStartX}, 
+                        realStartY: ${realStartY}, 
+                        width: ${width}, 
+                        height: ${height},
+                        scale: ${scale}`);
+                     
                     // Add the new rectangle to the array
-                    rectangles.push({ startX, startY, width, height });
+                    // rectangles.push({ startX, startY, width, height, scale });
+                    rectangles.push({ startX, startY, realStartX, realStartY, width, height });
                     console.log(rectangles);
                     // Reset drawing state
                     isDrawing = false;
@@ -161,9 +195,10 @@ export default function ImageCroppedPage() {
                         const rect = rectangles[length - 1]
                         let canvas = document.createElement("canvas");
                         let canvasContext = canvas.getContext('2d');
-                        let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
-                        canvas.width = rect.width;
-                        canvas.height = rect.height;
+                        let imageData2 = fixedSizeCtx?.getImageData(rect.realStartX / scale, rect.realStartY / scale , rect.width, rect.height );
+                        let imageData = ctx?.getImageData(rect.startX , rect.startY, rect.width, rect.height);
+                        canvas.width = rect.width / scale;
+                        canvas.height = rect.height / scale;
                         canvas.classList.add('shadow-gray-300', 'shadow-xl', 'border-2', 'border-black', 'rounded-md', 'm-2', 'cropped-canvas');
                         // add event listener to choose cropped image
                         canvas.addEventListener('click', (e) => {
@@ -181,8 +216,9 @@ export default function ImageCroppedPage() {
 
                         });
 
-                        if (imageData) {
-                            canvasContext?.putImageData(imageData, 0, 0);
+                        // let imageData3 = fixedSizeCtx?.getImageData(82, 131, 58, 93);
+                        if (imageData2) {
+                            canvasContext?.putImageData(imageData2, 0, 0);
                         }
                         canvasArea?.appendChild(canvas);
                     }
@@ -303,8 +339,35 @@ export default function ImageCroppedPage() {
     return (
         <div className="p-5 flex justify-center">
             <div className=" border-[1px] 
-                         border-[#e6e6e8] ">
-                <div className="border-b-[1px] text-xl border-[#e6e6e8] p-[10px] font-semibold ">Image Cropper</div>
+                        border-[#e6e6e8] 
+                            rounded-md">
+                <div className="flex justify-between border-b-[1px] text-xl border-[#e6e6e8] p-[10px] ">
+                    <span className="font-semibold">Image Cropper</span>
+                    <div className="flex gap-5">
+                        <button
+                            ref={croppingButtonRef}
+                            onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }} 
+                            className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black rounded-sm px-2`}
+                        >
+                            <CropIcon   size={20} />
+                        </button>
+                        <button 
+                            ref={movingButtonRef} 
+                            onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }} 
+                            className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-2 rounded-sm`}>
+                            <MoveIcon   size={20} />
+                        </button>
+                        <button
+                            ref={zoomInRef} 
+                            className="hover:border-2 hover:border-black px-2 rounded-sm">
+                            <ZoomIn     size={20} />
+                        </button>
+                        <button
+                            ref={zoomOutRef} className="hover:border-2 hover:border-black px-2 rounded-sm">
+                            <ZoomOut    size={20} />
+                        </button>
+                    </div>
+                </div>
                 <div className="relative flex max-w-[1000px] max-h-[680px] p-[30px]">
                     <canvas
                         ref={canvasRef}
@@ -320,14 +383,6 @@ export default function ImageCroppedPage() {
                          "
                     >
                     </canvas>
-                    <div className="absolute top-10 right-10">
-                        <button ref={croppingButtonRef} onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }} className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200 border-r-2 border-black`}><CropIcon size={24} /></button>
-                        <button ref={movingButtonRef} onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }} className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-5 py-2 bg-gray-200`}><MoveIcon size={24} /></button>
-                    </div>
-                    <div className="absolute bottom-10 right-10">
-                        <button ref={zoomInRef} className="px-5 py-2 bg-gray-200 border-r-2 border-black"><ZoomIn size={24} /></button>
-                        <button ref={zoomOutRef} className="px-5 py-2 bg-gray-200"><ZoomOut size={24} /></button>
-                    </div>
                     <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
                 </div>
 
