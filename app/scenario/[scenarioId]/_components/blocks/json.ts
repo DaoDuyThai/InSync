@@ -120,7 +120,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     },
     {
         "type": "zoom",
-        "message0": "zoom %1",
+        "message0": "zoom %1 for %2 ms",
         "args0": [
             {
                 "type": "field_dropdown",
@@ -129,11 +129,30 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                     ["in", "IN"],
                     ["out", "OUT"]
                 ]
+            },
+            {
+                "type": "field_number",
+                "name": "DURATION",
+                "value": 1000,
+                "min": 0,
+                "precision": 1
+            }
+        ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
             }
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 230
+        "colour": 230,
+        "mutator": "zoom_mutator"
     },
     {
         "type": "swipe",
@@ -260,59 +279,58 @@ Blockly.Extensions.registerMutator('delay_mutator', {
 
 Blockly.Extensions.registerMutator('open_app_mutator', {
     mutationToDom: function () {
-      const container = Blockly.utils.xml.createElement('mutation');
-      const isLog = this.getFieldValue('ISLOG') === 'TRUE';
-      const isOther = this.getFieldValue('APP_CHOICE') === 'OTHER';
-      container.setAttribute('is_log', isLog.toString());
-      container.setAttribute('is_other', isOther.toString());
-      return container;
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        const isOther = this.getFieldValue('APP_CHOICE') === 'OTHER';
+        container.setAttribute('is_log', isLog.toString());
+        container.setAttribute('is_other', isOther.toString());
+        return container;
     },
     domToMutation: function (xmlElement: Element) {
-      const isLog = (xmlElement.getAttribute('is_log') === 'true');
-      const isOther = (xmlElement.getAttribute('is_other') === 'true');
-      this.updateShape(isLog, isOther);
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        const isOther = (xmlElement.getAttribute('is_other') === 'true');
+        this.updateShape(isLog, isOther);
     },
     updateShape: function (isLog: boolean, isOther: boolean) {
-      // Handle "Other" app input
-      if (isOther) {
-        if (!this.getInput('CUSTOM_APP')) {
-          this.appendDummyInput('CUSTOM_APP')
-              
-              .appendField('Custom App Name:')
-              .appendField(new Blockly.FieldTextInput(''), 'CUSTOM_APP_NAME');
-        }
-      } else {
-        if (this.getInput('CUSTOM_APP')) {
-          this.removeInput('CUSTOM_APP');
-        }
-      }
-  
-      // Handle logging
-      const appName = isOther ? this.getFieldValue('CUSTOM_APP_NAME') || "appName" : this.getFieldValue('APP_CHOICE');
-      const logMessage = `Open app ${appName}`;
-      if (isLog) {
-        if (!this.getInput('LOGCONTENT_INPUT')) {
-          this.appendDummyInput('LOGCONTENT_INPUT')
-              .appendField('with content')
-              .appendField(new Blockly.FieldTextInput(logMessage), 'LOGCONTENT');
+        // Handle "Other" app input
+        if (isOther) {
+            if (!this.getInput('CUSTOM_APP')) {
+                this.appendDummyInput('CUSTOM_APP')
+                    .appendField('Custom app name:')
+                    .appendField(new Blockly.FieldTextInput(''), 'CUSTOM_APP_NAME');
+            }
         } else {
-          this.setFieldValue(logMessage, 'LOGCONTENT');
+            if (this.getInput('CUSTOM_APP')) {
+                this.removeInput('CUSTOM_APP');
+            }
         }
-      } else {
-        if (this.getInput('LOGCONTENT_INPUT')) {
-          this.removeInput('LOGCONTENT_INPUT');
+
+        // Handle logging
+        const appName = isOther ? this.getFieldValue('CUSTOM_APP_NAME') || "appName" : this.getFieldValue('APP_CHOICE');
+        const logMessage = `Open app ${appName}`;
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(logMessage), 'LOGCONTENT');
+            } else {
+                this.setFieldValue(logMessage, 'LOGCONTENT');
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
         }
-      }
     },
     onchange: function (e: Blockly.Events.Abstract) {
-      const isLog = this.getFieldValue('ISLOG') === 'TRUE';
-      const isOther = this.getFieldValue('APP_CHOICE') === 'OTHER';
-      this.updateShape(isLog, isOther);
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        const isOther = this.getFieldValue('APP_CHOICE') === 'OTHER';
+        this.updateShape(isLog, isOther);
     }
-  });
+});
 
 
-  Blockly.Extensions.registerMutator('for_block_mutator', {
+Blockly.Extensions.registerMutator('for_block_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
@@ -326,7 +344,7 @@ Blockly.Extensions.registerMutator('open_app_mutator', {
     updateShape: function (isLog: boolean) {
         // Default log content for for_block
         const defaultLogContent = `Repeat ${this.getFieldValue('TIMES')} times`;
-        
+
         // Add or remove log content field based on isLog value
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {
@@ -347,6 +365,43 @@ Blockly.Extensions.registerMutator('open_app_mutator', {
         this.updateShape(isLog);
     }
 });
+
+Blockly.Extensions.registerMutator('zoom_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+    },
+    updateShape: function (isLog: boolean) {
+        const direction = this.getFieldValue('DIRECTION') || "in";
+        const duration = this.getFieldValue('DURATION') || 1000;
+        const logMessage = `Zoom ${direction} for ${duration} ms`;
+
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(logMessage), 'LOGCONTENT');
+            } else {
+                this.setFieldValue(logMessage, 'LOGCONTENT');
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function (e: Blockly.Events.Abstract) {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});
+
 
 Blockly.Extensions.registerMutator('swipe_mutator', {
     mutationToDom: function () {

@@ -145,7 +145,7 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 
 jsonGenerator.forBlock['for_block'] = function (block, generator) {
   const times = block.getFieldValue('TIMES');           // Number of repetitions
-  const isLog = block.getFieldValue('ISLOG');   
+  const isLog = block.getFieldValue('ISLOG');
   const actions = generator.statementToCode(block, 'ACTIONS'); // Collect actions inside the loop
   // Get isLog value
 
@@ -161,8 +161,8 @@ jsonGenerator.forBlock['for_block'] = function (block, generator) {
   }`;
 
   if (isLog === 'TRUE') {
-      const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-      code = `
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `
   {
     "actionType": "FOR",
     "executeActions": [${actions}], 
@@ -177,13 +177,28 @@ jsonGenerator.forBlock['for_block'] = function (block, generator) {
 
 jsonGenerator.forBlock['zoom'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
-  const code = `{
+  const duration = block.getFieldValue('DURATION');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const defaultLogContent = `Zoom ${direction} for ${duration} ms`;
+
+  let code = `{
     "actionType": "ZOOM",
-    "on": "${direction}",
-    "logResult": true,
-    "duration": 100,
-    "tries": 1
+    "direction": "${direction}",
+    "duration": ${duration},
+    "isLog": ${isLog}
   }`;
+
+  if (isLog) {
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
+      "actionType": "ZOOM",
+      "direction": "${direction}",
+      "duration": ${duration},
+      "isLog": true,
+      "logContent": "${logContent}"
+    }`;
+  }
+
   return code;
 };
 
@@ -193,8 +208,8 @@ jsonGenerator.forBlock['swipe'] = function (block) {
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Swipe ${direction} for ${duration} ms`;
 
-  let 
-  code = `
+  let
+    code = `
   {
     "actionType": "SWIPE",
     "direction": "${direction}",
