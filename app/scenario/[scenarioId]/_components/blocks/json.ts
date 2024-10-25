@@ -44,12 +44,15 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     },
     {
         "type": "click",
-        "message0": "click on %1\nfor %2 ms",
+        "message0": "click on %1 for %2 ms",
         "args0": [
             {
                 "type": "field_image_drop",
                 "name": "ON",
-                "text": "Drag image here"
+                "src": "default.png",
+                "width": 50,
+                "height": 50,
+                "alt": "Drag image here"
             },
             {
                 "type": "field_number",
@@ -73,7 +76,9 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "previousStatement": null,
         "nextStatement": null,
         "colour": 230,
-        "mutator": "click_mutator"
+        "mutator": "click_mutator",
+        "tooltip": "Clicks on the specified element and optionally logs a message.",
+        "helpUrl": ""
     },
     {
         "type": "open_app",
@@ -288,6 +293,7 @@ Blockly.Extensions.registerMutator('delay_mutator', {
     }
 });
 
+// Register click_mutator for dynamic log message field
 Blockly.Extensions.registerMutator('click_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
@@ -300,9 +306,8 @@ Blockly.Extensions.registerMutator('click_mutator', {
         this.updateShape(isLog);
     },
     updateShape: function (isLog: boolean) {
-        const element = this.getFieldValue('ELEMENT') || "element";
         const duration = this.getFieldValue('DURATION') || 1000;
-        const logMessage = `Click on ${element} for ${duration} ms`;
+        const logMessage = `Click for ${duration} ms`;
 
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {
@@ -318,19 +323,9 @@ Blockly.Extensions.registerMutator('click_mutator', {
             }
         }
     },
-    onchange: function (e: Blockly.Events.Abstract) {
+    onchange: function () {
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
         this.updateShape(isLog);
-
-        // Retrieve the ON value safely
-        const elementUrl = this.getFieldValue('ON');
-        console.log('Image URL:', elementUrl);  // Log the URL to confirm
-
-        if (elementUrl) {
-            console.log('URL successfully retrieved:', elementUrl);
-        } else {
-            console.warn('ON is null');
-        }
     }
 });
 
@@ -500,22 +495,19 @@ Blockly.Extensions.registerMutator('swipe_mutator', {
 
 
 
-class FieldImageDrop extends Blockly.FieldTextInput {
-    constructor(text: string) {
-        super(text || '', FieldImageDrop.urlValidator);
-        this.setSpellcheck(false);
-    }
+// Custom FieldImageDrop Class (from previous setup)
+class FieldImageDrop extends Blockly.FieldImage {
+    private imageUrl: string | null = null;
 
-    static urlValidator(text: string) {
-        const isValidUrl = text && text.match(/(http[s]?:\/\/.*\.(?:png|jpg|jpeg|gif|svg|bmp))/i);
-        return isValidUrl ? text : null;
+    constructor(url: string, width: number, height: number, alt: string) {
+        super(url, width, height, alt);
+        this.imageUrl = url || '';
     }
 
     initView() {
         super.initView();
 
-        // Add drag-and-drop functionality
-        if (this.fieldGroup_) {
+        if (this.sourceBlock_ && this.fieldGroup_) {
             this.fieldGroup_.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 if (e.dataTransfer) {
@@ -526,12 +518,23 @@ class FieldImageDrop extends Blockly.FieldTextInput {
             this.fieldGroup_.addEventListener('drop', (e) => {
                 e.preventDefault();
                 const url = e.dataTransfer ? e.dataTransfer.getData('URL') : '';
-                if (FieldImageDrop.urlValidator(url)) {
-                    this.setValue(url);  // Set value so Blockly recognizes it
+                if (this.isValidImageUrl(url)) {
+                    this.setValue(url);
                 } else {
                     console.warn("Invalid URL format");
                 }
             });
+        }
+    }
+
+    private isValidImageUrl(url: string): boolean {
+        return /\.(png|jpe?g|gif|svg)$/i.test(url);
+    }
+
+    setValue(url: string | null) {
+        if (url && this.isValidImageUrl(url)) {
+            this.imageUrl = url;
+            super.setValue(url);
         }
     }
 }
