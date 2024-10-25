@@ -47,9 +47,9 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "message0": "click on %1 for %2 ms",
         "args0": [
             {
-                "type": "field_input",
-                "name": "ELEMENT",
-                "text": "element"
+                "type": "field_image_drop",
+                "name": "ON",
+                "text": "Drag image here"
             },
             {
                 "type": "field_number",
@@ -321,6 +321,16 @@ Blockly.Extensions.registerMutator('click_mutator', {
     onchange: function (e: Blockly.Events.Abstract) {
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
         this.updateShape(isLog);
+
+        // Retrieve the ON value safely
+        const elementUrl = this.getFieldValue('ON');
+        console.log('Image URL:', elementUrl);  // Log the URL to confirm
+
+        if (elementUrl) {
+            console.log('URL successfully retrieved:', elementUrl);
+        } else {
+            console.warn('ON is null');
+        }
     }
 });
 
@@ -487,3 +497,44 @@ Blockly.Extensions.registerMutator('swipe_mutator', {
         this.updateShape(isLog);
     }
 });
+
+
+
+class FieldImageDrop extends Blockly.FieldTextInput {
+    constructor(text: string) {
+        super(text || '', FieldImageDrop.urlValidator);
+        this.setSpellcheck(false);
+    }
+
+    static urlValidator(text: string) {
+        const isValidUrl = text && text.match(/(http[s]?:\/\/.*\.(?:png|jpg|jpeg|gif|svg|bmp))/i);
+        return isValidUrl ? text : null;
+    }
+
+    initView() {
+        super.initView();
+
+        // Add drag-and-drop functionality
+        if (this.fieldGroup_) {
+            this.fieldGroup_.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if (e.dataTransfer) {
+                    e.dataTransfer.dropEffect = 'copy';
+                }
+            });
+
+            this.fieldGroup_.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const url = e.dataTransfer ? e.dataTransfer.getData('URL') : '';
+                if (FieldImageDrop.urlValidator(url)) {
+                    this.setValue(url);  // Set value so Blockly recognizes it
+                } else {
+                    console.warn("Invalid URL format");
+                }
+            });
+        }
+    }
+}
+
+// Register the custom field
+Blockly.fieldRegistry.register('field_image_drop', FieldImageDrop);

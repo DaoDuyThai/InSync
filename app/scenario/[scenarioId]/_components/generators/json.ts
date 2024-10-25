@@ -97,28 +97,30 @@ jsonGenerator.forBlock['delay'] = function (block) {
 };
 
 jsonGenerator.forBlock['click'] = function (block) {
-  const element = block.getFieldValue('ELEMENT');
+  const element = block.getFieldValue('ON');  
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Click on ${element} for ${duration} ms`;
 
-  let code = `{
+  let code = `
+  {
     "actionType": "CLICK",
     "on": "${element}",
-    "duration": ${duration},
     "isLog": ${isLog},
-    "logContent": ""
+    "logContent": "",
+    "duration": ${duration}
   }`;
 
   if (isLog) {
     const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-    code = `{
-      "actionType": "CLICK",
-      "on": "${element}",
-      "duration": ${duration},
-      "isLog": true,
-      "logContent": "${logContent}"
-    }`;
+    code = `
+  {
+    "actionType": "CLICK",
+    "on": "${element}",
+    "isLog": true,
+    "logContent": "${logContent}",
+    "duration": ${duration}
+  }`;
   }
 
   return code;

@@ -89,6 +89,10 @@ export const Canvas = () => {
             <div id="blocklyDiv"></div>
             <div id="toolbox"></div>
             <pre id="generatedCode" className="w-1/4  h-full"><code className=""></code></pre>
+            <div>
+                <img src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg" alt="" />
+                <img src="https://gratisography.com/wp-content/uploads/2024/03/gratisography-funflower-800x525.jpg" alt="" />
+            </div>
         </div>
     );
 };
