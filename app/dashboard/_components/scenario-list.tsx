@@ -251,7 +251,7 @@ export const ScenarioList = ({
                         authorId={scenario.authorId}
                         authorName={scenario.authorName}
                         createdAt={getUnixTime(new Date(scenario.createdAt)) * 1000} //milliseconds to seconds
-                        projectId={scenario.projectId}
+                        // projectId={scenario.projectId}
                         isFavorite={scenario.isFavorites}
                         toggleFavorite={() => toggleFavorite(scenario.id)}
                         deleteScenario={() => deleteScenario(scenario.id)}

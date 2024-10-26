@@ -26,6 +26,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { selectProject } from "@/store/projectSlice";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { set } from "date-fns";
 
 interface Project {
     id: string;
@@ -42,6 +43,7 @@ export const ProjectSettings = () => {
     const [project, setProject] = React.useState<Project | null>(null);
     const [newTitle, setNewTitle] = React.useState<string>("");
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
 
     const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
     const dispatch = useDispatch<AppDispatch>();

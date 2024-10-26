@@ -23,7 +23,7 @@ interface ScenarioCardProps {
     authorId: string;
     createdAt: number;
     imageUrl: string;
-    projectId: string;
+    // projectId: string;
     isFavorite: boolean;
     toggleFavorite: () => void;
     deleteScenario: () => void;
@@ -37,7 +37,7 @@ export const ScenarioCard = ({
     authorId,
     createdAt,
     imageUrl,
-    projectId,
+    // projectId,
     isFavorite,
     toggleFavorite,
     deleteScenario,
