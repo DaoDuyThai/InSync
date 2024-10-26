@@ -4,7 +4,14 @@ export const jsonGenerator = new Blockly.Generator('JSON');
 
 jsonGenerator.forBlock['scenario'] = function (block, generator) {
   const actions = generator.statementToCode(block, 'ACTIONS');  // Get the actions inside
-  const code = `[
+  const code = `
+  [
+    {
+      "actionType": "DELAY",
+      "isLog": false,
+      "logContent": "",
+      "duration": 1000
+    },
     ${actions},
     {
         "actionType": "END_RUN"
@@ -41,7 +48,7 @@ jsonGenerator.forBlock['delay'] = function (block) {
 };
 
 jsonGenerator.forBlock['click'] = function (block) {
-  const element = block.getFieldValue('ON');  
+  const element = block.getFieldValue('ON');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Click on ${element} for ${duration} ms`;
