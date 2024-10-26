@@ -21,12 +21,13 @@ const ScenarioIdPage = ({
 }: ScenarioIdPageProps) => {
 
     return (
-        // <Suspense fallback={<Loading />}>
-        //     {params.scenarioId}
-        // </Suspense>
+        <div className="w-full h-full">
+            <Canvas />
+        </div>
 
 
-        <Canvas />
+
+
 
         // <Room roomId={params.boardId} fallback={<Loading />}>
         //     <Canvas boardId={params.boardId} />

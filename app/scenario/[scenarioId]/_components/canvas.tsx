@@ -4,24 +4,28 @@ import { blocks } from './blocks/json';
 import { save, load } from './serialization';
 import { toolbox } from './toolbox';
 import { jsonGenerator } from "./generators/json";
-import '@/CSS/blockly.css';
+import './blockly.css';
+import { toast } from "sonner";
+import React from "react";
+import { Loading } from "@/components/loading";
 
 
 export const Canvas = () => {
     const mount = useRef(false);
+    const [loading, setLoading] = React.useState(true);
 
     useEffect(() => {
         if (mount.current == false) {
+
             // Register the blocks and generator with Blockly
             Blockly.common.defineBlocks(blocks);
 
             // Set up UI elements and inject Blockly
-            const codeDiv = document.getElementById('generatedCode')?.firstChild;
+            // const codeDiv = document.getElementById('generatedCode')?.firstChild;
             const blocklyDiv = document.getElementById('blocklyDiv');
-            if (blocklyDiv && codeDiv) {
+            if (blocklyDiv) {
                 const workspace = Blockly.inject(blocklyDiv, {
                     toolbox,
-                    theme: Blockly.Themes.Zelos,
                     scrollbars: false,
                     toolboxPosition: "start",
                     grid: {
@@ -54,10 +58,15 @@ export const Canvas = () => {
                 // Function to generate and display the JSON code
                 const runCode = () => {
                     const code = jsonGenerator.workspaceToCode(workspace);
-                    (codeDiv as HTMLElement).innerText = code;
+                    if ((!code.startsWith('[') || !code.endsWith(']')) && code.trim() !== '') {
+                        toast.error('Action blocks must be inside a scenario block')
+                    }
+                    // console.log(code);
+                    // (codeDiv as HTMLElement).innerText = code;
                 };
 
                 // Load the initial state from storage and run the code
+
                 load(workspace);
                 runCode();
 
@@ -77,6 +86,7 @@ export const Canvas = () => {
                     }
                     runCode(); // Regenerate and display the code
                 });
+                setLoading(false);
             }
         }
 
@@ -85,11 +95,19 @@ export const Canvas = () => {
         };
     }, []);
 
-    return (
-        <div id="pageContainer" className="relative">
-            <div id="blocklyDiv"></div>
-            <div id="toolbox"></div>
-            <pre id="generatedCode" className="w-1/4  h-full"><code className=""></code></pre>
-        </div>
-    );
+    if (loading) {
+        return (
+            <div id="pageContainer" className="w-full h-full">
+                <div id="blocklyDiv" className="w-full h-full basis-full"><Loading /></div>
+            </div>
+        )
+    } else if(!loading){
+        return (
+            <div id="pageContainer" className="w-full h-full flex">
+                <div id="blocklyDiv " className="w-full h-full basis-full"></div>
+            </div>
+        );
+    }
+
+
 };

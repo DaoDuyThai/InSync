@@ -1,0 +1,16 @@
+.blocklyScrollbarVertical {
+  display: none;
+}
+.blocklyMenu.blocklyNonSelectable.blocklyContextMenu{
+  overflow-y: hidden;
+}
+
+
+/* pre,
+code {
+  overflow: auto;
+} */
+
+
+
+
