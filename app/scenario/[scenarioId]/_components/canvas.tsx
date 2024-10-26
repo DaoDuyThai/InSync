@@ -61,7 +61,7 @@ export const Canvas = () => {
                     if ((!code.startsWith('[') || !code.endsWith(']')) && code.trim() !== '') {
                         toast.error('Action blocks must be inside a scenario block')
                     }
-                    // console.log(code);
+                        console.log(code);
                     // (codeDiv as HTMLElement).innerText = code;
                 };
 
