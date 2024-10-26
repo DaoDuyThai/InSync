@@ -38,6 +38,7 @@ export default function ImagePage() {
                     
                     // </div>
                     <div 
+                        key={i}
                         className="overflow-hidden rounded-md">
                             <img 
                                 key={i}
