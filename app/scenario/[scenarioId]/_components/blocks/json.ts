@@ -318,7 +318,7 @@ Blockly.Extensions.registerMutator('open_app_mutator', {
         if (isOther) {
             if (!this.getInput('CUSTOM_APP')) {
                 this.appendDummyInput('CUSTOM_APP')
-                    .appendField('Custom app name:')
+                    .appendField('custom app name:')
                     .appendField(new Blockly.FieldTextInput(''), 'CUSTOM_APP_NAME');
             }
         } else {
