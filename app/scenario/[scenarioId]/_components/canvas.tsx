@@ -46,7 +46,7 @@ export const Canvas = () => {
                     trashcan: true,
                     zoom: {
                         controls: true,
-                        // wheel: true,
+                        wheel: true,
                         startScale: 1.0,
                         maxScale: 3,
                         minScale: 0.3,
