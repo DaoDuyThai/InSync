@@ -231,8 +231,8 @@ export default function ImageCroppedPage() {
                 const currentY = e.clientY - rect.top;
                 let width = currentX - startX;
                 let height = currentY - startY;
-                const realStartX = startX - scale * imageX;
-                const realStartY = startY - scale * imageY;
+                const realStartX = startX - scale * centerMoveX;
+                const realStartY = startY - scale * centerMoveY;
                 rectangles.push({ startX, startY, realStartX, realStartY, width, height });
                 isDrawing = false;
                 // Redraw everything
@@ -327,20 +327,22 @@ export default function ImageCroppedPage() {
         });
 
         const drawImage = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, img: HTMLImageElement) => {
-            if (ctx && canvas && isMovingButtonClicked) {
-                console.log("draw image when moving");
+            // if (ctx && canvas && isMovingButtonClicked) {
+            //     console.log("draw image when moving");
                 
+            //     ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //     ctx.save();
+            //     ctx.scale(scale, scale);
+            //     ctx.drawImage(img, centerMoveX, centerMoveY);
+            //     ctx.restore();
+            // }
+            // else
+             if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
                 ctx.scale(scale, scale);
                 ctx.drawImage(img, centerMoveX, centerMoveY);
-                ctx.restore();
-            }
-            else if (ctx && canvas) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.save();
-                ctx.scale(scale, scale);
-                ctx.drawImage(img, imageX, imageY, img.width, img.height);
+                // ctx.drawImage(img, imageX, imageY, img.width, img.height);
                 ctx.restore();
             } 
         };
@@ -476,17 +478,21 @@ export default function ImageCroppedPage() {
             <div
                 className={`popup flex items-center fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 ${openPopup ? 'block' : 'hidden'}`}
             >
-                <div className="popup-content bg-white w-[500px] h-[400px] m-auto p-5 rounded-md">
-                    <div className="flex justify-between">
+                <div className="popup-content bg-white w-[500px] h-[500px] max-h-[600px] m-auto p-5 rounded-md">
+                    <div className="flex justify-between max-h-[500px]">
                         <span className="font-semibold">Choose image to upload</span>
                         <button className="hover:border-2 hover:border-black px-2 rounded-sm">
                             <XIcon size={20} onClick={() => setOpenPopup(false)} />
                         </button>
                     </div>
                     <div className="p-5">
-                        <div ref={canvasAreaRef} className="flex items-start flex-wrap gap-1 max-w-[400px]"></div>
+                        <div ref={canvasAreaRef} className="flex items-start flex-wrap gap-1 max-h-[380px] overflow-y-auto"></div>
                         <div className="flex justify-center">
-                            <button onClick={() => handleImageUpload()} ref={uploadImageButtonRef} className="border-2 bg-green-600 px-5 py-5 text-lg rounded-lg hidden" >
+                            <button 
+                                onClick={() => handleImageUpload()} 
+                                ref={uploadImageButtonRef} 
+                                className="border-2 bg-green-600 px-5 py-2 text-lg rounded-lg hidden" 
+                            >
                                 <UploadCloudIcon className="inline-block" size={20} /> <span>Upload Image</span>
                             </button>
                         </div>
