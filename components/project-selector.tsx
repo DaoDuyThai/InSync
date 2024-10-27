@@ -4,7 +4,7 @@ import * as React from "react";
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {  Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import {
     Command,
     CommandEmpty,
@@ -89,6 +89,11 @@ export const ProjectSelector = () => {
                     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
                     const data = await response.json();
                     setProjects(data.data); // Adjust according to the structure of the API response
+                    const storedProjectId = localStorage.getItem("selectedProjectId");
+                    if (storedProjectId && !projects.find((project) => project.id === storedProjectId)) {
+                        dispatch(clearProject());
+                        localStorage.removeItem("selectedProjectId");
+                    }
                 } catch (error) {
                     console.error("Error fetching projects:", error);
                 }
