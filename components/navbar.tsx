@@ -32,7 +32,7 @@ export const Navbar = (
                 <div className="flex items-center gap-x-2">
                     <Image priority src="/logo.svg" alt="logo" height={60} width={60} />
                     <span className={cn(
-                        "font-semibold text-2xl",
+                        "font-semibold text-2xl hidden md:block",
                         font.className,
                     )}>INSYNC</span>
                 </div>
