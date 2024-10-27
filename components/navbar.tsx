@@ -9,6 +9,7 @@ import { ProjectSelector } from "./project-selector";
 import Link from "next/link";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
+import { Badge } from "./ui/badge";
 
 interface NavbarProps {
     searchLink?: string;
@@ -35,6 +36,11 @@ export const Navbar = (
                         "font-semibold text-2xl hidden md:block",
                         font.className,
                     )}>INSYNC</span>
+                    <Badge variant="secondary">
+                        Free
+                        {/* TODO: is subscribed */}
+                        {/* {isSubscribed ? "Pro" : "Free"} */}
+                    </Badge>
                 </div>
             </Link>
             <div className="w-fit lg:hidden block items-center justify-center">
