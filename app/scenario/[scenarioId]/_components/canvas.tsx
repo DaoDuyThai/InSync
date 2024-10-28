@@ -58,10 +58,10 @@ export const Canvas = () => {
                 // Function to generate and display the JSON code
                 const runCode = () => {
                     const code = jsonGenerator.workspaceToCode(workspace);
-                    if ((!code.startsWith('[') || !code.endsWith(']')) && code.trim() !== '') {
-                        toast.error('Action blocks must be inside a scenario block')
+                    if (!code.trim().startsWith('[') || !code.trim().endsWith(']')) {
+                        toast.error('Action block(s) must be inside a scenario block')
                     }
-                        console.log(code);
+                    console.log(code);
                     // (codeDiv as HTMLElement).innerText = code;
                 };
 
@@ -101,7 +101,7 @@ export const Canvas = () => {
                 <div id="blocklyDiv" className="w-full h-full basis-full"><Loading /></div>
             </div>
         )
-    } else if(!loading){
+    } else if (!loading) {
         return (
             <div id="pageContainer" className="w-full h-full flex">
                 <div id="blocklyDiv " className="w-full h-full basis-full"></div>

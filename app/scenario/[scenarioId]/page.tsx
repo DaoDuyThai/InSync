@@ -16,6 +16,8 @@ interface ScenarioIdPageProps {
     }
 }
 
+
+
 const ScenarioIdPage = ({
     params
 }: ScenarioIdPageProps) => {
@@ -24,10 +26,6 @@ const ScenarioIdPage = ({
         <div className="w-full h-full">
             <Canvas />
         </div>
-
-
-
-
 
         // <Room roomId={params.boardId} fallback={<Loading />}>
         //     <Canvas boardId={params.boardId} />

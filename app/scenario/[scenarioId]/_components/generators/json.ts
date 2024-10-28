@@ -8,8 +8,8 @@ jsonGenerator.forBlock['scenario'] = function (block, generator) {
   [
     {
       "actionType": "DELAY",
-      "isLog": false,
-      "logContent": "",
+      "isLog": true,
+      "logContent": "Starting up the scenario",
       "duration": 1000
     },
     ${actions},
