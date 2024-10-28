@@ -58,7 +58,7 @@ export const Canvas = () => {
                 // Function to generate and display the JSON code
                 const runCode = () => {
                     const code = jsonGenerator.workspaceToCode(workspace);
-                    if (!code.trim().startsWith('[') || !code.trim().endsWith(']')) {
+                    if ((!code.trim().startsWith('[') || !code.trim().endsWith(']')) && code.trim() !== '') {
                         toast.error('Action block(s) must be inside a scenario block')
                     }
                     console.log(code);

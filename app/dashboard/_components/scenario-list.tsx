@@ -139,8 +139,6 @@ export const ScenarioList = ({
                         scenarioName: "Untitled",
                         userIdClerk: user.id,
                         description: "Description",
-                        stepsWeb: "Steps Web",
-                        stepsAndroid: "Steps Android",
                         isFavorites: false,
                         imageUrl: randomImage,
                     }
@@ -169,6 +167,7 @@ export const ScenarioList = ({
                 },
                 body: JSON.stringify({
                     scenarioName: newTitle,
+                    id: id,
                 }),
             });
             const data = await response.json();
@@ -180,6 +179,7 @@ export const ScenarioList = ({
             }
             setPending(true);
         } catch (error) {
+            toast.error("Failed to rename scenario.");
             console.error("Error renaming scenario:", error);
         }
     }

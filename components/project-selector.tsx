@@ -81,26 +81,32 @@ export const ProjectSelector = () => {
 
     const [projects, setProjects] = React.useState<Project[]>([]);
 
-    // Fetch projects when user is loaded
     React.useEffect(() => {
         if (user && isLoaded) {
             const fetchProjects = async () => {
                 try {
                     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
                     const data = await response.json();
-                    setProjects(data.data); // Adjust according to the structure of the API response
-                    const storedProjectId = localStorage.getItem("selectedProjectId");
-                    if (storedProjectId && !projects.find((project) => project.id === storedProjectId)) {
-                        dispatch(clearProject());
-                        localStorage.removeItem("selectedProjectId");
+    
+                    // Only set projects if data exists, preventing premature local storage clearance
+                    if (data?.data?.length > 0) {
+                        setProjects(data.data); // Adjust according to the API response structure
+    
+                        const storedProjectId = localStorage.getItem("selectedProjectId");
+                        // Only clear project if it doesn't exist in the loaded projects list
+                        if (storedProjectId && !data.data.find((project: Project) => project.id === storedProjectId)) {
+                            dispatch(clearProject());
+                            localStorage.removeItem("selectedProjectId");
+                        }
                     }
                 } catch (error) {
                     console.error("Error fetching projects:", error);
                 }
             };
+    
             fetchProjects();
         }
-    }, [user, isLoaded, projects]);
+    }, [user, isLoaded, projects, dispatch]);
 
     // console.log(projects);
 
