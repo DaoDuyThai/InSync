@@ -59,6 +59,7 @@ export const Canvas = ({ setJsonAndroid }: CanvasProps) => {
                     toast.error('Action block(s) must be inside a scenario block');
                 }
                 const formattedCode = formatJSON(code);
+                setCode(formattedCode ?? '');
                 if (setJsonAndroid) setJsonAndroid(formattedCode ?? '');
             };
 
