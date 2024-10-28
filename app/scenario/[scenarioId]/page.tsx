@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import { Canvas } from "./_components/canvas";
 import { Loading } from "@/components/loading";
@@ -71,6 +71,19 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
         fetchScenario();
     }, [params.scenarioId]);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.ctrlKey && event.key === 's') {
+                event.preventDefault();
+                handleSaveScenario();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
 
     function isValidJSON(jsonString: string): boolean {
         try {
@@ -107,7 +120,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             toast.error("Failed to rename scenario.");
             console.error("Error renaming scenario:", error);
         }
-    }
+    };
 
     const deleteScenario = async (id: string) => {
         if (!user || !isLoaded) return;
@@ -128,7 +141,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
         } catch (error) {
             console.error("Error deleting scenario:", error);
         }
-    }
+    };
 
     const handleSaveScenario = async () => {
         try {
@@ -147,11 +160,10 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 toast.error("Failed to save scenario.");
             }
         } catch (error) {
-            console.error("Error renaming project:", error);
-            toast.error("Failed to rename project.");
+            console.error("Error saving scenario:", error);
+            toast.error("Failed to save scenario.");
         }
     };
-
 
     if (loading) return <Loading />;
     if (!scenario) return <Loading />;
@@ -164,7 +176,6 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 renameScenario={renameScenario} />
             {scenario ? (
                 <>
-                    <button onClick={handleSaveScenario}>Save</button>
                     <Canvas />
                 </>
             ) : null}
