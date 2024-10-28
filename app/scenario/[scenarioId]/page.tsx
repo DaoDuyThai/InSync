@@ -34,7 +34,6 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     const [loading, setLoading] = useState(true);
     const { user, isLoaded } = useUser();
     const [pending, setPending] = React.useState(false);
-    const [jsonAndroid, setJsonAndroid] = useState<string>("");
 
     useEffect(() => {
         const fetchScenario = async () => {
@@ -146,22 +145,26 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
 
     const handleSaveScenario = async () => {
         try {
+            // Get Web JSON from localStorage
             const jsonWeb = localStorage.getItem("jsonGeneratorWorkspace");
-
+    
+            // Get Android JSON from Textarea by ID
+            const jsonAndroid = (document.getElementById("codeTextarea") as HTMLTextAreaElement)?.value;
+    
             // Save Web JSON
             const responseWeb = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-web-json/${params.scenarioId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(jsonWeb)
             });
-
+    
             // Save Android JSON
             const responseAndroid = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-android-json/${params.scenarioId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(jsonAndroid) // Use jsonAndroid state
+                body: JSON.stringify(jsonAndroid) // Use jsonAndroid directly from the Textarea
             });
-
+    
             if (responseWeb.ok && responseAndroid.ok) {
                 toast.success("Scenario saved successfully for both platforms!");
             } else {
@@ -177,10 +180,16 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     if (!scenario) return <Loading />;
     return (
         <div className="w-full h-full">
-            <Header id={scenario?.id} title={scenario?.title} deleteScenario={() => deleteScenario(scenario?.id)} renameScenario={renameScenario} />
+            <Header
+                id={scenario.id}
+                title={scenario?.title}
+                deleteScenario={() => deleteScenario(scenario.id)}
+                renameScenario={renameScenario} />
             {scenario ? (
-                <Canvas setJsonAndroid={setJsonAndroid} /> 
-            ) : <Loading />}
+                <>
+                    <Canvas />
+                </>
+            ) : null}
         </div>
     );
 };

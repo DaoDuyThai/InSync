@@ -9,11 +9,7 @@ import { toast } from "sonner";
 import { Loading } from "@/components/loading";
 import { Textarea } from "@/components/ui/textarea";
 
-interface CanvasProps {
-    setJsonAndroid?: (json: string) => void; // Optional prop with specific type
-}
-
-export const Canvas = ({ setJsonAndroid }: CanvasProps) => {
+export const Canvas = () => {
     const blocklyDivRef = useRef<HTMLDivElement | null>(null);
     const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
     const [loading, setLoading] = useState(true);
@@ -60,7 +56,6 @@ export const Canvas = ({ setJsonAndroid }: CanvasProps) => {
                 }
                 const formattedCode = formatJSON(code);
                 setCode(formattedCode ?? '');
-                if (setJsonAndroid) setJsonAndroid(formattedCode ?? '');
             };
 
             load(workspace);
