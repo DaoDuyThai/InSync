@@ -8,11 +8,21 @@ import './blockly.css';
 import { toast } from "sonner";
 import React from "react";
 import { Loading } from "@/components/loading";
+import { jsonrepair } from "jsonrepair";
 
 
 export const Canvas = () => {
     const mount = useRef(false);
     const [loading, setLoading] = React.useState(true);
+
+    function formatJSON(jsonString: string): string | null {
+        try {
+            const parsed = JSON.parse(jsonString);
+            return JSON.stringify(parsed, null, 4); // 4 spaces for indentation
+        } catch (error) {
+            return jsonString;
+        }
+    }
 
     useEffect(() => {
         if (mount.current == false) {
@@ -21,9 +31,9 @@ export const Canvas = () => {
             Blockly.common.defineBlocks(blocks);
 
             // Set up UI elements and inject Blockly
-            // const codeDiv = document.getElementById('generatedCode')?.firstChild;
+            const codeDiv = document.getElementById('codeDiv')?.firstChild;
             const blocklyDiv = document.getElementById('blocklyDiv');
-            if (blocklyDiv) {
+            if (blocklyDiv && codeDiv) {
                 const workspace = Blockly.inject(blocklyDiv, {
                     toolbox,
                     scrollbars: false,
@@ -57,12 +67,12 @@ export const Canvas = () => {
 
                 // Function to generate and display the JSON code
                 const runCode = () => {
-                    const code = jsonGenerator.workspaceToCode(workspace);
+                    const code = jsonGenerator.workspaceToCode(workspace).trim();
                     if ((!code.trim().startsWith('[') || !code.trim().endsWith(']')) && code.trim() !== '') {
                         toast.error('Action block(s) must be inside a scenario block')
                     }
-                    console.log(code);
-                    // (codeDiv as HTMLElement).innerText = code;
+                    const formattedCode = formatJSON(code);
+                    (codeDiv as HTMLElement).innerText = formattedCode !== null ? formattedCode : '';
                 };
 
                 // Load the initial state from storage and run the code
@@ -99,12 +109,14 @@ export const Canvas = () => {
         return (
             <div id="pageContainer" className="w-full h-full">
                 <div id="blocklyDiv" className="w-full h-full basis-full"><Loading /></div>
+                <pre id="codeDiv" className="w-full h-full "><code></code></pre>
             </div>
         )
     } else if (!loading) {
         return (
             <div id="pageContainer" className="w-full h-full flex">
-                <div id="blocklyDiv " className="w-full h-full basis-full"></div>
+                <div id="blocklyDiv " className="w-1/2 h-full "></div>
+                <pre id="codeDiv" className="w-1/2 h-full "><code></code></pre>
             </div>
         );
     }

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Canvas } from "./_components/canvas";
 import { Loading } from "@/components/loading";
 import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
+import { Header } from "./_components/header";
 
 interface Scenario {
     id: string;
@@ -30,23 +32,32 @@ interface ScenarioIdPageProps {
 const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     const [scenario, setScenario] = useState<Scenario | null>(null);
     const [loading, setLoading] = useState(true);
+    const { user, isLoaded } = useUser();
+    const [pending, setPending] = React.useState(false);
 
     useEffect(() => {
         const fetchScenario = async () => {
             try {
                 localStorage.removeItem("jsonGeneratorWorkspace");
+                const selectedProjectId = localStorage.getItem("selectedProjectId");
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/${params.scenarioId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                setScenario(data);
-                const jsonWeb = data.stepsWeb;
-                if(isValidJSON(jsonWeb) && jsonWeb) {
-                    localStorage.setItem("jsonGeneratorWorkspace", jsonWeb);
-                }else if(!jsonWeb){
-                    localStorage.removeItem("jsonGeneratorWorkspace");
+                if (selectedProjectId !== data.projectId) {
+                    throw new Error("Scenario not found. Redirecting...");
+                } else {
+                    setScenario(data);
+
+                    const jsonWeb = data.stepsWeb;
+                    if (isValidJSON(jsonWeb) && jsonWeb) {
+                        localStorage.setItem("jsonGeneratorWorkspace", jsonWeb);
+                    } else if (!jsonWeb) {
+                        localStorage.removeItem("jsonGeneratorWorkspace");
+                    }
                 }
+
             } catch (error) {
                 toast.error("Scenario not found. Redirecting...");
                 setTimeout(() => {
@@ -67,6 +78,55 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             return true;
         } catch (error) {
             return false;
+        }
+    }
+
+    const renameScenario = async (id: string, newTitle: string) => {
+        if (!user || !isLoaded) return;
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/rename-scenario/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    scenarioName: newTitle,
+                    id: id,
+                }),
+            });
+            const data = await response.json();
+            if (response.status === 200) {
+                toast.success(data.message);
+                setPending(true);
+            } else {
+                toast.error(data.title);
+            }
+            setPending(true);
+        } catch (error) {
+            toast.error("Failed to rename scenario.");
+            console.error("Error renaming scenario:", error);
+        }
+    }
+
+    const deleteScenario = async (id: string) => {
+        if (!user || !isLoaded) return;
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            if (response.status === 200) {
+                toast.success(data.message);
+            } else {
+                toast.error(data.title);
+            }
+            setPending(true);
+        } catch (error) {
+            console.error("Error deleting scenario:", error);
         }
     }
 
@@ -94,9 +154,14 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
 
 
     if (loading) return <Loading />;
-
+    if (!scenario) return <Loading />;
     return (
         <div className="w-full h-full">
+            <Header
+                id={scenario.id}
+                title={scenario?.title}
+                deleteScenario={() => deleteScenario(scenario.id)}
+                renameScenario={renameScenario} />
             {scenario ? (
                 <>
                     <button onClick={handleSaveScenario}>Save</button>

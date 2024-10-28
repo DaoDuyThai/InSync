@@ -4,19 +4,17 @@ export const jsonGenerator = new Blockly.Generator('JSON');
 
 jsonGenerator.forBlock['scenario'] = function (block, generator) {
   const actions = generator.statementToCode(block, 'ACTIONS');  // Get the actions inside
-  const code = `
-  [
+  const code = `[
     {
-      "actionType": "DELAY",
-      "isLog": true,
-      "logContent": "Starting up the scenario",
-      "duration": 1000
-    },
-    ${actions},
+        "actionType": "DELAY",
+        "isLog": true,
+        "logContent": "Starting up",
+        "duration": 1000
+    },${actions},
     {
         "actionType": "END_RUN"
     }
-  ]`;
+]`;
   return code;
 };
 
@@ -27,21 +25,21 @@ jsonGenerator.forBlock['delay'] = function (block) {
   // Generate base JSON for the delay
   let
     code = `{
-    "actionType": "DELAY",
-    "isLog": ${isLog === 'TRUE' ? 'true' : 'false'}, 
-    "logContent": "",
-    "duration": ${duration}
-  }`;
+        "actionType": "DELAY",
+        "isLog": ${isLog === 'TRUE' ? 'true' : 'false'}, 
+        "logContent": "",
+        "duration": ${duration}
+    }`;
 
   // If logging is enabled, add log content
   if (isLog === 'TRUE') {
     const logContent = block.getFieldValue('LOGCONTENT') || 'Log Content';
     code = `{
-    "actionType": "DELAY",
-    "isLog": true,
-    "logContent": "${logContent}",
-    "duration": ${duration}
-  }`;
+        "actionType": "DELAY",
+        "isLog": true,
+        "logContent": "${logContent}",
+        "duration": ${duration}
+    }`;
   }
 
   return code;
@@ -53,25 +51,23 @@ jsonGenerator.forBlock['click'] = function (block) {
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Click on ${element} for ${duration} ms`;
 
-  let code = `
-  {
-    "actionType": "CLICK",
-    "on": "${element}",
-    "isLog": ${isLog},
-    "logContent": "",
-    "duration": ${duration}
-  }`;
+  let code = `{
+        "actionType": "CLICK",
+        "on": "${element}",
+        "isLog": ${isLog},
+        "logContent": "",
+        "duration": ${duration}
+    }`;
 
   if (isLog) {
     const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-    code = `
-  {
-    "actionType": "CLICK",
-    "on": "${element}",
-    "isLog": true,
-    "logContent": "${logContent}",
-    "duration": ${duration}
-  }`;
+    code = `{
+        "actionType": "CLICK",
+        "on": "${element}",
+        "isLog": true,
+        "logContent": "${logContent}",
+        "duration": ${duration}
+    }`;
   }
 
   return code;
@@ -94,21 +90,21 @@ jsonGenerator.forBlock['open_app'] = function (block) {
   // Generate base JSON for the open app
   let
     code = `{
-    "actionType": "OPEN_APP",
-    "open": "${appName}",
-    "isLog": ${isLog === 'TRUE' ? 'true' : 'false'},
-    "logContent": ""
-  }`;
+        "actionType": "OPEN_APP",
+        "open": "${appName}",
+        "isLog": ${isLog === 'TRUE' ? 'true' : 'false'},
+        "logContent": ""
+    }`;
 
   // If logging is enabled, add log content
   if (isLog === 'TRUE') {
     const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
     code = `{
-    "actionType": "OPEN_APP",
-    "open": "${appName}",
-    "isLog": true,
-    "logContent": "${logContent}"
-  }`;
+        "actionType": "OPEN_APP",
+        "open": "${appName}",
+        "isLog": true,
+        "logContent": "${logContent}"
+    }`;
   }
 
   return code;
@@ -123,25 +119,23 @@ jsonGenerator.forBlock['for'] = function (block, generator) {
 
   // Default log content if not specified
   const defaultLogContent = `Repeat ${times} times`;
-  let code = `
-  {
-    "actionType": "FOR",
-    "executeActions": [${actions}], 
-    "times": ${times},
-    "isLog": ${isLog === 'TRUE' ? 'true' : 'false'},
-    "logContent": ""
-  }`;
+  let code = `{
+        "actionType": "FOR",
+        "executeActions": [${actions}], 
+        "times": ${times},
+        "isLog": ${isLog === 'TRUE' ? 'true' : 'false'},
+        "logContent": ""
+    }`;
 
   if (isLog === 'TRUE') {
     const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-    code = `
-  {
-    "actionType": "FOR",
-    "executeActions": [${actions}], 
-    "times": ${times},
-    "isLog": true,
-    "logContent": "${logContent}"
-  }`;
+    code = `{
+        "actionType": "FOR",
+        "executeActions": [${actions}], 
+        "times": ${times},
+        "isLog": true,
+        "logContent": "${logContent}"
+    }`;
   }
   return code;
 };
@@ -154,22 +148,22 @@ jsonGenerator.forBlock['zoom'] = function (block) {
   const defaultLogContent = `Zoom ${direction} for ${duration} ms`;
 
   let code = `{
-    "actionType": "ZOOM",
-    "direction": "${direction}",
-    "duration": ${duration},
-    "isLog": ${isLog},
-    "logContent": ""
-  }`;
+        "actionType": "ZOOM",
+        "direction": "${direction}",
+        "duration": ${duration},
+        "isLog": ${isLog},
+        "logContent": ""
+    }`;
 
   if (isLog) {
     const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
     code = `{
-      "actionType": "ZOOM",
-      "direction": "${direction}",
-      "duration": ${duration},
-      "isLog": true,
-      "logContent": "${logContent}"
-    }`;
+          "actionType": "ZOOM",
+          "direction": "${direction}",
+          "duration": ${duration},
+          "isLog": true,
+          "logContent": "${logContent}"
+      }`;
   }
 
   return code;
@@ -182,25 +176,23 @@ jsonGenerator.forBlock['swipe'] = function (block) {
   const defaultLogContent = `Swipe ${direction} for ${duration} ms`;
 
   let
-    code = `
-  {
-    "actionType": "SWIPE",
-    "direction": "${direction}",
-    "duration": ${duration},
-    "isLog": ${isLog},
-    "logContent": ""
-  }`;
+    code = `{
+        "actionType": "SWIPE",
+        "direction": "${direction}",
+        "duration": ${duration},
+        "isLog": ${isLog},
+        "logContent": ""
+    }`;
 
   if (isLog) {
     const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-    code = `
-  {
-    "actionType": "SWIPE",
-    "direction": "${direction}",
-    "duration": ${duration},
-    "isLog": true,
-    "logContent": "${logContent}"
-  }`;
+    code = `{
+        "actionType": "SWIPE",
+        "direction": "${direction}",
+        "duration": ${duration},
+        "isLog": true,
+        "logContent": "${logContent}"
+    }`;
   }
 
   return code;
