@@ -166,9 +166,9 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             });
     
             if (responseWeb.ok && responseAndroid.ok) {
-                toast.success("Scenario saved successfully for both platforms!");
+                toast.success("Scenario saved successfully!");
             } else {
-                toast.error("Failed to save scenario for both platforms.");
+                toast.error("Failed to save scenario!");
             }
         } catch (error) {
             console.error("Error saving scenario:", error);
