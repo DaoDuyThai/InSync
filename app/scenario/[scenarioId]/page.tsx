@@ -34,6 +34,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     const [loading, setLoading] = useState(true);
     const { user, isLoaded } = useUser();
     const [pending, setPending] = React.useState(false);
+    const [jsonAndroid, setJsonAndroid] = useState<string>("");
 
     useEffect(() => {
         const fetchScenario = async () => {
@@ -147,17 +148,24 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
         try {
             const jsonWeb = localStorage.getItem("jsonGeneratorWorkspace");
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-web-json/${params.scenarioId}`, {
+            // Save Web JSON
+            const responseWeb = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-web-json/${params.scenarioId}`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(jsonWeb)
             });
-            if (response.ok) {
-                toast.success("Scenario saved successfully!");
+
+            // Save Android JSON
+            const responseAndroid = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-android-json/${params.scenarioId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(jsonAndroid) // Use jsonAndroid state
+            });
+
+            if (responseWeb.ok && responseAndroid.ok) {
+                toast.success("Scenario saved successfully for both platforms!");
             } else {
-                toast.error("Failed to save scenario.");
+                toast.error("Failed to save scenario for both platforms.");
             }
         } catch (error) {
             console.error("Error saving scenario:", error);
@@ -169,16 +177,10 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     if (!scenario) return <Loading />;
     return (
         <div className="w-full h-full">
-            <Header
-                id={scenario.id}
-                title={scenario?.title}
-                deleteScenario={() => deleteScenario(scenario.id)}
-                renameScenario={renameScenario} />
+            <Header id={scenario?.id} title={scenario?.title} deleteScenario={() => deleteScenario(scenario?.id)} renameScenario={renameScenario} />
             {scenario ? (
-                <>
-                    <Canvas />
-                </>
-            ) : null}
+                <Canvas setJsonAndroid={setJsonAndroid} /> 
+            ) : <Loading />}
         </div>
     );
 };
