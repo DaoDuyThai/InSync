@@ -22,6 +22,8 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
+import CodeMirror from "@uiw/react-codemirror";
+import { json } from "@codemirror/lang-json";
 
 interface CanvasProps {
     id: string;
@@ -84,6 +86,9 @@ export const Canvas = ({
         } finally {
             setIsLoading(false);
             setOpen(false);
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         }
     };
 
@@ -254,7 +259,7 @@ export const Canvas = ({
                             onConfirm={() => {
                                 deleteScenario();
                                 setTimeout(() => {
-                                    window.location.reload(); 
+                                    window.location.reload();
                                 }, 5000);
                             }}
                         >
@@ -347,16 +352,21 @@ export const Canvas = ({
                             This is a Logs tab
                         </div>
                     </TabsContent>
-                    <TabsContent value="code" className="flex-1">
-                        <Textarea
-                            id="codeTextarea"
-                            className="w-full h-full overflow-auto resize-none focus:ring-0 focus:ring-offset-0"
+                    <TabsContent value="code" className="flex-1 overflow-y-auto">
+                        <CodeMirror
                             value={code}
-                            onChange={(e) => setCode(e.target.value)}
+                            extensions={[json()]}
+                            theme="light"
+                            onChange={(value) => setCode(value)}
+                            basicSetup={{
+                                lineNumbers: true,
+                                foldGutter: true,
+                                highlightActiveLineGutter: true,
+                            }}
+                            className="w-full"
                             style={{
-                                border: 'none',
-                                outline: 'none',
-                                boxShadow: 'none',
+                                maxHeight: '100%',
+                                overflowY: 'auto', // Ensures scrolling within the editor
                             }}
                         />
                     </TabsContent>
