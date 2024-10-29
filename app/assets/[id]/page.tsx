@@ -327,16 +327,6 @@ export default function ImageCroppedPage() {
         });
 
         const drawImage = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, img: HTMLImageElement) => {
-            // if (ctx && canvas && isMovingButtonClicked) {
-            //     console.log("draw image when moving");
-                
-            //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-            //     ctx.save();
-            //     ctx.scale(scale, scale);
-            //     ctx.drawImage(img, centerMoveX, centerMoveY);
-            //     ctx.restore();
-            // }
-            // else
              if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
