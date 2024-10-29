@@ -247,17 +247,25 @@ export const Canvas = ({
                             </DialogContent>
                         </Dialog>
 
-                        <Hint label="Delete Scenario" side="top">
-                            <ConfirmModal 
-                                header="Delete Scenario?"
-                                description="This will delete the scenario and all of its contents."
-                                onConfirm={deleteScenario}
-                            >
-                                <Button variant="ghost" size="sm" aria-label="Undo">
-                                    <Trash2 color="#ff0000" className="h-4 w-4" />
-                                </Button>
-                            </ConfirmModal>
-                        </Hint>
+
+                        <ConfirmModal
+                            header="Delete Scenario?"
+                            description="This will delete the scenario and all of its contents."
+                            onConfirm={() => {
+                                deleteScenario();
+                                setTimeout(() => {
+                                    window.location.reload(); 
+                                }, 5000);
+                            }}
+                        >
+                            <span>
+                                <Hint label="Delete Scenario" side="top">
+                                    <Button variant="ghost" size="sm" aria-label="Delete">
+                                        <Trash2 color="#ff0000" className="h-4 w-4" />
+                                    </Button>
+                                </Hint>
+                            </span>
+                        </ConfirmModal>
 
 
                         <Separator orientation="vertical" className="mx-2 h-4" />
