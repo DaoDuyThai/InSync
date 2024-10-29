@@ -84,6 +84,9 @@ export const Canvas = ({
         } finally {
             setIsLoading(false);
             setOpen(false);
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         }
     };
 
@@ -254,7 +257,7 @@ export const Canvas = ({
                             onConfirm={() => {
                                 deleteScenario();
                                 setTimeout(() => {
-                                    window.location.reload(); 
+                                    window.location.reload();
                                 }, 5000);
                             }}
                         >

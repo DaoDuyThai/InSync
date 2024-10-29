@@ -46,8 +46,8 @@ export const Header = ({
     renameScenario
 }: HeaderProps) => {
     return (
-        <header className="border-b-2 border-slate-200 px-4 sticky top-0 bg-white z-10 h-16 flex justify-between">
-            <div className="h-full flex gap-4">
+        <header className="border-b-2 border-slate-200 px-4 sticky top-0 bg-white z-10 h-16 flex justify-between items-center ">
+            <div className="h-full flex">
                 <Link href="/">
                     <div className="flex items-center gap-x-2">
                         <Image priority src="/logo.svg" alt="logo" height={60} width={60} />
@@ -62,24 +62,16 @@ export const Header = ({
                         </Badge>
                     </div>
                 </Link>
+            </div>
 
-                <NavigationMenu className="hidden md:inline-flex">
-                    <NavigationMenuList>
-                        <NavigationMenuItem>
+            <h1 className="underline">
+                {title}
+            </h1>
 
-                            <Actions
-                                id={id}
-                                title={title}
-                                side="bottom"
-                                deleteScenario={deleteScenario}
-                                renameScenario={renameScenario}>
-                                <Button variant={"ghost"}>
-                                    <Settings className="mr-3" /> Settings
-                                </Button>
-                            </Actions>
 
-                        </NavigationMenuItem>
-
+            <div className="flex justify-end gap-5">
+                <NavigationMenu className="hidden md:inline-flex ">
+                    <NavigationMenuList className="gap-5">
                         <NavigationMenuItem>
                             <Link href="/docs" legacyBehavior passHref>
                                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -98,9 +90,7 @@ export const Header = ({
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
-            </div>
 
-            <div className="flex justify-end">
                 <ClerkLoading >
                     <Loader className="h-5 w-5 text-muted-foreground animate-spin" />
                 </ClerkLoading>
@@ -128,29 +118,3 @@ export const Header = ({
         </header>
     )
 }
-
-const ListItem = React.forwardRef<
-    React.ElementRef<"a">,
-    React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
-    return (
-        <li>
-            <NavigationMenuLink asChild>
-                <a
-                    ref={ref}
-                    className={cn(
-                        "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                        className
-                    )}
-                    {...props}
-                >
-                    <div className="text-sm font-medium leading-none">{title}</div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        {children}
-                    </p>
-                </a>
-            </NavigationMenuLink>
-        </li>
-    )
-})
-ListItem.displayName = "ListItem"
