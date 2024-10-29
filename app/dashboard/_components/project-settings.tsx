@@ -130,6 +130,9 @@ export const ProjectSettings = () => {
 
             // Optionally, dispatch an action to clear the selected project in Redux
             dispatch(selectProject(''));
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         } catch (error) {
             console.error("Error deleting project:", error);
             toast.error("Failed to delete project.");

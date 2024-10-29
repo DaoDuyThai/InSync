@@ -190,10 +190,10 @@ export const Canvas = ({
     }, []);
 
     return (
-        <div className="flex h-[calc(100vh-70px)] overflow-hidden">
+        <div className="flex h-[calc(100vh-70px)] ">
             {/* Left sidebar */}
-            <div className="w-2/3 flex flex-col border-r">
-                <div className=" flex items-center justify-between px-4 py-1">
+            <div className="hidden  w-2/3 md:flex flex-col ">
+                <div className=" flex items-center justify-between px-4 py-1 h-12">
                     <div className="flex items-center">
                         <Hint label="Save" side="top">
                             <Button onClick={handleSave} variant="ghost" size="sm" aria-label="Save" disabled={saved}>
@@ -205,11 +205,6 @@ export const Canvas = ({
                                 <Link className="h-4 w-4" />
                             </Button>
                         </Hint>
-
-
-
-
-
                         <Dialog open={open} onOpenChange={setOpen}>
                             <Hint label="Rename" side="top">
                                 <DialogTrigger asChild>
@@ -316,23 +311,20 @@ export const Canvas = ({
                             </Button>
                         </Hint>
                     </div>
-
                 </div>
                 <div ref={blocklyDivRef} id="blocklyDiv" className="w-full h-full"></div>
             </div>
 
             {/* Right content area */}
-            <div className="flex-1 w-1/3 flex flex-col">
-
+            <div className="flex-1 md:w-1/3 flex flex-col">
                 <Tabs
                     defaultValue="code"
                     value={activeTab}
                     onValueChange={(value) => setActiveTab(value)}
                     className="flex-1 flex flex-col"
                 >
-
-                    <div className="p-1 flex justify-between">
-                        <div className="p-2 text-lg font-semibold">
+                    <div className="px-2 h-12 flex justify-between items-center">
+                        <div className="px-1 text-lg font-semibold">
                             {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} {/* Capitalize first letter */}
                         </div>
                         <TabsList>
@@ -342,7 +334,7 @@ export const Canvas = ({
                         </TabsList>
                     </div>
 
-                    <TabsContent value="assets" className="flex-1 p-1">
+                    <TabsContent value="assets" className="flex-1">
                         <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                             This is an Assets tab
                         </div>
@@ -352,23 +344,25 @@ export const Canvas = ({
                             This is a Logs tab
                         </div>
                     </TabsContent>
-                    <TabsContent value="code" className="flex-1 overflow-y-auto">
-                        <CodeMirror
-                            value={code}
-                            extensions={[json()]}
-                            theme="light"
-                            onChange={(value) => setCode(value)}
-                            basicSetup={{
-                                lineNumbers: true,
-                                foldGutter: true,
-                                highlightActiveLineGutter: true,
-                            }}
-                            className="w-full"
-                            style={{
-                                maxHeight: '100%',
-                                overflowY: 'auto', // Ensures scrolling within the editor
-                            }}
-                        />
+                    <TabsContent value="code" className="flex-1 overflow-auto m-0">
+                        <div className="w-full h-[calc(100vh-119px)]">
+                            <CodeMirror
+                                value={code}
+                                extensions={[json()]}
+                                theme="light"
+                                onChange={(value) => setCode(value)}
+                                basicSetup={{
+                                    lineNumbers: true,
+                                    foldGutter: true,
+                                    highlightActiveLineGutter: true,
+                                }}
+                                className="w-full"
+                                style={{
+                                    maxHeight: '100%',
+                                    overflowY: 'auto', // Ensures scrolling within the editor
+                                }}
+                            />
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>

@@ -180,7 +180,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     if (loading) return <Loading />;
     if (!scenario) return <Loading />;
     return (
-        <div className="w-full h-full">
+        <div className="w-screen h-screen">
             <Header
                 id={scenario.id}
                 title={scenario?.title}
