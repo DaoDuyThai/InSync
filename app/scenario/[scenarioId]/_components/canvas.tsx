@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Hint } from "@/components/hint";
+import { Separator } from "@/components/ui/separator";
 
 interface CanvasProps {
     id: string;
@@ -38,7 +39,7 @@ export const Canvas = ({
     const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
     const [loading, setLoading] = useState(true);
     const [code, setCode] = useState<string>("");
-    const [activeTab, setActiveTab] = useState("code");
+    const [activeTab, setActiveTab] = useState("assets");
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [saved, setSaved] = useState(true);
 
@@ -76,28 +77,24 @@ export const Canvas = ({
         }
     };
 
-    // Zoom In
     const handleZoomIn = () => {
         if (workspaceRef.current) {
             workspaceRef.current.zoomCenter(1); // 1 is zoom-in scale
         }
     };
 
-    // Zoom Out
     const handleZoomOut = () => {
         if (workspaceRef.current) {
             workspaceRef.current.zoomCenter(-1); // -1 is zoom-out scale
         }
     };
 
-    // Center the workspace
     const handleCenterWorkspace = () => {
         if (workspaceRef.current) {
             workspaceRef.current.scrollCenter();
         }
     };
 
-    // Toggle full-screen mode
     const toggleFullScreen = () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
@@ -161,19 +158,32 @@ export const Canvas = ({
             {/* Left sidebar */}
             <div className="w-2/3 flex flex-col border-r">
                 <div className=" flex items-center justify-between px-4 py-1">
-                    <div className="flex">
+                    <div className="flex items-center">
                         <Hint label="Save" side="top">
                             <Button onClick={handleSave} variant="ghost" size="sm" aria-label="Save" disabled={saved}>
                                 <Save className="h-4 w-4" />
                             </Button>
                         </Hint>
+                        <Separator orientation="vertical" className="mx-2 h-4" />
+                        <Hint label="Undo" side="top">
+                            <Button variant="ghost" size="sm" onClick={handleUndo} aria-label="Undo">
+                                <Undo className="h-4 w-4" />
+                            </Button>
+                        </Hint>
+                        <Hint label="Redo" side="top">
+                            <Button variant="ghost" size="sm" onClick={handleRedo} aria-label="Redo">
+                                <Redo className="h-4 w-4" />
+                            </Button>
+                        </Hint>
 
+
+                    </div>
+                    <div className="flex">
                         <Hint label="Zoom In" side="top">
                             <Button onClick={handleZoomIn} variant="ghost" size="sm" aria-label="Zoom In">
                                 <ZoomIn className="h-4 w-4" />
                             </Button>
                         </Hint>
-
                         <Hint label="Zoom Out" side="top">
                             <Button onClick={handleZoomOut} variant="ghost" size="sm" aria-label="Zoom Out">
                                 <ZoomOut className="h-4 w-4" />
@@ -191,17 +201,11 @@ export const Canvas = ({
                                 {isFullScreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
                             </Button>
                         </Hint>
-                    </div>
-                    <div className="flex">
-                        <Button variant="ghost" size="sm" onClick={handleUndo} aria-label="Undo">
-                            <Undo className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={handleRedo} aria-label="Redo">
-                            <Redo className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={handleDelete} aria-label="Delete">
-                            <Trash className="h-4 w-4" />
-                        </Button>
+                        <Hint label="Delete" side="top">
+                            <Button variant="ghost" size="sm" onClick={handleDelete} aria-label="Delete">
+                                <Trash className="h-4 w-4" />
+                            </Button>
+                        </Hint>
                     </div>
 
                 </div>
