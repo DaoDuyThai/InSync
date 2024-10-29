@@ -187,7 +187,13 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 renameScenario={renameScenario} />
             {scenario ? (
                 <>
-                    <Canvas />
+                    <Canvas
+                        id={scenario.id}
+                        title={scenario.title}
+                        deleteScenario={() => deleteScenario(scenario.id)}
+                        renameScenario={renameScenario}
+                        saveScenario={handleSaveScenario}
+                    />
                 </>
             ) : null}
         </div>

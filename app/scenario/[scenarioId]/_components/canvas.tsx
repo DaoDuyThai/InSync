@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Loading } from "@/components/loading";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move } from "lucide-react"
+import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -19,13 +19,28 @@ import {
 import { Button } from "@/components/ui/button"
 import { Hint } from "@/components/hint";
 
-export const Canvas = () => {
+interface CanvasProps {
+    id: string;
+    title: string;
+    deleteScenario: () => void;
+    renameScenario: (id: string, newTitle: string) => Promise<void>;
+    saveScenario: () => void;
+}
+
+export const Canvas = ({
+    id,
+    title,
+    deleteScenario,
+    renameScenario,
+    saveScenario
+}: CanvasProps) => {
     const blocklyDivRef = useRef<HTMLDivElement | null>(null);
     const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
     const [loading, setLoading] = useState(true);
     const [code, setCode] = useState<string>("");
     const [activeTab, setActiveTab] = useState("code");
     const [isFullScreen, setIsFullScreen] = useState(false);
+    const [saved, setSaved] = useState(true);
 
     function formatJSON(jsonString: string): string | null {
         try {
@@ -34,6 +49,11 @@ export const Canvas = () => {
         } catch (error) {
             return jsonString;
         }
+    }
+
+    const handleSave = () => {
+        saveScenario();
+        setSaved(true);
     }
 
     const handleUndo = () => {
@@ -119,6 +139,7 @@ export const Canvas = () => {
                     toast.error('Action block(s) must be inside a scenario block');
                 }
                 const formattedCode = formatJSON(code);
+                setSaved(false);
                 setCode(formattedCode ?? '');
             };
 
@@ -141,6 +162,12 @@ export const Canvas = () => {
             <div className="w-2/3 flex flex-col border-r">
                 <div className=" flex items-center justify-between px-4 py-1">
                     <div className="flex">
+                        <Hint label="Save" side="top">
+                            <Button onClick={handleSave} variant="ghost" size="sm" aria-label="Save" disabled={saved}>
+                                <Save className="h-4 w-4" />
+                            </Button>
+                        </Hint>
+
                         <Hint label="Zoom In" side="top">
                             <Button onClick={handleZoomIn} variant="ghost" size="sm" aria-label="Zoom In">
                                 <ZoomIn className="h-4 w-4" />
