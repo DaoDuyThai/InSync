@@ -12,6 +12,12 @@ import { AppDispatch, RootState } from '@/store/store';
 import { selectProject } from '@/store/projectSlice';
 import { toast } from 'sonner';
 import { NoProjectSelected } from './no-project-selected';
+import { Plus } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
 
 interface ScenarioListProps {
     projectId: string;
@@ -46,6 +52,9 @@ export const ScenarioList = ({
     const [scenarioList, setScenarioList] = React.useState<Scenario[]>([]);
     const [filteredScenarios, setFilteredScenarios] = React.useState<Scenario[]>([]);
     const [pending, setPending] = React.useState(false);
+    const [open, setOpen] = React.useState<boolean>(false);
+    const [title, setTitle] = React.useState<string>("Untitled");
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
     // Fetch scenarios based on the project ID and user
     React.useEffect(() => {
@@ -124,7 +133,7 @@ export const ScenarioList = ({
         "/placeholders/10.svg",
     ]
 
-    const createScenario = async () => {
+    const createScenario = async (title: string) => {
         if (!user || !isLoaded) return;
         try {
             const randomImage = images[Math.floor(Math.random() * images.length)]
@@ -136,7 +145,7 @@ export const ScenarioList = ({
                 body: JSON.stringify(
                     {
                         projectId: projectId,
-                        scenarioName: "Untitled",
+                        scenarioName: title,
                         userIdClerk: user.id,
                         description: "Description",
                         isFavorites: false,
@@ -155,6 +164,19 @@ export const ScenarioList = ({
             console.error("Error creating project:", error);
         }
     }
+
+    const handleCreate = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            await createScenario(title);
+        } catch (error) {
+            console.error("Failed to rename scenario.");
+        } finally {
+            setIsLoading(false);
+            setOpen(false);
+        }
+    };
 
     const renameScenario = async (id: string, newTitle: string) => {
         if (!user || !isLoaded) return;
@@ -227,7 +249,7 @@ export const ScenarioList = ({
     }
 
     if (!scenarioList.length) {
-        return <EmptyScenario onClick={createScenario} />;
+        return <EmptyScenario createScenario={createScenario} />;
     }
 
     return (
@@ -240,7 +262,56 @@ export const ScenarioList = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 mt-8 pb-12">
-                <NewScenarioButton onClick={createScenario} />
+
+
+
+                <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger asChild>
+                        <button
+                            className={cn(
+                                "col-span-1 aspect-[100/127] bg-gray-500 rounded-lg hover:bg-gray-700 flex flex-col items-center justify-center py-6"
+                                , (false) && "opacity-75 hover:bg-blue-600 cursor-not-allowed")}
+                        >
+                            <div />
+                            <Plus className="h-12 w-12 text-white stroke-1" />
+                            <p className="text-sm text-white font-light">
+                                New Scenario
+                            </p>
+                        </button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md" >
+                        <DialogHeader>
+                            <DialogTitle>Create Scenario</DialogTitle>
+                            <DialogDescription>
+                                Enter title for this scenario.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleCreate} className="space-y-4">
+                            <Input
+                                required
+                                maxLength={60}
+                                minLength={5}
+                                placeholder="Enter scenario title"
+                                // value={title} // Pre-filled with the current title
+                                onChange={(e) => {
+                                    setTitle(e.target.value)
+                                }}
+                            />
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button" variant="outline">
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
+                                <Button type="submit" disabled={isLoading}>
+                                    {isLoading ? "Creating..." : "Submit"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
+                {/* <NewScenarioButton createScenario={createScenario} /> */}
 
                 {filteredScenarios.map((scenario) => (
                     <ScenarioCard
