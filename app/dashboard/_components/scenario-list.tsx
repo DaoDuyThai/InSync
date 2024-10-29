@@ -3,7 +3,6 @@ import * as React from "react";
 import { EmptyFavorites } from "./empty-favorites";
 import { EmptyScenario } from "./empty-scenario";
 import { EmptySearch } from "./empty-search";
-import { NewScenarioButton } from "./new-scenario-button";
 import { ScenarioCard } from "./scenario-card";
 import { ProjectSettings } from './project-settings';
 import { useUser } from '@clerk/nextjs';
