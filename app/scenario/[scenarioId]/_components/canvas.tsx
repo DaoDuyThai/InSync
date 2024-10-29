@@ -137,6 +137,7 @@ export const Canvas = ({
                 }
                 const formattedCode = formatJSON(code);
                 setSaved(false);
+                localStorage.setItem('jsonMobile', formattedCode ?? '');
                 setCode(formattedCode ?? '');
             };
 

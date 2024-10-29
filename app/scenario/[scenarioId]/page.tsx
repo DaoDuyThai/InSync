@@ -38,7 +38,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     useEffect(() => {
         const fetchScenario = async () => {
             try {
-                localStorage.removeItem("jsonGeneratorWorkspace");
+                localStorage.removeItem("jsonWeb");
                 const selectedProjectId = localStorage.getItem("selectedProjectId");
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/${params.scenarioId}`);
                 if (!response.ok) {
@@ -52,9 +52,9 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
 
                     const jsonWeb = data.stepsWeb;
                     if (isValidJSON(jsonWeb) && jsonWeb) {
-                        localStorage.setItem("jsonGeneratorWorkspace", jsonWeb);
+                        localStorage.setItem("jsonWeb", jsonWeb);
                     } else if (!jsonWeb) {
-                        localStorage.removeItem("jsonGeneratorWorkspace");
+                        localStorage.removeItem("jsonWeb");
                     }
                 }
 
@@ -146,10 +146,10 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
     const handleSaveScenario = async () => {
         try {
             // Get Web JSON from localStorage
-            const jsonWeb = localStorage.getItem("jsonGeneratorWorkspace");
+            const jsonWeb = localStorage.getItem("jsonWeb");
 
             // Get Android JSON from Textarea by ID
-            const jsonAndroid = (document.getElementById("codeTextarea") as HTMLTextAreaElement)?.value;
+            const jsonMobile = localStorage.getItem("jsonMobile");
 
             // Save Web JSON
             const responseWeb = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-web-json/${params.scenarioId}`, {
@@ -162,7 +162,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             const responseAndroid = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-android-json/${params.scenarioId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(jsonAndroid) // Use jsonAndroid directly from the Textarea
+                body: JSON.stringify(jsonMobile) // Use jsonMobile directly from the Textarea
             });
 
             if (responseWeb.ok && responseAndroid.ok) {
