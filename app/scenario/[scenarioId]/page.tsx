@@ -147,24 +147,24 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
         try {
             // Get Web JSON from localStorage
             const jsonWeb = localStorage.getItem("jsonGeneratorWorkspace");
-    
+
             // Get Android JSON from Textarea by ID
             const jsonAndroid = (document.getElementById("codeTextarea") as HTMLTextAreaElement)?.value;
-    
+
             // Save Web JSON
             const responseWeb = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-web-json/${params.scenarioId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(jsonWeb)
             });
-    
+
             // Save Android JSON
             const responseAndroid = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-android-json/${params.scenarioId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(jsonAndroid) // Use jsonAndroid directly from the Textarea
             });
-    
+
             if (responseWeb.ok && responseAndroid.ok) {
                 toast.success("Scenario saved successfully!");
             } else {
