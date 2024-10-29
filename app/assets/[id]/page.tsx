@@ -94,7 +94,7 @@ export default function ImageCroppedPage() {
     const movingButtonRef = useRef<HTMLButtonElement>(null);
     const [selectedImageCanvas, setSelectedImageCanvas] = useState<Array<HTMLCanvasElement | null>>([]);
     const [openPopup, setOpenPopup] = useState(false);
-    
+
 
     //#region useEffect
     useEffect(() => {
@@ -129,7 +129,13 @@ export default function ImageCroppedPage() {
         const fixedSizeImage = new Image();
         //#region declare fixed size image
         // Cài đặt hình ảnh cố định để cắt ảnh
-        fixedSizeImage.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
+        const imgURL = localStorage.getItem('imageURL')?.toString();
+        console.log(`imgURL: ${imgURL}`);
+        
+        if (imgURL) {
+            fixedSizeImage.src = imgURL; // Update with the path to your image
+            img.src = imgURL;
+        }
         fixedSizeImage.crossOrigin = "Anonymous";
         fixedSizeImage.onload = function () {
             fixedSizeCanvas.width = fixedSizeImage.width;
@@ -140,7 +146,7 @@ export default function ImageCroppedPage() {
         canvasArea?.appendChild(fixedSizeCanvas);
         //#endregion
 
-        img.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
+        // img.src = 'https://st.quantrimang.com/photos/image/2018/02/26/bat-thong-bao-khi-chia-se-hinh-anh-1.jpg'; // Update with the path to your image
         // Array to store rectangles
         const rectangles: Array<any> = [];
 
@@ -171,7 +177,7 @@ export default function ImageCroppedPage() {
             if (isCroppingButtonClicked) {
                 console.log("isCroppingButtonClicked")
                 startX = e.offsetX;
-                startY = e.offsetY;                
+                startY = e.offsetY;
                 isDrawing = true;
             } else if (isMovingButtonClicked) {
                 console.log("isMovingButtonClicked")
@@ -196,8 +202,8 @@ export default function ImageCroppedPage() {
                 if (ctx) {
                     try {
                         ctx.beginPath();
-                        console.log(`render rectangle: ${startX}, ${startY}, ${width}, ${height}`);   
-                        
+                        console.log(`render rectangle: ${startX}, ${startY}, ${width}, ${height}`);
+
                         ctx.rect(startX, startY, width, height);
                         ctx.lineWidth = 2;
                         ctx.strokeStyle = 'white';
@@ -272,7 +278,7 @@ export default function ImageCroppedPage() {
                     // let imageData3 = fixedSizeCtx?.getImageData(82, 131, 58, 93);
                     if (imageData2) {
                         canvasContext?.putImageData(imageData2, 0, 0);
-                        
+
                         if (totalImagesElement) {
                             totalImagesElement.parentElement?.classList.remove('hidden');
                             totalImagesElement.textContent = `${++totalImages}`;
@@ -327,14 +333,14 @@ export default function ImageCroppedPage() {
         });
 
         const drawImage = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, img: HTMLImageElement) => {
-             if (ctx && canvas) {
+            if (ctx && canvas) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
                 ctx.scale(scale, scale);
                 ctx.drawImage(img, centerMoveX, centerMoveY);
                 // ctx.drawImage(img, imageX, imageY, img.width, img.height);
                 ctx.restore();
-            } 
+            }
         };
 
         //#region declare zoom function
@@ -348,7 +354,7 @@ export default function ImageCroppedPage() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawImage(ctx, canvas, img);
             }
-                
+
         });
 
         zoomOutButton?.addEventListener('click', (e) => {
@@ -358,7 +364,7 @@ export default function ImageCroppedPage() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 drawImage(ctx, canvas, img);
             }
-                
+
         });
         //#endregion
 
@@ -478,10 +484,10 @@ export default function ImageCroppedPage() {
                     <div className="p-5">
                         <div ref={canvasAreaRef} className="flex items-start flex-wrap gap-1 max-h-[380px] overflow-y-auto"></div>
                         <div className="flex justify-center">
-                            <button 
-                                onClick={() => handleImageUpload()} 
-                                ref={uploadImageButtonRef} 
-                                className="border-2 bg-green-600 px-5 py-2 text-lg rounded-lg hidden" 
+                            <button
+                                onClick={() => handleImageUpload()}
+                                ref={uploadImageButtonRef}
+                                className="border-2 bg-green-600 px-5 py-2 text-lg rounded-lg hidden"
                             >
                                 <UploadCloudIcon className="inline-block" size={20} /> <span>Upload Image</span>
                             </button>
