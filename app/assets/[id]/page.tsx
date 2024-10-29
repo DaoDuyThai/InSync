@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { CropIcon, ImagesIcon, MoveIcon, UploadCloudIcon, XIcon, ZoomIn, ZoomOut } from "lucide-react";
 import uploadImage from "../_components/uploadImage";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 /**
  * ImageCroppedPage component provides functionality for cropping and moving images on a canvas.
