@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Loading } from "@/components/loading";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Undo, Redo, Trash, MoreHorizontal } from "lucide-react"
+import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,6 +17,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { Hint } from "@/components/hint";
 
 export const Canvas = () => {
     const blocklyDivRef = useRef<HTMLDivElement | null>(null);
@@ -24,6 +25,7 @@ export const Canvas = () => {
     const [loading, setLoading] = useState(true);
     const [code, setCode] = useState<string>("");
     const [activeTab, setActiveTab] = useState("code");
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     function formatJSON(jsonString: string): string | null {
         try {
@@ -48,9 +50,41 @@ export const Canvas = () => {
 
     const handleDelete = () => {
         const selectedBlock = Blockly.common.getSelected();
-    
+
         if (selectedBlock && selectedBlock instanceof Blockly.BlockSvg) {
             selectedBlock.dispose(true, true); // Dispose of only the selected block
+        }
+    };
+
+    // Zoom In
+    const handleZoomIn = () => {
+        if (workspaceRef.current) {
+            workspaceRef.current.zoomCenter(1); // 1 is zoom-in scale
+        }
+    };
+
+    // Zoom Out
+    const handleZoomOut = () => {
+        if (workspaceRef.current) {
+            workspaceRef.current.zoomCenter(-1); // -1 is zoom-out scale
+        }
+    };
+
+    // Center the workspace
+    const handleCenterWorkspace = () => {
+        if (workspaceRef.current) {
+            workspaceRef.current.scrollCenter();
+        }
+    };
+
+    // Toggle full-screen mode
+    const toggleFullScreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            setIsFullScreen(true);
+        } else {
+            document.exitFullscreen();
+            setIsFullScreen(false);
         }
     };
 
@@ -106,18 +140,31 @@ export const Canvas = () => {
             {/* Left sidebar */}
             <div className="w-2/3 flex flex-col border-r">
                 <div className=" flex items-center justify-between px-4 py-1">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                                <MoreHorizontal className="h-4 w-4" />
+                    <div className="flex">
+                        <Hint label="Zoom In" side="top">
+                            <Button onClick={handleZoomIn} variant="ghost" size="sm" aria-label="Zoom In">
+                                <ZoomIn className="h-4 w-4" />
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem>New Block</DropdownMenuItem>
-                            <DropdownMenuItem>Import</DropdownMenuItem>
-                            <DropdownMenuItem>Export</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </Hint>
+
+                        <Hint label="Zoom Out" side="top">
+                            <Button onClick={handleZoomOut} variant="ghost" size="sm" aria-label="Zoom Out">
+                                <ZoomOut className="h-4 w-4" />
+                            </Button>
+                        </Hint>
+
+                        <Hint label="Center Workspace" side="top">
+                            <Button onClick={handleCenterWorkspace} variant="ghost" size="sm" aria-label="Center Workspace">
+                                <Move className="h-4 w-4" />
+                            </Button>
+                        </Hint>
+
+                        <Hint label={isFullScreen ? "Exit Full Screen" : "Enter Full Screen"} side="top">
+                            <Button onClick={toggleFullScreen} variant="ghost" size="sm" aria-label="Full Screen">
+                                {isFullScreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+                            </Button>
+                        </Hint>
+                    </div>
                     <div className="flex">
                         <Button variant="ghost" size="sm" onClick={handleUndo} aria-label="Undo">
                             <Undo className="h-4 w-4" />
