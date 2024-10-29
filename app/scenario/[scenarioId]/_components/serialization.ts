@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 
-const storageKey = 'jsonGeneratorWorkspace';
+const storageKey = 'jsonWeb';
 
 /**
  * Saves the state of the workspace to browser's local storage.

@@ -45,6 +45,7 @@ export const Actions = ({
 }: ActionsProps) => {
     const [newTitle, setNewTitle] = React.useState<string>(title);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [open, setOpen] = React.useState<boolean>(false);
 
     const onCopyLink = () => {
         navigator.clipboard
@@ -59,8 +60,6 @@ export const Actions = ({
 
     const handleRename = async (e: React.FormEvent) => {
         e.preventDefault();
-
-
         setIsLoading(true);
         try {
             await renameScenario(id, newTitle);
@@ -68,6 +67,7 @@ export const Actions = ({
             console.error("Failed to rename scenario.");
         } finally {
             setIsLoading(false);
+            setOpen(false);
         }
     };
 
@@ -88,7 +88,7 @@ export const Actions = ({
 
                 {/* Rename Dialog */}
 
-                <Dialog>
+                <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
                         <Button variant="ghost" className="cursor-pointer text-sm w-full justify-start font-normal">
                             <Pencil className="h-4 w-4 mr-2" />

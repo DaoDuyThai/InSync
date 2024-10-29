@@ -26,6 +26,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { selectProject } from "@/store/projectSlice";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { set } from "date-fns";
 
 interface Project {
     id: string;
@@ -42,6 +43,7 @@ export const ProjectSettings = () => {
     const [project, setProject] = React.useState<Project | null>(null);
     const [newTitle, setNewTitle] = React.useState<string>("");
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [open, setOpen] = React.useState(false);
 
     const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
     const dispatch = useDispatch<AppDispatch>();
@@ -105,6 +107,7 @@ export const ProjectSettings = () => {
             toast.error("Failed to rename project.");
         } finally {
             setIsLoading(false);
+            setOpen(false);
         }
     };
 
@@ -146,7 +149,7 @@ export const ProjectSettings = () => {
 
                 {/* Rename Project */}
                 <DropdownMenuLabel>
-                    <Dialog>
+                    <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
                             <Button onClick={getCurrentProject} variant="ghost" size={'sm'} className="flex cursor-pointer text-sm w-full justify-center font-normal">
                                 <Pencil className="h-4 w-4 mr-2" />

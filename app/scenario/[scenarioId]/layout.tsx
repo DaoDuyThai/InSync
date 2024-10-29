@@ -1,5 +1,3 @@
-import { Navbar } from "@/components/navbar";
-import { ProjectSidebar } from "@/components/project-sidebar";
 
 type Props = {
     children: React.ReactNode

@@ -50,7 +50,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
     },
     {
         "type": "click",
-        "message0": "click on %1 for %2 ms",
+        "message0": "click on %1\nfor %2 ms",
         "args0": [
             {
                 "type": "field_image_drop",
@@ -94,8 +94,13 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "type": "field_dropdown",
                 "name": "APP_CHOICE",
                 "options": [
-                    ["App 1", "com.example.app1"],
-                    ["App 2", "com.example.app2"],
+                    ["Youtube", "com.google.android.youtube"],
+                    ["Facebook", "com.facebook.katana"],
+                    ["Instagram", "com.instagram.android"],
+                    ["Twitter", "com.twitter.android"],
+                    ["TikTok", "com.zhiliaoapp.musically"],
+                    ["Zoom", "us.zoom.videomeetings"],
+                    ["Google Meet", "com.google.android.apps.meetings"],
                     ["Other", "OTHER"]
                 ]
             }
@@ -318,7 +323,7 @@ Blockly.Extensions.registerMutator('open_app_mutator', {
         if (isOther) {
             if (!this.getInput('CUSTOM_APP')) {
                 this.appendDummyInput('CUSTOM_APP')
-                    .appendField('Custom app name:')
+                    .appendField('custom app name:')
                     .appendField(new Blockly.FieldTextInput(''), 'CUSTOM_APP_NAME');
             }
         } else {

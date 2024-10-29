@@ -1,6 +1,16 @@
 {
     "cSpell.words": [
         "blockly",
-        "Blockly"
+        "Blockly",
+        "const",
+        "Guid",
+        "json",
+        "JSON",
+        "keydown",
+        "nextjs",
+        "params",
+        "sonner",
+        "stringify",
+        "Textarea"
     ]
 }

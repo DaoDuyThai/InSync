@@ -4,15 +4,20 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 export const EmptyProject = () => {
     const { user, isLoaded } = useUser();
+    const [openDialog, setOpenDialog] = React.useState(false)
+    const [title, setTitle] = React.useState<string>("Untitled");
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-    const createProject = async () => {
+    const createProject = async (title: string) => {
         if (user && isLoaded) {
             const body = {
-                projectName: "Untitled",
+                projectName: title,
                 userIdClerk: user.id,
                 description: "Project added on " + new Date().toLocaleString(),
                 isPublish: true,
@@ -40,6 +45,19 @@ export const EmptyProject = () => {
         }
     };
 
+    const handleCreateProject = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            await createProject(title);
+        } catch (error) {
+            console.error("Failed to create scenario.");
+        } finally {
+            setIsLoading(false);
+            setOpenDialog(false);
+        }
+    };
+
 
 
     return (
@@ -50,9 +68,44 @@ export const EmptyProject = () => {
                 Create a Project to get started
             </p>
             <div className="mt-6">
-                <Button size="lg" onClick={createProject}>
-                    Create Project
-                </Button>
+                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                    <DialogTrigger asChild>
+                        <Button size="lg">
+                            Create Project
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-md" >
+                        <DialogHeader>
+                            <DialogTitle>Create Project</DialogTitle>
+                            <DialogDescription>
+                                Enter title for this Project.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleCreateProject} className="space-y-4">
+                            <Input
+                                required
+                                maxLength={60}
+                                minLength={5}
+                                placeholder="Enter project title"
+                                // value={title} // Pre-filled with the current title
+                                onChange={(e) => {
+                                    setTitle(e.target.value)
+                                }}
+                            />
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button type="button" variant="outline">
+                                        Cancel
+                                    </Button>
+                                </DialogClose>
+                                <Button type="submit" disabled={isLoading}>
+                                    {isLoading ? "Creating..." : "Submit"}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
             </div>
         </div>
     );
