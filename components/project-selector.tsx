@@ -26,6 +26,8 @@ import { RootState, AppDispatch } from '@/store/store';
 
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Input } from "./ui/input";
 
 
 
@@ -49,7 +51,10 @@ export const ProjectSelector = () => {
     // TODO: Fetch and display projects
 
     // Projects ComboBox
-    const [open, setOpen] = React.useState(false)
+    const [openPopOver, setOpenPopOver] = React.useState(false)
+    const [openDialog, setOpenDialog] = React.useState(false)
+    const [title, setTitle] = React.useState<string>("Untitled");
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
     // Get the current project from Redux
     const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
@@ -74,7 +79,7 @@ export const ProjectSelector = () => {
             dispatch(clearProject());
             localStorage.removeItem("selectedProjectId");
         }
-        setOpen(false);
+        setOpenPopOver(false);
     };
 
     const { user, isLoaded } = useUser();
@@ -87,11 +92,11 @@ export const ProjectSelector = () => {
                 try {
                     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
                     const data = await response.json();
-    
+
                     // Only set projects if data exists, preventing premature local storage clearance
                     if (data?.data?.length > 0) {
                         setProjects(data.data); // Adjust according to the API response structure
-    
+
                         const storedProjectId = localStorage.getItem("selectedProjectId");
                         // Only clear project if it doesn't exist in the loaded projects list
                         if (storedProjectId && !data.data.find((project: Project) => project.id === storedProjectId)) {
@@ -103,17 +108,17 @@ export const ProjectSelector = () => {
                     console.error("Error fetching projects:", error);
                 }
             };
-    
+
             fetchProjects();
         }
     }, [user, isLoaded, projects, dispatch]);
 
     // console.log(projects);
 
-    const createProject = async () => {
+    const createProject = async (title: string) => {
         if (user && isLoaded) {
             const body = {
-                projectName: "Untitled",
+                projectName: title,
                 userIdClerk: user.id,
                 description: "Project added on " + new Date().toLocaleString(),
                 isPublish: true,
@@ -142,10 +147,23 @@ export const ProjectSelector = () => {
         }
     }
 
+    const handleCreateProject = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            await createProject(title);
+        } catch (error) {
+            console.error("Failed to create scenario.");
+        } finally {
+            setIsLoading(false);
+            setOpenDialog(false);
+        }
+    };
+
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={openPopOver} onOpenChange={setOpenPopOver}>
             <PopoverTrigger asChild>
-                <Button variant="outline" role="combobox" aria-expanded={open} className="w-[186px] justify-between">
+                <Button variant="outline" role="combobox" aria-expanded={openPopOver} className="w-[186px] justify-between">
                     {
                         selectedProject
                             ? projects && projects.length > 0
@@ -181,9 +199,44 @@ export const ProjectSelector = () => {
                     </CommandList>
                     <CommandSeparator />
                     <CommandItem>
-                        <Button onClick={createProject} className="w-full" size={"sm"} variant={"default"}>
-                            New Project
-                        </Button>
+                        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                            <DialogTrigger asChild>
+                                <Button className="w-full" size={"sm"} variant={"default"}>
+                                    New Project
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-md" >
+                                <DialogHeader>
+                                    <DialogTitle>Create Project</DialogTitle>
+                                    <DialogDescription>
+                                        Enter title for this Project.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <form onSubmit={handleCreateProject} className="space-y-4">
+                                    <Input
+                                        required
+                                        maxLength={60}
+                                        minLength={5}
+                                        placeholder="Enter project title"
+                                        // value={title} // Pre-filled with the current title
+                                        onChange={(e) => {
+                                            setTitle(e.target.value)
+                                        }}
+                                    />
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button type="button" variant="outline">
+                                                Cancel
+                                            </Button>
+                                        </DialogClose>
+                                        <Button type="submit" disabled={isLoading}>
+                                            {isLoading ? "Creating..." : "Submit"}
+                                        </Button>
+                                    </DialogFooter>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+
                     </CommandItem>
                 </Command>
             </PopoverContent>
