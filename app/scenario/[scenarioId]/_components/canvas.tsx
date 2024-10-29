@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Loading } from "@/components/loading";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save } from "lucide-react"
+import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2 } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -19,6 +19,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Hint } from "@/components/hint";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { ConfirmModal } from "@/components/confirm-modal";
 
 interface CanvasProps {
     id: string;
@@ -42,6 +45,9 @@ export const Canvas = ({
     const [activeTab, setActiveTab] = useState("assets");
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [saved, setSaved] = useState(true);
+    const [newTitle, setNewTitle] = React.useState<string>(title);
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [open, setOpen] = React.useState<boolean>(false);
 
     function formatJSON(jsonString: string): string | null {
         try {
@@ -56,6 +62,30 @@ export const Canvas = ({
         saveScenario();
         setSaved(true);
     }
+
+    const handleCopyUrl = () => {
+        navigator.clipboard
+            .writeText(`${window.location.origin}/scenario/${id}`)
+            .then(() => {
+                toast.success("Link copied");
+            })
+            .catch(() => {
+                toast.error("Failed to copy link");
+            });
+    };
+
+    const handleRename = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            await renameScenario(id, newTitle);
+        } catch (error) {
+            console.error("Failed to rename scenario.");
+        } finally {
+            setIsLoading(false);
+            setOpen(false);
+        }
+    };
 
     const handleUndo = () => {
         if (workspaceRef.current) {
@@ -165,6 +195,71 @@ export const Canvas = ({
                                 <Save className="h-4 w-4" />
                             </Button>
                         </Hint>
+                        <Hint label="Copy URL" side="top">
+                            <Button onClick={handleCopyUrl} variant="ghost" size="sm" aria-label="Copy URL">
+                                <Link className="h-4 w-4" />
+                            </Button>
+                        </Hint>
+
+
+
+
+
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <Hint label="Rename" side="top">
+                                <DialogTrigger asChild>
+
+                                    <Button variant="ghost" size="sm" aria-label="Rename">
+                                        <SquarePen className="h-4 w-4" />
+                                    </Button>
+
+                                </DialogTrigger>
+                            </Hint>
+                            <DialogContent className="sm:max-w-md" >
+                                <DialogHeader>
+                                    <DialogTitle>Edit scenario title</DialogTitle>
+                                    <DialogDescription>
+                                        Enter a new title for this scenario.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <form onSubmit={handleRename} className="space-y-4">
+                                    <Input
+                                        required
+                                        maxLength={60}
+                                        minLength={5}
+                                        placeholder={title}
+                                        // value={title} // Pre-filled with the current title
+                                        onChange={(e) => {
+                                            setNewTitle(e.target.value)
+                                        }}
+                                    />
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button type="button" variant="outline">
+                                                Cancel
+                                            </Button>
+                                        </DialogClose>
+                                        <Button type="submit" disabled={isLoading}>
+                                            {isLoading ? "Renaming..." : "Submit"}
+                                        </Button>
+                                    </DialogFooter>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+
+                        <Hint label="Delete Scenario" side="top">
+                            <ConfirmModal 
+                                header="Delete Scenario?"
+                                description="This will delete the scenario and all of its contents."
+                                onConfirm={deleteScenario}
+                            >
+                                <Button variant="ghost" size="sm" aria-label="Undo">
+                                    <Trash2 color="#ff0000" className="h-4 w-4" />
+                                </Button>
+                            </ConfirmModal>
+                        </Hint>
+
+
                         <Separator orientation="vertical" className="mx-2 h-4" />
                         <Hint label="Undo" side="top">
                             <Button variant="ghost" size="sm" onClick={handleUndo} aria-label="Undo">
@@ -202,8 +297,8 @@ export const Canvas = ({
                                 {isFullScreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
                             </Button>
                         </Hint>
-                        <Hint label="Delete" side="top">
-                            <Button variant="ghost" size="sm" onClick={handleDelete} aria-label="Delete">
+                        <Hint label="Delete Block(s)" side="top">
+                            <Button variant="ghost" size="sm" onClick={handleDelete} aria-label="Delete Block(s)">
                                 <Trash className="h-4 w-4" />
                             </Button>
                         </Hint>

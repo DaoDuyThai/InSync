@@ -39,6 +39,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
         const fetchScenario = async () => {
             try {
                 localStorage.removeItem("jsonWeb");
+                localStorage.removeItem("jsonMobile");
                 const selectedProjectId = localStorage.getItem("selectedProjectId");
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/${params.scenarioId}`);
                 if (!response.ok) {
