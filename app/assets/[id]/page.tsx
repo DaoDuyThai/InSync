@@ -399,6 +399,7 @@ export default function ImageCroppedPage() {
                 const uploadImageString = image?.toDataURL();
                 if (uploadImageString) {
                     uploadImage(uploadImageString.toString());
+                    toast.success("Image uploaded successfully");
                 }
             }); // <-- Add this closing parenthesis
         } catch (error) {

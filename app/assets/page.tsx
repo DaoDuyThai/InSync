@@ -29,7 +29,7 @@ export default function ImagePage() {
             try {
                 const selectedProjectId = localStorage.getItem("selectedProjectId");
                 if(selectedProjectId) {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/assets/asset-project/${selectedProjectId}`);
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/assets/asset-project/${selectedProjectId}`);
                     const data = await response.json();
                     setImages(data.data);
                 } else {
