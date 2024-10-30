@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarFoldIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface ImageInterface {
     "id": string,
@@ -26,9 +27,15 @@ export default function ImagePage() {
         document.title = "InSync - Assets Management";
         const fetchImageThroughAPI = async () => {
             try {
-                const response = await fetch("https://in-sync-71cacf992634.herokuapp.com/api/assets/asset-project/21B012D5-2F45-4850-8DBB-43590DD7D750");
-                const data = await response.json();
-                setImages(data.data);
+                const selectedProjectId = localStorage.getItem("selectedProjectId");
+                if(selectedProjectId) {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/assets/asset-project/${selectedProjectId}`);
+                    const data = await response.json();
+                    setImages(data.data);
+                } else {
+                    toast.error("No project selected");
+                }
+                
             } catch (error) {
                 console.log(error);
             }
