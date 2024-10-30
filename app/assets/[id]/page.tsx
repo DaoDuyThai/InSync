@@ -4,6 +4,7 @@ import { CropIcon, ImagesIcon, MoveIcon, UploadCloudIcon, XIcon, ZoomIn, ZoomOut
 import uploadImage from "../_components/uploadImage";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { current } from "@reduxjs/toolkit";
 
 /**
  * ImageCroppedPage component provides functionality for cropping and moving images on a canvas.
@@ -122,6 +123,9 @@ export default function ImageCroppedPage() {
         let imageX = 0;
         let imageY = 0;
         let totalImages = 0;
+        let isMoving = false;
+        let lastMovingX = 0;
+        let lastMovingY = 0;
 
         // Initialize values 
         totalImagesElement?.parentElement?.classList.add('hidden');
@@ -171,6 +175,7 @@ export default function ImageCroppedPage() {
             console.log("IsMovingButtonClicked is listened");
             isMovingButtonClicked = true;
             isCroppingButtonClicked = false;
+            
         })
 
 
@@ -183,14 +188,16 @@ export default function ImageCroppedPage() {
                 isDrawing = true;
             } else if (isMovingButtonClicked) {
                 console.log("isMovingButtonClicked")
-                isDrawing = true;
+                isMoving = true;
+                lastMovingX = e.offsetX;
+                lastMovingY = e.offsetY;
+                
             }
         });
 
         // Function to draw the rectangle while mouse is moving
         canvas?.addEventListener('mousemove', (e) => {
-            if (!isDrawing) return;
-            if (isCroppingButtonClicked) {
+            if (isCroppingButtonClicked &&  isDrawing) {
                 const currentX = e.offsetX;
                 const currentY = e.offsetY;
 
@@ -215,13 +222,14 @@ export default function ImageCroppedPage() {
                     }
                 }
             }
-            else if (isMovingButtonClicked) {
-                console.log("is moving");
-                const rect = canvas.getBoundingClientRect();
-                imageX = (e.clientX - rect.left);
-                imageY = (e.clientY - rect.top);
-                centerMoveX = imageX - img.width / 2;
-                centerMoveY = imageY - img.height / 2;
+            else if (isMovingButtonClicked && isMoving) {
+                let currentX = e.offsetX;
+                let currentY = e.offsetY;
+                imageX += (currentX - lastMovingX ) * 1.1 / scale;
+                imageY += (currentY - lastMovingY ) * 1.1 / scale;
+                lastMovingX = currentX;
+                lastMovingY = currentY;
+                
 
                 ctx?.clearRect(0, 0, canvas.width, canvas.height);
                 if (ctx) {
@@ -239,12 +247,16 @@ export default function ImageCroppedPage() {
                 const currentY = e.clientY - rect.top;
                 let width = currentX - startX;
                 let height = currentY - startY;
-                const realStartX = startX - scale * centerMoveX;
-                const realStartY = startY - scale * centerMoveY;
+                const realStartX = startX - scale * imageX;
+                const realStartY = startY - scale * imageY;
                 rectangles.push({ startX, startY, realStartX, realStartY, width, height });
                 isDrawing = false;
                 // Redraw everything
                 drawImageAndRectangles(ctx, canvas, img, rectangles);
+            } else if (isMovingButtonClicked && isMoving) {
+                isMoving = false;
+                lastMovingX = e.offsetX;
+                lastMovingY = e.offsetY;
             }
         });
 
@@ -276,8 +288,6 @@ export default function ImageCroppedPage() {
                         }
 
                     });
-
-                    // let imageData3 = fixedSizeCtx?.getImageData(82, 131, 58, 93);
                     if (imageData2) {
                         canvasContext?.putImageData(imageData2, 0, 0);
 
@@ -304,7 +314,7 @@ export default function ImageCroppedPage() {
 
 
         canvas?.addEventListener('click', (e) => {
-            if (isCroppingButtonClicked) {
+            if (isCroppingButtonClicked ) {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
@@ -326,8 +336,9 @@ export default function ImageCroppedPage() {
                         selectedRectIndex = null;
                         drawImageAndRectangles(ctx, canvas, img, rectangles);
                     }
-                }
-            } else if (isMovingButtonClicked) {
+                };
+            } 
+            else if (isMovingButtonClicked) {
                 isMovingButtonClicked = false;
             } else if (!isMovingButtonClicked) {
                 isMovingButtonClicked = true;
@@ -339,8 +350,8 @@ export default function ImageCroppedPage() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
                 ctx.scale(scale, scale);
-                ctx.drawImage(img, centerMoveX, centerMoveY);
-                // ctx.drawImage(img, imageX, imageY, img.width, img.height);
+                // ctx.drawImage(img, centerMoveX, centerMoveY);
+                ctx.drawImage(img, imageX, imageY, img.width, img.height);
                 ctx.restore();
             }
         };
