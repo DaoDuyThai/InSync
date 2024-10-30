@@ -98,6 +98,18 @@ export const Canvas = ({
         }
     }
 
+    useEffect(() => {
+        const handleFullScreenChange = () => {
+            setIsFullScreen(Boolean(document.fullscreenElement));
+        };
+
+        document.addEventListener("fullscreenchange", handleFullScreenChange);
+
+        return () => {
+            document.removeEventListener("fullscreenchange", handleFullScreenChange);
+        };
+    }, []);
+
     const handleSave = () => {
         saveScenario();
         setSaved(true);
@@ -230,7 +242,7 @@ export const Canvas = ({
     return (
         <div className="flex h-[calc(100vh-70px)] ">
             {/* Left sidebar */}
-            <div className="hidden  w-2/3 md:flex flex-col ">
+            <div className={`hidden  md:flex flex-col ${isFullScreen ? 'w-full' : 'w-2/3'}`}>
                 <div className=" flex items-center justify-between px-4 py-1 h-12">
                     <div className="flex items-center">
                         <Hint label="Save" side="top">
@@ -353,7 +365,7 @@ export const Canvas = ({
             </div>
 
             {/* Right content area */}
-            <div className="flex-1 md:w-1/3 flex flex-col">
+            <div className={`flex-1 md:w-1/3 flex flex-col ${isFullScreen ? 'hidden' : ''}`}>
                 <Tabs
                     defaultValue="code"
                     value={activeTab}
