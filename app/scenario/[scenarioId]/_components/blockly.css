@@ -1,13 +1,14 @@
 .blocklyScrollbarVertical {
   display: none;
 }
-.blocklyMenu.blocklyNonSelectable.blocklyContextMenu{
+
+.blocklyMenu.blocklyNonSelectable.blocklyContextMenu {
   overflow-y: hidden;
 }
 
 .blocklyFlyoutBackground {
   fill: white;
-  stroke: #e2e8f0; /* slate-200 color */
+  stroke: #e2e8f0;
+  /* slate-200 color */
   stroke-width: 2px;
 }
-

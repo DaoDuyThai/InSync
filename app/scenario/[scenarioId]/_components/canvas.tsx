@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from "react";
 import * as Blockly from 'blockly';
 import { blocks } from './blocks/json';
@@ -9,7 +10,7 @@ import { toast } from "sonner";
 import { Loading } from "@/components/loading";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2 } from "lucide-react"
+import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, Plus } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,6 +25,18 @@ import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
+import Image from "next/image";
+
+interface Asset {
+    id: string;
+    projectId: string;
+    projectName: string | null;
+    assetName: string;
+    type: string | null;
+    filePath: string;
+    dateCreated: string | null;
+    dateUpdated: string | null;
+}
 
 interface CanvasProps {
     id: string;
@@ -31,6 +44,7 @@ interface CanvasProps {
     deleteScenario: () => void;
     renameScenario: (id: string, newTitle: string) => Promise<void>;
     saveScenario: () => void;
+    projectId: string;
 }
 
 export const Canvas = ({
@@ -38,18 +52,42 @@ export const Canvas = ({
     title,
     deleteScenario,
     renameScenario,
-    saveScenario
+    saveScenario,
+    projectId
 }: CanvasProps) => {
     const blocklyDivRef = useRef<HTMLDivElement | null>(null);
     const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
-    const [loading, setLoading] = useState(true);
     const [code, setCode] = useState<string>("");
     const [activeTab, setActiveTab] = useState("assets");
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [saved, setSaved] = useState(true);
     const [newTitle, setNewTitle] = React.useState<string>(title);
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const [open, setOpen] = React.useState<boolean>(false);
+    const [loadingPage, setLoadingPage] = useState(true);
+    const [loadingScenarioRenameInput, setLoadingScenarioRenameInput] = React.useState<boolean>(false);
+    const [openRenameScenarioDialog, setOpenRenameScenarioDialog] = React.useState<boolean>(false);
+    const [assets, setAssets] = React.useState<Asset[]>([]);
+
+    // Fetch assets based on the project ID 
+    React.useEffect(() => {
+        if (projectId !== "") {
+            const fetchAssets = async () => {
+                try {
+                    const response = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${projectId}`
+                    );
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    setAssets(data.data);
+                } catch (error) {
+                    console.error("Error fetching assets:", error);
+                }
+            };
+            fetchAssets();
+            // setPending(false);
+        }
+    }, [projectId]);
 
     function formatJSON(jsonString: string): string | null {
         try {
@@ -59,6 +97,18 @@ export const Canvas = ({
             return jsonString;
         }
     }
+
+    useEffect(() => {
+        const handleFullScreenChange = () => {
+            setIsFullScreen(Boolean(document.fullscreenElement));
+        };
+
+        document.addEventListener("fullscreenchange", handleFullScreenChange);
+
+        return () => {
+            document.removeEventListener("fullscreenchange", handleFullScreenChange);
+        };
+    }, []);
 
     const handleSave = () => {
         saveScenario();
@@ -78,14 +128,14 @@ export const Canvas = ({
 
     const handleRename = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
+        setLoadingScenarioRenameInput(true);
         try {
             await renameScenario(id, newTitle);
         } catch (error) {
             console.error("Failed to rename scenario.");
         } finally {
-            setIsLoading(false);
-            setOpen(false);
+            setLoadingScenarioRenameInput(false);
+            setOpenRenameScenarioDialog(false);
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
@@ -185,15 +235,15 @@ export const Canvas = ({
                 runCode();
             });
 
-            setLoading(false);
+            setLoadingPage(false);
         }
     }, []);
 
     return (
-        <div className="flex h-[calc(100vh-70px)] overflow-hidden">
+        <div className="flex h-[calc(100vh-70px)] ">
             {/* Left sidebar */}
-            <div className="w-2/3 flex flex-col border-r">
-                <div className=" flex items-center justify-between px-4 py-1">
+            <div className={`hidden  md:flex flex-col ${isFullScreen ? 'w-full' : 'w-2/3'}`}>
+                <div className=" flex items-center justify-between px-4 py-1 h-12">
                     <div className="flex items-center">
                         <Hint label="Save" side="top">
                             <Button onClick={handleSave} variant="ghost" size="sm" aria-label="Save" disabled={saved}>
@@ -205,19 +255,13 @@ export const Canvas = ({
                                 <Link className="h-4 w-4" />
                             </Button>
                         </Hint>
-
-
-
-
-
-                        <Dialog open={open} onOpenChange={setOpen}>
+                        <Dialog open={openRenameScenarioDialog} onOpenChange={setOpenRenameScenarioDialog}>
                             <Hint label="Rename" side="top">
                                 <DialogTrigger asChild>
 
                                     <Button variant="ghost" size="sm" aria-label="Rename">
                                         <SquarePen className="h-4 w-4" />
                                     </Button>
-
                                 </DialogTrigger>
                             </Hint>
                             <DialogContent className="sm:max-w-md" >
@@ -244,8 +288,8 @@ export const Canvas = ({
                                                 Cancel
                                             </Button>
                                         </DialogClose>
-                                        <Button type="submit" disabled={isLoading}>
-                                            {isLoading ? "Renaming..." : "Submit"}
+                                        <Button type="submit" disabled={loadingScenarioRenameInput}>
+                                            {loadingScenarioRenameInput ? "Renaming..." : "Submit"}
                                         </Button>
                                     </DialogFooter>
                                 </form>
@@ -316,24 +360,21 @@ export const Canvas = ({
                             </Button>
                         </Hint>
                     </div>
-
                 </div>
                 <div ref={blocklyDivRef} id="blocklyDiv" className="w-full h-full"></div>
             </div>
 
             {/* Right content area */}
-            <div className="flex-1 w-1/3 flex flex-col">
-
+            <div className={`flex-1 md:w-1/3 flex flex-col ${isFullScreen ? 'hidden' : ''}`}>
                 <Tabs
                     defaultValue="code"
                     value={activeTab}
                     onValueChange={(value) => setActiveTab(value)}
                     className="flex-1 flex flex-col"
                 >
-
-                    <div className="p-1 flex justify-between">
-                        <div className="p-2 text-lg font-semibold">
-                            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} {/* Capitalize first letter */}
+                    <div className="px-2 h-12 flex justify-between items-center">
+                        <div className="px-1 text-lg font-semibold">
+                            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                         </div>
                         <TabsList>
                             <TabsTrigger value="assets">Assets</TabsTrigger>
@@ -342,9 +383,23 @@ export const Canvas = ({
                         </TabsList>
                     </div>
 
-                    <TabsContent value="assets" className="flex-1 p-1">
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            This is an Assets tab
+                    <TabsContent value="assets" className="flex-1 overflow-hidden m-0">
+                        <div className="w-full h-full max-h-[calc(100vh-119px)] overflow-y-auto text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-4">
+                            <div className="group cursor-pointer relative aspect-square bg-gray-500 rounded-lg hover:bg-gray-700 flex flex-col items-center justify-center">
+                                <Plus className="h-12 w-12 text-white stroke-1" />
+                                <p className="text-sm text-white font-light">
+                                    New Asset
+                                </p>
+                            </div>
+                            {assets.map((asset) => (
+                                <div key={asset.id} className="group cursor-pointer relative aspect-square">
+                                    <img
+                                        src={asset.filePath}
+                                        alt={asset.assetName}
+                                        className="w-full h-full object-cover rounded-lg transition-transform transform scale-100 group-hover:scale-105"
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </TabsContent>
                     <TabsContent value="logs" className="flex-1 p-1">
@@ -352,28 +407,30 @@ export const Canvas = ({
                             This is a Logs tab
                         </div>
                     </TabsContent>
-                    <TabsContent value="code" className="flex-1 overflow-y-auto">
-                        <CodeMirror
-                            value={code}
-                            extensions={[json()]}
-                            theme="light"
-                            onChange={(value) => setCode(value)}
-                            basicSetup={{
-                                lineNumbers: true,
-                                foldGutter: true,
-                                highlightActiveLineGutter: true,
-                            }}
-                            className="w-full"
-                            style={{
-                                maxHeight: '100%',
-                                overflowY: 'auto', // Ensures scrolling within the editor
-                            }}
-                        />
+                    <TabsContent value="code" className="flex-1 overflow-auto m-0">
+                        <div className="w-full h-[calc(100vh-119px)]">
+                            <CodeMirror
+                                value={code}
+                                extensions={[json()]}
+                                theme="light"
+                                onChange={(value) => setCode(value)}
+                                basicSetup={{
+                                    lineNumbers: true,
+                                    foldGutter: true,
+                                    highlightActiveLineGutter: true,
+                                }}
+                                className="w-full"
+                                style={{
+                                    maxHeight: '100%',
+                                    overflowY: 'auto', // Ensures scrolling within the editor
+                                }}
+                            />
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>
 
-            {loading && (
+            {loadingPage && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
                     <Loading />
                 </div>
@@ -381,3 +438,4 @@ export const Canvas = ({
         </div>
     );
 };
+

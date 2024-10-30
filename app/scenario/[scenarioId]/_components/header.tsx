@@ -64,7 +64,7 @@ export const Header = ({
                 </Link>
             </div>
 
-            <h1 className="underline">
+            <h1 className="underline hidden md:block">
                 {title}
             </h1>
 
