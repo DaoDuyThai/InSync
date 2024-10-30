@@ -415,7 +415,7 @@ export default function ImageCroppedPage() {
                         border-[#e6e6e8] 
                             rounded-md">
                     <div className="flex justify-between border-b-[1px] text-xl border-[#e6e6e8] p-[10px] ">
-                        <span className="font-semibold">Image Cropper</span>
+                        <span className="font-semibold">Assets Modifier</span>
                         <div className="flex gap-5">
                             <button
                                 className="hover:border-2 hover:border-black px-2 rounded-sm relative"
@@ -484,16 +484,18 @@ export default function ImageCroppedPage() {
                             <XIcon size={20} onClick={() => setOpenPopup(false)} />
                         </button>
                     </div>
-                    <div className="p-5">
+                    <div className="p-5 relative h-full w-full">
                         <div ref={canvasAreaRef} className="flex items-start flex-wrap gap-1 max-h-[380px] overflow-y-auto"></div>
-                        <div className="flex justify-center">
-                            <button
+                        <div className="flex justify-center w-full absolute bottom-5 ">
+                            <Button
+                                variant={"default"}
+                                size={"lg"}
                                 onClick={() => handleImageUpload()}
                                 ref={uploadImageButtonRef}
-                                className="border-2 bg-green-600 px-5 py-2 text-lg rounded-lg hidden"
+                                className="hidden"
                             >
                                 <UploadCloudIcon className="inline-block" size={20} /> <span>Upload Image</span>
-                            </button>
+                            </Button>
                         </div>
 
                     </div>

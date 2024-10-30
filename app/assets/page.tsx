@@ -29,9 +29,8 @@ export default function ImagePage() {
             try {
                 const selectedProjectId = localStorage.getItem("selectedProjectId");
                 if(selectedProjectId) {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/assets/asset-project/${selectedProjectId}`);
-                    const data = await response.json();
-                    setImages(data.data);
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${selectedProjectId}`)
+                    .then(res => res.json()).then(data => setImages(data.data)).catch(err => console.log(err));
                 } else {
                     toast.error("No project selected");
                 }

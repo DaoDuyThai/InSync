@@ -31,12 +31,12 @@ export default async function uploadImage(base64EncodedImage: string) {
 
 
 async function uploadImageToDB(imgURL: string) {
-  const url = "https://in-sync-71cacf992634.herokuapp.com/api/assets";
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/assets`;
   const currentDate = new Date();
   const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
-  const imgName = formattedDate + "_Image_" + "21B012D5-2F45-4850-8DBB-43590DD7D750";
+  const imgName = formattedDate + "_Image_" + localStorage.getItem("selectedProjectId");
   const data = {
-    "projectId": "21B012D5-2F45-4850-8DBB-43590DD7D750",
+    "projectId": localStorage.getItem("selectedProjectId"),
     "assetName": imgName,
     "type": "image",
     "filePath": imgURL
