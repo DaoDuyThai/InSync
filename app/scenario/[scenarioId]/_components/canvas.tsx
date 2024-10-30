@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from "react";
 import * as Blockly from 'blockly';
 import { blocks } from './blocks/json';
@@ -24,6 +25,18 @@ import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
+import Image from "next/image";
+
+interface Asset {
+    id: string;
+    projectId: string;
+    projectName: string | null;
+    assetName: string;
+    type: string | null;
+    filePath: string;
+    dateCreated: string | null;
+    dateUpdated: string | null;
+}
 
 interface CanvasProps {
     id: string;
@@ -31,6 +44,7 @@ interface CanvasProps {
     deleteScenario: () => void;
     renameScenario: (id: string, newTitle: string) => Promise<void>;
     saveScenario: () => void;
+    projectId: string;
 }
 
 export const Canvas = ({
@@ -38,18 +52,42 @@ export const Canvas = ({
     title,
     deleteScenario,
     renameScenario,
-    saveScenario
+    saveScenario,
+    projectId
 }: CanvasProps) => {
     const blocklyDivRef = useRef<HTMLDivElement | null>(null);
     const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
-    const [loading, setLoading] = useState(true);
     const [code, setCode] = useState<string>("");
     const [activeTab, setActiveTab] = useState("assets");
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [saved, setSaved] = useState(true);
     const [newTitle, setNewTitle] = React.useState<string>(title);
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const [open, setOpen] = React.useState<boolean>(false);
+    const [loadingPage, setLoadingPage] = useState(true);
+    const [loadingScenarioRenameInput, setLoadingScenarioRenameInput] = React.useState<boolean>(false);
+    const [openRenameScenarioDialog, setOpenRenameScenarioDialog] = React.useState<boolean>(false);
+    const [assets, setAssets] = React.useState<Asset[]>([]);
+
+    // Fetch assets based on the project ID 
+    React.useEffect(() => {
+        if (projectId !== "") {
+            const fetchAssets = async () => {
+                try {
+                    const response = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${projectId}`
+                    );
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    setAssets(data.data);
+                } catch (error) {
+                    console.error("Error fetching assets:", error);
+                }
+            };
+            fetchAssets();
+            // setPending(false);
+        }
+    }, [projectId]);
 
     function formatJSON(jsonString: string): string | null {
         try {
@@ -78,14 +116,14 @@ export const Canvas = ({
 
     const handleRename = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
+        setLoadingScenarioRenameInput(true);
         try {
             await renameScenario(id, newTitle);
         } catch (error) {
             console.error("Failed to rename scenario.");
         } finally {
-            setIsLoading(false);
-            setOpen(false);
+            setLoadingScenarioRenameInput(false);
+            setOpenRenameScenarioDialog(false);
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
@@ -185,7 +223,7 @@ export const Canvas = ({
                 runCode();
             });
 
-            setLoading(false);
+            setLoadingPage(false);
         }
     }, []);
 
@@ -205,7 +243,7 @@ export const Canvas = ({
                                 <Link className="h-4 w-4" />
                             </Button>
                         </Hint>
-                        <Dialog open={open} onOpenChange={setOpen}>
+                        <Dialog open={openRenameScenarioDialog} onOpenChange={setOpenRenameScenarioDialog}>
                             <Hint label="Rename" side="top">
                                 <DialogTrigger asChild>
 
@@ -239,8 +277,8 @@ export const Canvas = ({
                                                 Cancel
                                             </Button>
                                         </DialogClose>
-                                        <Button type="submit" disabled={isLoading}>
-                                            {isLoading ? "Renaming..." : "Submit"}
+                                        <Button type="submit" disabled={loadingScenarioRenameInput}>
+                                            {loadingScenarioRenameInput ? "Renaming..." : "Submit"}
                                         </Button>
                                     </DialogFooter>
                                 </form>
@@ -325,7 +363,7 @@ export const Canvas = ({
                 >
                     <div className="px-2 h-12 flex justify-between items-center">
                         <div className="px-1 text-lg font-semibold">
-                            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} {/* Capitalize first letter */}
+                            {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                         </div>
                         <TabsList>
                             <TabsTrigger value="assets">Assets</TabsTrigger>
@@ -334,9 +372,17 @@ export const Canvas = ({
                         </TabsList>
                     </div>
 
-                    <TabsContent value="assets" className="flex-1">
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            This is an Assets tab
+                    <TabsContent value="assets" className="flex-1 overflow-hidden m-0">
+                        <div className="w-full h-full max-h-[calc(100vh-119px)] overflow-y-auto text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-4">
+                            {assets.map((asset) => (
+                                <div key={asset.id} className="group cursor-pointer relative aspect-square">
+                                    <img
+                                        src={asset.filePath}
+                                        alt={asset.assetName}
+                                        className="w-full h-full object-cover rounded-lg transition-transform transform scale-100 group-hover:scale-105"
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </TabsContent>
                     <TabsContent value="logs" className="flex-1 p-1">
@@ -367,7 +413,7 @@ export const Canvas = ({
                 </Tabs>
             </div>
 
-            {loading && (
+            {loadingPage && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
                     <Loading />
                 </div>
@@ -375,3 +421,4 @@ export const Canvas = ({
         </div>
     );
 };
+

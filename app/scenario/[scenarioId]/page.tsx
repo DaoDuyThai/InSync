@@ -194,6 +194,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                         deleteScenario={() => deleteScenario(scenario.id)}
                         renameScenario={renameScenario}
                         saveScenario={handleSaveScenario}
+                        projectId = {scenario.projectId}
                     />
                 </>
             ) : null}

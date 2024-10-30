@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      domains: ['example.com'], // Add your allowed image domains here
+      domains: ['res.cloudinary.com'], // Add your allowed image domains here
     },
   };
   
