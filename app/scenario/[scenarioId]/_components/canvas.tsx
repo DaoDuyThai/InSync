@@ -384,7 +384,7 @@ export const Canvas = ({
                     </div>
 
                     <TabsContent value="assets" className="flex-1 overflow-hidden m-0">
-                        <div className="w-full h-full max-h-[calc(100vh-119px)] overflow-y-auto text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-4">
+                        <div className="w-full max-h-[calc(100vh-119px)] overflow-y-auto text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-4">
                             <div className="group cursor-pointer relative aspect-square bg-gray-500 rounded-lg hover:bg-gray-700 flex flex-col items-center justify-center">
                                 <Plus className="h-12 w-12 text-white stroke-1" />
                                 <p className="text-sm text-white font-light">
