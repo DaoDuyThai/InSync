@@ -33,7 +33,7 @@ export const Footer = ({
             </p>
 
             <p className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-muted-foreground truncate">
-                {authorLabel}, {createdAtLabel}
+                {authorLabel}, {createdAtLabel}  
             </p>
             <button
                 disabled={disabled}
