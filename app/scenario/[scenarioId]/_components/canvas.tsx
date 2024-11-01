@@ -26,6 +26,9 @@ import { ConfirmModal } from "@/components/confirm-modal";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import Image from "next/image";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
+import CloudinaryUploadWidget from "@/components/cloudinary-upload-widget";
 
 interface Asset {
     id: string;
@@ -67,6 +70,36 @@ export const Canvas = ({
     const [openRenameScenarioDialog, setOpenRenameScenarioDialog] = React.useState<boolean>(false);
     const [assets, setAssets] = React.useState<Asset[]>([]);
 
+    const handlePublicId = (publicId: string) => {
+        // console.log('Uploaded Public ID:', publicId);
+        // Handle the public ID as needed
+    };
+
+    const uwConfig = {
+        cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+        uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+        sources: ["local", "url", "camera", "google_drive"],
+        resourceType: "image",
+        clientAllowedFormats: ["png", "jpg", "jpeg"],
+        maxFileSize: 5500000,
+        cropping: true,
+        showAdvancedOptions: true,  //add advanced options (public_id and tag)
+        theme: "minimal",
+        singleUploadAutoClose: true,
+        showUploadMoreButton: true,
+            // cropping: true, //add a cropping step
+            // sources: [ "local", "url"], // restrict the upload sources to URL and local files
+            // multiple: false,  //restrict upload to a single file
+            // folder: "user_images", //upload files to the specified folder
+            // tags: ["users", "profile"], //add the given tags to the uploaded files
+            // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
+            // clientAllowedFormats: ["images"], //restrict uploading to image files only
+            // maxImageFileSize: 2000000,  //restrict file size to less than 2MB
+            // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
+            // theme: "purple", //change to a purple theme
+        
+    };
+
     // Fetch assets based on the project ID 
     React.useEffect(() => {
         if (projectId !== "") {
@@ -88,6 +121,8 @@ export const Canvas = ({
             // setPending(false);
         }
     }, [projectId]);
+
+
 
     function formatJSON(jsonString: string): string | null {
         try {
@@ -385,12 +420,9 @@ export const Canvas = ({
 
                     <TabsContent value="assets" className="flex-1 overflow-hidden m-0">
                         <div className="w-full max-h-[calc(100vh-119px)] overflow-y-auto text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-4">
-                            <div className="group cursor-pointer relative aspect-square bg-gray-500 rounded-lg hover:bg-gray-700 flex flex-col items-center justify-center">
-                                <Plus className="h-12 w-12 text-white stroke-1" />
-                                <p className="text-sm text-white font-light">
-                                    New Asset
-                                </p>
-                            </div>
+                            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={handlePublicId}>
+                                {/* Optionally render additional components */}
+                            </CloudinaryUploadWidget>
                             {assets.map((asset) => (
                                 <div key={asset.id} className="group cursor-pointer relative aspect-square">
                                     <img
