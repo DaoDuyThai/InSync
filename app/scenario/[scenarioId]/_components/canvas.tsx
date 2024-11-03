@@ -67,10 +67,16 @@ export const Canvas = ({
     const [loadingScenarioRenameInput, setLoadingScenarioRenameInput] = React.useState<boolean>(false);
     const [openRenameScenarioDialog, setOpenRenameScenarioDialog] = React.useState<boolean>(false);
     const [assets, setAssets] = React.useState<Asset[]>([]);
+    const [filteredAssets, setFilteredAssets] = React.useState<Asset[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>("");
 
     const handlePublicId = (publicId: string) => {
+        if (projectId !== "") {
+            setTimeout(() => {
+                fetchAssets();
+            }, 2000);
+        }
         // console.log('Uploaded Public ID:', publicId);
-        // Handle the public ID as needed
     };
 
     const uwConfig = {
@@ -85,42 +91,55 @@ export const Canvas = ({
         theme: "minimal",
         singleUploadAutoClose: true,
         showUploadMoreButton: true,
-            // cropping: true, //add a cropping step
-            // sources: [ "local", "url"], // restrict the upload sources to URL and local files
-            // multiple: false,  //restrict upload to a single file
-            // folder: "user_images", //upload files to the specified folder
-            // tags: ["users", "profile"], //add the given tags to the uploaded files
-            // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
-            // clientAllowedFormats: ["images"], //restrict uploading to image files only
-            // maxImageFileSize: 2000000,  //restrict file size to less than 2MB
-            // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
-            // theme: "purple", //change to a purple theme
-        
+        // cropping: true, //add a cropping step
+        // sources: [ "local", "url"], // restrict the upload sources to URL and local files
+        // multiple: false,  //restrict upload to a single file
+        // folder: "user_images", //upload files to the specified folder
+        // tags: ["users", "profile"], //add the given tags to the uploaded files
+        // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
+        // clientAllowedFormats: ["images"], //restrict uploading to image files only
+        // maxImageFileSize: 2000000,  //restrict file size to less than 2MB
+        // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
+        // theme: "purple", //change to a purple theme
+
     };
 
-    // Fetch assets based on the project ID 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchAssets = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${projectId}`
+            );
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            const sortedAssets = data.data.sort((a: { dateCreated: string | number | Date; }, b: { dateCreated: string | number | Date; }) => {
+                return new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime();
+            });
+            setAssets(sortedAssets);
+        } catch (error) {
+            console.error("Error fetching assets:", error);
+        }
+    };
+
     React.useEffect(() => {
         if (projectId !== "") {
-            const fetchAssets = async () => {
-                try {
-                    const response = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${projectId}`
-                    );
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    setAssets(data.data);
-                } catch (error) {
-                    console.error("Error fetching assets:", error);
-                }
-            };
             fetchAssets();
-            // setPending(false);
         }
     }, [projectId]);
 
+    // Update filtered assets based on search term
+    useEffect(() => {
+        const updatedFilteredAssets = searchTerm
+            ? assets.filter(asset =>
+                asset.assetName.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            : assets;
 
+        setFilteredAssets(updatedFilteredAssets);
+    }, [searchTerm, assets]);
 
     function formatJSON(jsonString: string): string | null {
         try {
@@ -417,12 +436,20 @@ export const Canvas = ({
                     </div>
 
                     <TabsContent value="assets" className="flex-1 overflow-hidden m-0">
+                        <div className="w-full px-4">
+                            <Input
+                                placeholder="Search assets"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full" // Add margin for spacing
+                            />
+                        </div>
                         <div className="w-full max-h-[calc(100vh-119px)] overflow-y-auto text-muted-foreground grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-4">
-                            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={handlePublicId}>
+                            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={handlePublicId} projectId={projectId}>
                                 {/* Optionally render additional components */}
                             </CloudinaryUploadWidget>
-                            {assets.map((asset) => (
-                                <div key={asset.id} className="group cursor-pointer relative aspect-square">
+                            {filteredAssets.map((asset) => (
+                                <div key={asset.id} className="group cursor-grab relative aspect-square">
                                     <img
                                         src={asset.filePath}
                                         alt={asset.assetName}
