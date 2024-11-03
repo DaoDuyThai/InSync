@@ -1,3 +1,4 @@
+import { set } from "date-fns";
 import { Loader, Plus } from "lucide-react";
 import { createContext, useEffect, useState, ReactNode } from "react";
 import { toast } from "sonner";
@@ -100,11 +101,11 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                     }
                 }
             );
-            setLoading(false); // Hide loading once widget is initialized
             myWidget.open();
         } else {
             console.error("Cloudinary script not loaded.");
-        }
+        } 
+        setLoading(false); // Hide loading indicator
     };
 
     return (

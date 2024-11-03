@@ -10,11 +10,13 @@ import { toast } from "sonner";
 import { Loading } from "@/components/loading";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, Plus } from "lucide-react"
+import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, Plus, MoreVertical } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
@@ -69,6 +71,9 @@ export const Canvas = ({
     const [assets, setAssets] = React.useState<Asset[]>([]);
     const [filteredAssets, setFilteredAssets] = React.useState<Asset[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
+    const [openRenameAssetDialog, setOpenRenameAssetDialog] = React.useState<boolean>(false);
+    const [loadingAssetRenameInput, setLoadingAssetRenameInput] = React.useState<boolean>(false);
+    const [newAssetName, setNewAssetName] = React.useState<string>("");
 
     const handlePublicId = (publicId: string) => {
         if (projectId !== "") {
@@ -291,6 +296,66 @@ export const Canvas = ({
         }
     }, []);
 
+    const handleRenameAsset = async (e: React.FormEvent, scenarioId: string) => {
+        e.preventDefault();
+
+        setLoadingAssetRenameInput(true);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/${scenarioId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    assetName: newAssetName, // Assuming newAssetName is a state variable or a ref for the new name
+                    id: scenarioId,
+                    type: "image", // Assuming assetType is defined somewhere in your component
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Optionally handle the response if you need to
+            const data = await response.json();
+            // console.log("Asset renamed successfully:", data);
+            toast.success("Asset renamed successfully");
+
+            // Optionally update assets in state if necessary
+            fetchAssets();
+        } catch (error) {
+            console.error("Failed to rename asset:", error);
+            toast.error("Failed to rename asset");
+        } finally {
+            setLoadingAssetRenameInput(false);
+            setOpenRenameAssetDialog(false);
+        }
+    };
+
+    const handleDeleteAsset = async (assetId: string) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/${assetId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Optionally handle the response if you need to
+            const data = await response.json();
+            // console.log("Asset deleted successfully:", data);
+            toast.success("Asset deleted successfully");
+
+            // Optionally update assets in state if necessary
+            fetchAssets();
+        } catch (error) {
+            console.error("Failed to delete asset:", error);
+            toast.error("Failed to delete asset");
+        }
+    }
+
     return (
         <div className="flex h-[calc(100vh-70px)] ">
             {/* Left sidebar */}
@@ -455,6 +520,88 @@ export const Canvas = ({
                                         alt={asset.assetName}
                                         className="w-full h-full object-cover rounded-lg transition-transform transform scale-100 group-hover:scale-105"
                                     />
+                                    <div className="absolute top-0 right-0">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button className="rounded-full" variant="ghost" size="sm" aria-label="More options">
+                                                    <MoreVertical className="h-3 w-3" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="w-full h-full">
+                                                <DropdownMenuLabel>{asset.assetName}</DropdownMenuLabel>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem asChild className="w-full h-full">
+
+
+
+
+                                                    <Dialog open={openRenameAssetDialog} onOpenChange={setOpenRenameAssetDialog}>
+                                                        <DialogTrigger className="w-full h-full">
+                                                            <Button className="w-full" variant="ghost" size="sm" aria-label="Rename">
+                                                                <Pencil className="h-4 w-4 mr-4" />Rename
+                                                            </Button>
+                                                        </DialogTrigger>
+
+                                                        <DialogContent className="sm:max-w-md" >
+                                                            <DialogHeader>
+                                                                <DialogTitle>Edit asset title</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Enter a new title for this asset.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+                                                            <form onSubmit={(e) => handleRenameAsset(e, asset.id)} className="space-y-4">
+                                                                <Input
+                                                                    required
+                                                                    maxLength={60}
+                                                                    minLength={5}
+                                                                    placeholder={asset.assetName}
+                                                                    onChange={(e) => {
+                                                                        setNewAssetName(e.target.value)
+                                                                    }}
+                                                                />
+                                                                <DialogFooter>
+                                                                    <DialogClose asChild>
+                                                                        <Button type="button" variant="outline">
+                                                                            Cancel
+                                                                        </Button>
+                                                                    </DialogClose>
+                                                                    <Button type="submit" disabled={loadingAssetRenameInput}>
+                                                                        {loadingAssetRenameInput ? "Renaming..." : "Submit"}
+                                                                    </Button>
+                                                                </DialogFooter>
+                                                            </form>
+                                                        </DialogContent>
+                                                    </Dialog>
+
+
+
+
+
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem asChild className="w-full h-full">
+                                                    <ConfirmModal
+                                                        header="Delete Asset?"
+                                                        description="This will delete the asset from the database."
+                                                        onConfirm={() => {
+                                                            handleDeleteAsset(asset.id);
+                                                        }}>
+                                                        <Button className="w-full" variant="ghost" size="sm" aria-label="Delete">
+                                                            <Trash2 className="h-4 w-4 mr-4" />Delete
+                                                        </Button>
+                                                    </ConfirmModal>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+
+                                    {/* <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Button variant="ghost" size="sm" aria-label="Rename">
+                                            <Pencil className="h-4 w-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="sm" aria-label="Delete">
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div> */}
                                 </div>
                             ))}
                         </div>
@@ -487,12 +634,14 @@ export const Canvas = ({
                 </Tabs>
             </div>
 
-            {loadingPage && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
-                    <Loading />
-                </div>
-            )}
-        </div>
+            {
+                loadingPage && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white z-50">
+                        <Loading />
+                    </div>
+                )
+            }
+        </div >
     );
 };
 
