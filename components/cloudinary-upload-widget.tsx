@@ -94,7 +94,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                 uwConfig,
                 (error: any, result: any) => {
                     if (!error && result && result.event === "success") {
-                        console.log("Done! Here is the image info: ", result.info.url);
+                        // console.log("Done! Here is the image info: ", result.info.url);
                         setPublicId(result.info.public_id);
                         uploadAsset(result.info.original_filename, result.info.url, projectId, "image");
                     }
