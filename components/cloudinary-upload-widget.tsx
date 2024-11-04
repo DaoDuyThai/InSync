@@ -37,6 +37,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
     const [loading, setLoading] = useState(false); // State to manage loading indicator
 
     const uploadAsset = async (assetName: string, filePath: string, projectId: string, type: string) => {
+        setLoading(true); // Show loading indicator
         const body = {
             assetName,
             filePath,
@@ -63,6 +64,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
         } catch (error) {
             console.error("Error uploading asset:", error);
         }
+        setLoading(false); // Hide loading
     };
 
     useEffect(() => {
@@ -89,23 +91,26 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
     }, [loaded]);
 
     const initializeCloudinaryWidget = () => {
-        setLoading(true); // Show loading indicator
         if (window.cloudinary) {
             const myWidget = window.cloudinary.createUploadWidget(
                 uwConfig,
                 (error: any, result: any) => {
-                    if (!error && result && result.event === "success") {
-                        // console.log("Done! Here is the image info: ", result.info.url);
+                    if (result?.event === "close") {
+                        // If the widget is closed, hide loading
+                        setLoading(false);
+                    } else if (!error && result?.event === "success") {
                         setPublicId(result.info.public_id);
                         uploadAsset(result.info.original_filename, result.info.url, projectId, "image");
+                        setLoading(false); // Hide loading on successful upload
                     }
                 }
             );
             myWidget.open();
         } else {
             console.error("Cloudinary script not loaded.");
-        } 
-        setLoading(false); // Hide loading indicator
+            toast.error("Something went wrong. Please try again.");
+            setLoading(false); // Hide loading if there's an error
+        }
     };
 
     return (
@@ -117,7 +122,10 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                     </div>
                 ) : (
                     <button
-                        onClick={initializeCloudinaryWidget}
+                        onClick={() =>{
+                            setLoading(true);
+                            initializeCloudinaryWidget();
+                        }}
                         id="upload_widget"
                         className="w-full h-full group cursor-pointer relative aspect-square bg-gray-500 rounded-lg hover:bg-gray-700 flex flex-col items-center justify-center"
                     >
