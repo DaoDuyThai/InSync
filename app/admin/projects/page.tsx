@@ -23,7 +23,7 @@ type Payment = {
   email: string
 }
 
-export const payments: Payment[] = [
+const payments: Payment[] = [
   {
     id: "728ed52f",
     amount: 100,
@@ -39,7 +39,7 @@ export const payments: Payment[] = [
   // ...
 ]
 
-export const columns: ColumnDef<Payment>[] = [
+const columns: ColumnDef<Payment>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -110,7 +110,6 @@ const ProjectsPage = () => {
   return (
     <div className="w-full h-full overflow-y-auto">
       <DataTable columns={columns} data={payments} />
-
     </div>
   );
 }
