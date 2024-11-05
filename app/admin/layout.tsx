@@ -1,10 +1,12 @@
 // import { Navbar } from "@/components/navbar";
 // import { ProjectSidebar } from "@/components/project-sidebar";
+"use client"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AdminSidebar } from "./_components/admin-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { UserButton } from "@clerk/nextjs"
+import Link from "next/link"
 
 
 type Props = {
@@ -24,8 +26,7 @@ const AdminLayout = ({ children }: Props) => {
                     <UserButton />
                 </header>
 
-                <div className="flex flex-1 flex-col gap-4 p-4">
-
+                <div className="container">
                     {children}
                 </div>
             </SidebarInset>
