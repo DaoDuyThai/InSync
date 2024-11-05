@@ -11,14 +11,6 @@ export const toolbox = {
     },
     {
       'kind': 'block',
-      'type': 'delay'
-    },
-    {
-      'kind': 'block',
-      'type': 'click'
-    },
-    {
-      'kind': 'block',
       'type': 'open_app'
     },
     {
@@ -27,11 +19,27 @@ export const toolbox = {
     },
     {
       'kind': 'block',
+      'type': 'delay'
+    },
+    {
+      'kind': 'block',
+      'type': 'click'
+    },
+    {
+      'kind': 'block',
       'type': 'zoom'
     },
     {
       'kind': 'block',
       'type': 'swipe'
+    },
+    {
+      'kind': 'block',
+      'type': "rotate"
+    },
+    {
+      'kind': 'block',
+      'type': 'paste'
     }
   ]
 };

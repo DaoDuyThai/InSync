@@ -5,7 +5,7 @@ import * as React from "react";
 
 
 
-const AdminDocsPage = () => {
+const SubscriptionsPage = () => {
   return (
     <div className="w-full h-full overflow-y-auto">
       
@@ -13,4 +13,4 @@ const AdminDocsPage = () => {
   );
 }
 
-export default AdminDocsPage;
+export default SubscriptionsPage;

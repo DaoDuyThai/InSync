@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -6,14 +6,8 @@ import { Overlay } from "./overlay";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "@clerk/nextjs";
 import { Footer } from "./footer";
-import { Skeleton } from "@/components/ui/skeleton"
-// TODO: Action to be implemented
-// import { Actions } from "@/components/actions";
+import { Skeleton } from "@/components/ui/skeleton";
 import { MoreHorizontal } from "lucide-react";
-// import { useApiMutation } from "@/hooks/use-api-mutation";
-// import { api } from "@/convex/_generated/api";
-import { on } from "events";
-import { toast } from "sonner";
 import { Actions } from "@/components/actions";
 
 interface ScenarioCardProps {
@@ -21,9 +15,8 @@ interface ScenarioCardProps {
     title: string;
     authorName: string;
     authorId: string;
-    createdAt: number;
+    createdAt: number; // Assuming createdAt is a timestamp in milliseconds
     imageUrl: string;
-    // projectId: string;
     isFavorite: boolean;
     toggleFavorite: () => void;
     deleteScenario: () => void;
@@ -37,7 +30,6 @@ export const ScenarioCard = ({
     authorId,
     createdAt,
     imageUrl,
-    // projectId,
     isFavorite,
     toggleFavorite,
     deleteScenario,
@@ -45,7 +37,18 @@ export const ScenarioCard = ({
 }: ScenarioCardProps) => {
     const { userId } = useAuth();
     const authorLabel = userId === authorId ? "You" : authorName;
-    const createdAtLabel = formatDistanceToNow(createdAt, { addSuffix: true });
+
+    // Convert the createdAt timestamp to a Date object
+    const createdAtDate = new Date(createdAt);
+
+    // Get the local timezone offset in minutes and convert to milliseconds
+    const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000; // offset in milliseconds
+
+    // Adjust the createdAt date based on the local timezone
+    const adjustedCreatedAtDate = new Date(createdAtDate.getTime() - timezoneOffset);
+
+    // Format the distance from now
+    const createdAtLabel = formatDistanceToNow(adjustedCreatedAtDate, { addSuffix: true });
 
     return (
         <Link href={`/scenario/${id}`}>
@@ -68,15 +71,13 @@ export const ScenarioCard = ({
                     isFavorite={isFavorite}
                     title={title}
                     authorLabel={authorLabel}
-                    createdAtLabel={createdAtLabel}
+                    createdAtLabel={createdAtLabel} // This now reflects the local time adjustment
                     onClick={toggleFavorite}
                     disabled={false}
                 />
-
             </div>
-
         </Link>
-    )
+    );
 }
 
 ScenarioCard.Skeleton = function ScenarioCardSkeleton() {
@@ -84,5 +85,5 @@ ScenarioCard.Skeleton = function ScenarioCardSkeleton() {
         <div className="aspect-[100/127] rounded-lg overflow-hidden">
             <Skeleton className="h-full w-full" />
         </div>
-    )
+    );
 }

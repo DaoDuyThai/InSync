@@ -2,6 +2,7 @@ import * as Blockly from 'blockly';
 
 export const jsonGenerator = new Blockly.Generator('JSON');
 
+/* ===================================== SCENARIO START ======================================== */
 jsonGenerator.forBlock['scenario'] = function (block, generator) {
   const actions = generator.statementToCode(block, 'ACTIONS');  // Get the actions inside
   const code = `[
@@ -17,62 +18,9 @@ jsonGenerator.forBlock['scenario'] = function (block, generator) {
 ]`;
   return code;
 };
+/* ======================================= SCENARIO END ======================================== */
 
-jsonGenerator.forBlock['delay'] = function (block) {
-  const duration = block.getFieldValue('DURATION');  // Get the delay duration
-  const isLog = block.getFieldValue('ISLOG');  // Get whether logging is enabled
-
-  // Generate base JSON for the delay
-  let
-    code = `{
-        "actionType": "DELAY",
-        "isLog": ${isLog === 'TRUE' ? 'true' : 'false'}, 
-        "logContent": "",
-        "duration": ${duration}
-    }`;
-
-  // If logging is enabled, add log content
-  if (isLog === 'TRUE') {
-    const logContent = block.getFieldValue('LOGCONTENT') || 'Log Content';
-    code = `{
-        "actionType": "DELAY",
-        "isLog": true,
-        "logContent": "${logContent}",
-        "duration": ${duration}
-    }`;
-  }
-
-  return code;
-};
-
-jsonGenerator.forBlock['click'] = function (block) {
-  const element = block.getFieldValue('ON');
-  const duration = block.getFieldValue('DURATION');
-  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
-  const defaultLogContent = `Click on ${element} for ${duration} ms`;
-
-  let code = `{
-        "actionType": "CLICK",
-        "on": "${element}",
-        "isLog": ${isLog},
-        "logContent": "",
-        "duration": ${duration}
-    }`;
-
-  if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-    code = `{
-        "actionType": "CLICK",
-        "on": "${element}",
-        "isLog": true,
-        "logContent": "${logContent}",
-        "duration": ${duration}
-    }`;
-  }
-
-  return code;
-};
-
+/* =================================== OPEN APP ACTION START =================================== */
 jsonGenerator.forBlock['open_app'] = function (block) {
   const appChoice = block.getFieldValue('APP_CHOICE');  // Get the selected app or "Other"
   const isLog = block.getFieldValue('ISLOG');           // Get whether logging is enabled
@@ -109,8 +57,9 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 
   return code;
 };
+/* ==================================== OPEN APP ACTION END ==================================== */
 
-
+/* ===================================== FOR ACTION START ====================================== */
 jsonGenerator.forBlock['for'] = function (block, generator) {
   const times = block.getFieldValue('TIMES');           // Number of repetitions
   const isLog = block.getFieldValue('ISLOG');
@@ -139,8 +88,68 @@ jsonGenerator.forBlock['for'] = function (block, generator) {
   }
   return code;
 };
+/* ====================================== FOR ACTION END ======================================= */
 
+/* ==================================== DELAY ACTION START ===================================== */
+jsonGenerator.forBlock['delay'] = function (block) {
+  const duration = block.getFieldValue('DURATION');  // Get the delay duration
+  const isLog = block.getFieldValue('ISLOG');  // Get whether logging is enabled
 
+  // Generate base JSON for the delay
+  let
+    code = `{
+        "actionType": "DELAY",
+        "isLog": ${isLog === 'TRUE' ? 'true' : 'false'}, 
+        "logContent": "",
+        "duration": ${duration}
+    }`;
+
+  // If logging is enabled, add log content
+  if (isLog === 'TRUE') {
+    const logContent = block.getFieldValue('LOGCONTENT') || 'Log Content';
+    code = `{
+        "actionType": "DELAY",
+        "isLog": true,
+        "logContent": "${logContent}",
+        "duration": ${duration}
+    }`;
+  }
+
+  return code;
+};
+/* ===================================== DELAY ACTION END ====================================== */
+
+/* ==================================== CLICK ACTION START ===================================== */
+jsonGenerator.forBlock['click'] = function (block) {
+  const element = block.getFieldValue('ON');
+  const duration = block.getFieldValue('DURATION');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const defaultLogContent = `Click on ${element} for ${duration} ms`;
+
+  let code = `{
+        "actionType": "CLICK",
+        "on": "${element}",
+        "isLog": ${isLog},
+        "logContent": "",
+        "duration": ${duration}
+    }`;
+
+  if (isLog) {
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
+        "actionType": "CLICK",
+        "on": "${element}",
+        "isLog": true,
+        "logContent": "${logContent}",
+        "duration": ${duration}
+    }`;
+  }
+
+  return code;
+};
+/* ===================================== CLICK ACTION END ====================================== */
+
+/* ===================================== ZOOM ACTION START ===================================== */
 jsonGenerator.forBlock['zoom'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
   const duration = block.getFieldValue('DURATION');
@@ -168,7 +177,9 @@ jsonGenerator.forBlock['zoom'] = function (block) {
 
   return code;
 };
+/* ===================================== ZOOM ACTION END ======================================= */
 
+/* ==================================== SWIPE ACTION START ===================================== */
 jsonGenerator.forBlock['swipe'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
   const duration = block.getFieldValue('DURATION');
@@ -197,7 +208,67 @@ jsonGenerator.forBlock['swipe'] = function (block) {
 
   return code;
 };
+/* ===================================== SWIPE ACTION END ====================================== */
 
+/* ==================================== ROTATE ACTION START ==================================== */
+jsonGenerator.forBlock['rotate'] = function(block) {
+  const direction = block.getFieldValue('DIRECTION');
+  const duration = block.getFieldValue('DURATION');
+  const degrees = block.getFieldValue('DEGREES');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const defaultLogContent = `Rotate ${direction} for ${duration} ms by ${degrees} degrees`;
+
+  let code = `{
+        "actionType": "ROTATE",
+        "direction": "${direction}",
+        "duration": ${duration},
+        "degrees": ${degrees},
+        "isLog": ${isLog},
+        "logContent": ""
+    }`;
+
+  if (isLog) {
+      const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+      code = `{
+        "actionType": "ROTATE",
+        "direction": "${direction}",
+        "duration": ${duration},
+        "degrees": ${degrees},
+        "isLog": true,
+        "logContent": "${logContent}"
+    }`;
+  }
+
+  return code;
+};
+/* ===================================== ROTATE ACTION END ===================================== */
+
+/* ==================================== PASTE ACTION START ===================================== */
+jsonGenerator.forBlock['paste'] = function(block) {
+  const pasteContent = block.getFieldValue('PASTE_CONTENT');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const defaultLogContent = `Input "${pasteContent}"`;
+
+  let code = `{
+        "actionType": "PASTE",
+        "pasteContent": "${pasteContent}",
+        "isLog": ${isLog},
+        "logContent": ""
+  }`;
+
+  if (isLog) {
+      const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+      code = `{
+          "actionType": "PASTE",
+          "pasteContent": "${pasteContent}",
+          "isLog": true,
+          "logContent": "${logContent}"
+      }`;
+  }
+
+  return code;
+};
+/* ===================================== PASTE ACTION END ====================================== */
 
 
 jsonGenerator.scrub_ = function (block, code, thisOnly) {

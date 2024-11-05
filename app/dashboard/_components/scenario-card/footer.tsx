@@ -33,13 +33,21 @@ export const Footer = ({
             </p>
 
             <p className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-muted-foreground truncate">
-                {authorLabel}, {createdAtLabel}
+                {authorLabel}, {createdAtLabel}  
             </p>
-            <button disabled={disabled} onClick={handleClick} className={cn(
-                "opacity-0 group-hover:opacity-100 transition absolute top-3 right-3 text-muted-foreground hover:text-blue-500", disabled && "cursor-not-allowed opacity-75"
-            )}>
+            <button
+                disabled={disabled}
+                onClick={handleClick}
+                className={cn(
+                    "absolute top-3 right-3 transition",
+                    isFavorite ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+                    disabled && "cursor-not-allowed opacity-75",
+                    "text-muted-foreground hover:text-blue-500"
+                )}
+            >
                 <Star className={cn(
-                    "h-4 w-4", isFavorite && "fill-blue-600 text-blue-600"
+                    "h-4 w-4",
+                    isFavorite && "fill-blue-600 text-blue-600"
                 )} />
             </button>
         </div>

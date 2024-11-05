@@ -17,7 +17,78 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             }
         ],
         "colour": 0,
-        "tooltip": "Container for scenario actions",
+        "tooltip": "Defines a sequence of actions in a scenario.",
+        "helpUrl": ""
+    },
+    {
+        "type": "open_app",
+        "message0": "open app %1",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "APP_CHOICE",
+                "options": [
+                    ["Youtube", "com.google.android.youtube"],
+                    ["Facebook", "com.facebook.katana"],
+                    ["Instagram", "com.instagram.android"],
+                    ["Twitter", "com.twitter.android"],
+                    ["TikTok", "com.zhiliaoapp.musically"],
+                    ["Zoom", "us.zoom.videomeetings"],
+                    ["Google Meet", "com.google.android.apps.meetings"],
+                    ["Other", "OTHER"]
+                ]
+            }
+        ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 35,
+        "mutator": "open_app_mutator",
+        "tooltip": "Opens a specified app.",
+        "helpUrl": ""
+    },
+    {
+        "type": "for",
+        "message0": "repeat %1 times %2",
+        "args0": [
+            {
+                "type": "field_number",
+                "name": "TIMES",
+                "value": 3,
+                "min": 1,
+                "precision": 1
+            },
+            {
+                "type": "input_statement",
+                "name": "ACTIONS"
+            }
+        ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 70,
+        "mutator": "for_mutator",
+        "tooltip": "Repeats a sequence of actions a specified number of times.",
         "helpUrl": ""
     },
     {
@@ -45,8 +116,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 50,
+        "colour": 105,
         "mutator": "delay_mutator",
+        "tooltip": "Pauses the scenario for a specified duration.",
+        "helpUrl": ""
     },
     {
         "type": "click",
@@ -81,77 +154,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 100,
+        "colour": 140,
         "mutator": "click_mutator",
-        "tooltip": "Clicks on the specified element and optionally logs a message.",
-        "helpUrl": "",
-    },
-    {
-        "type": "open_app",
-        "message0": "open app %1",
-        "args0": [
-            {
-                "type": "field_dropdown",
-                "name": "APP_CHOICE",
-                "options": [
-                    ["Youtube", "com.google.android.youtube"],
-                    ["Facebook", "com.facebook.katana"],
-                    ["Instagram", "com.instagram.android"],
-                    ["Twitter", "com.twitter.android"],
-                    ["TikTok", "com.zhiliaoapp.musically"],
-                    ["Zoom", "us.zoom.videomeetings"],
-                    ["Google Meet", "com.google.android.apps.meetings"],
-                    ["Other", "OTHER"]
-                ]
-            }
-        ],
-        "message1": "log %1",
-        "args1": [
-            {
-                "type": "field_dropdown",
-                "name": "ISLOG",
-                "options": [
-                    ["false", "FALSE"],
-                    ["true", "TRUE"]
-                ]
-            }
-        ],
-        "previousStatement": null,
-        "nextStatement": null,
-        "colour": 150,
-        "mutator": "open_app_mutator",
-    },
-    {
-        "type": "for",
-        "message0": "repeat %1 times %2",
-        "args0": [
-            {
-                "type": "field_number",
-                "name": "TIMES",
-                "value": 3,
-                "min": 1,
-                "precision": 1
-            },
-            {
-                "type": "input_statement",
-                "name": "ACTIONS"
-            }
-        ],
-        "message1": "log %1",
-        "args1": [
-            {
-                "type": "field_dropdown",
-                "name": "ISLOG",
-                "options": [
-                    ["false", "FALSE"],
-                    ["true", "TRUE"]
-                ]
-            }
-        ],
-        "previousStatement": null,
-        "nextStatement": null,
-        "colour": 200,
-        "mutator": "for_mutator",
+        "tooltip": "Clicks on the specified element for a set duration.",
+        "helpUrl": ""
     },
     {
         "type": "zoom",
@@ -186,8 +192,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 250,
+        "colour": 175,
         "mutator": "zoom_mutator",
+        "tooltip": "Zooms in or out for a specified duration.",
+        "helpUrl": ""
     },
     {
         "type": "swipe",
@@ -224,55 +232,91 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 300,
+        "colour": 210,
         "mutator": "swipe_mutator",
+        "tooltip": "Performs a swipe action in a specified direction for a set duration.",
+        "helpUrl": ""
+    },
+    {
+        "type": "rotate",
+        "message0": "rotate %1\nfor %2 ms\nby %3 degrees",
+        "args0": [
+            {
+                "type": "field_dropdown",
+                "name": "DIRECTION",
+                "options": [
+                    ["clockwise", "CLOCKWISE"],
+                    ["counterclockwise", "COUNTERCLOCKWISE"]
+                ]
+            },
+            {
+                "type": "field_number",
+                "name": "DURATION",
+                "value": 1000,
+                "min": 0,
+                "precision": 1
+            },
+            {
+                "type": "field_number",
+                "name": "DEGREES",
+                "value": 90,
+                "min": 0,
+                "max": 360,
+                "precision": 1
+            }
+        ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 245,
+        "mutator": "rotate_mutator",
+        "tooltip": "Rotates in the specified direction by a given number of degrees and duration.",
+        "helpUrl": ""
+    },
+    {
+        "type": "paste",
+        "message0": "Input %1",
+        "args0": [
+            {
+                "type": "field_input",
+                "name": "PASTE_CONTENT",
+                "text": "text"
+            }
+        ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 280,
+        "mutator": "paste_mutator",
+        "tooltip": "Inputs specified text content.",
+        "helpUrl": ""
     }
 ]);
 
 
-// Register delay_mutator for dynamic log message field
-Blockly.Extensions.registerMutator('delay_mutator', {
-    mutationToDom: function () {
-        const container = Blockly.utils.xml.createElement('mutation');
-        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
-        container.setAttribute('is_log', isLog.toString());
-        return container;
-    },
-    domToMutation: function (xmlElement: Element) {
-        const isLog = (xmlElement.getAttribute('is_log') === 'true');
-        this.updateShape(isLog);
-    },
-    updateShape: function (isLog: boolean) {
-        const duration = this.getFieldValue('DURATION') || 1000;
-        const defaultLogMessage = `Delay for ${duration} milliseconds`;
-
-        if (isLog) {
-            if (!this.getInput('LOGCONTENT_INPUT')) {
-                // Add the log content input if it doesn’t exist, using the default message
-                this.appendDummyInput('LOGCONTENT_INPUT')
-                    .appendField('with content')
-                    .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
-            } else {
-                // Only update the log content if it’s currently set to the default message
-                const currentLogMessage = this.getFieldValue('LOGCONTENT');
-                if (currentLogMessage === `Delay for ${duration - 1} milliseconds` || currentLogMessage === `Delay for ${duration + 1} milliseconds` || currentLogMessage === defaultLogMessage) {
-                    this.setFieldValue(defaultLogMessage, 'LOGCONTENT');
-                }
-            }
-        } else {
-            if (this.getInput('LOGCONTENT_INPUT')) {
-                this.removeInput('LOGCONTENT_INPUT');
-            }
-        }
-    },
-    onchange: function (e: Blockly.Events.Abstract) {
-        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
-        this.updateShape(isLog);
-    }
-});
-
-
-
+/* ============================================================================================= */
+/* =================================== OPEN APP ACTION START =================================== */
+/* ============================================================================================= */
 // Register open_app_mutator for dynamic log message field and custom app name input
 Blockly.Extensions.registerMutator('open_app_mutator', {
     mutationToDom: function () {
@@ -332,7 +376,14 @@ Blockly.Extensions.registerMutator('open_app_mutator', {
         this.updateShape(isLog, isOther);
     }
 });
+/* ============================================================================================= */
+/* ==================================== OPEN APP ACTION END ==================================== */
+/* ============================================================================================= */
 
+
+/* ============================================================================================= */
+/* ===================================== FOR ACTION START ====================================== */
+/* ============================================================================================= */
 // Register for_mutator for dynamic log message field
 Blockly.Extensions.registerMutator('for_mutator', {
     mutationToDom: function () {
@@ -369,9 +420,15 @@ Blockly.Extensions.registerMutator('for_mutator', {
         this.updateShape(isLog);
     }
 });
+/* ============================================================================================= */
+/* ====================================== FOR ACTION END ======================================= */
+/* ============================================================================================= */
 
-// Register zoom_mutator for dynamic log message field
-Blockly.Extensions.registerMutator('zoom_mutator', {
+/* ============================================================================================= */
+/* ==================================== DELAY ACTION START ===================================== */
+/* ============================================================================================= */
+// Register delay_mutator for dynamic log message field
+Blockly.Extensions.registerMutator('delay_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
@@ -383,17 +440,19 @@ Blockly.Extensions.registerMutator('zoom_mutator', {
         this.updateShape(isLog);
     },
     updateShape: function (isLog: boolean) {
-        const direction = this.getFieldValue('DIRECTION') || "in";
         const duration = this.getFieldValue('DURATION') || 1000;
-        const defaultLogMessage = `Zoom ${direction} for ${duration} ms`;
+        const defaultLogMessage = `Delay for ${duration} milliseconds`;
+
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {
+                // Add the log content input if it doesn’t exist, using the default message
                 this.appendDummyInput('LOGCONTENT_INPUT')
                     .appendField('with content')
                     .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
             } else {
+                // Only update the log content if it’s currently set to the default message
                 const currentLogMessage = this.getFieldValue('LOGCONTENT');
-                if (currentLogMessage === defaultLogMessage) {
+                if (currentLogMessage === `Delay for ${duration - 1} milliseconds` || currentLogMessage === `Delay for ${duration + 1} milliseconds` || currentLogMessage === defaultLogMessage) {
                     this.setFieldValue(defaultLogMessage, 'LOGCONTENT');
                 }
             }
@@ -408,31 +467,50 @@ Blockly.Extensions.registerMutator('zoom_mutator', {
         this.updateShape(isLog);
     }
 });
+/* ============================================================================================= */
+/* ===================================== DELAY ACTION END ====================================== */
+/* ============================================================================================= */
 
-// Register swipe_mutator for dynamic log message field
-Blockly.Extensions.registerMutator('swipe_mutator', {
+
+/* ============================================================================================= */
+/* ==================================== CLICK ACTION START ===================================== */
+/* ============================================================================================= */
+// Update click_mutator to ensure ON field is managed
+Blockly.Extensions.registerMutator('click_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
         container.setAttribute('is_log', isLog.toString());
+
+        // Save ON field value in mutation
+        const onFieldValue = this.getFieldValue('ON') || '';
+        container.setAttribute('on_field', onFieldValue);
+
         return container;
     },
     domToMutation: function (xmlElement: Element) {
         const isLog = (xmlElement.getAttribute('is_log') === 'true');
         this.updateShape(isLog);
+
+        // Restore ON field value from mutation
+        const onFieldValue = xmlElement.getAttribute('on_field') || '';
+        if (onFieldValue) {
+            this.setFieldValue(onFieldValue, 'ON');
+        }
     },
     updateShape: function (isLog: boolean) {
-        const direction = this.getFieldValue('DIRECTION') || "left";
         const duration = this.getFieldValue('DURATION') || 1000;
-        const defaultLogMessage = `Swipe ${direction} for ${duration} ms`;
+        const defaultLogMessage = `Click for ${duration} ms`;
+
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {
+                // Add the log content input if it doesn’t exist, with the default message
                 this.appendDummyInput('LOGCONTENT_INPUT')
                     .appendField('with content')
                     .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
             } else {
                 const currentLogMessage = this.getFieldValue('LOGCONTENT');
-                if (currentLogMessage === defaultLogMessage) {
+                if (currentLogMessage === `Click for ${duration - 1} ms` || currentLogMessage === `Click for ${duration + 1} ms` || currentLogMessage === defaultLogMessage) {
                     this.setFieldValue(defaultLogMessage, 'LOGCONTENT');
                 }
             }
@@ -442,13 +520,11 @@ Blockly.Extensions.registerMutator('swipe_mutator', {
             }
         }
     },
-    onchange: function (e: Blockly.Events.Abstract) {
+    onchange: function () {
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
         this.updateShape(isLog);
     }
 });
-
-
 // Custom FieldImageDrop Class (from previous setup)
 class FieldImageDrop extends Blockly.FieldImage {
     private imageUrl: string | null = null;
@@ -502,43 +578,37 @@ class FieldImageDrop extends Blockly.FieldImage {
 
 // Register the custom field
 Blockly.fieldRegistry.register('field_image_drop', FieldImageDrop);
+/* ============================================================================================= */
+/* ===================================== CLICK ACTION END ====================================== */
+/* ============================================================================================= */
 
-// Update click_mutator to ensure ON field is managed
-Blockly.Extensions.registerMutator('click_mutator', {
+/* ============================================================================================= */
+/* ===================================== ZOOM ACTION START ===================================== */
+/* ============================================================================================= */
+// Register zoom_mutator for dynamic log message field
+Blockly.Extensions.registerMutator('zoom_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
         container.setAttribute('is_log', isLog.toString());
-
-        // Save ON field value in mutation
-        const onFieldValue = this.getFieldValue('ON') || '';
-        container.setAttribute('on_field', onFieldValue);
-
         return container;
     },
     domToMutation: function (xmlElement: Element) {
         const isLog = (xmlElement.getAttribute('is_log') === 'true');
         this.updateShape(isLog);
-
-        // Restore ON field value from mutation
-        const onFieldValue = xmlElement.getAttribute('on_field') || '';
-        if (onFieldValue) {
-            this.setFieldValue(onFieldValue, 'ON');
-        }
     },
     updateShape: function (isLog: boolean) {
+        const direction = this.getFieldValue('DIRECTION') || "in";
         const duration = this.getFieldValue('DURATION') || 1000;
-        const defaultLogMessage = `Click for ${duration} ms`;
-
+        const defaultLogMessage = `Zoom ${direction} for ${duration} ms`;
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {
-                // Add the log content input if it doesn’t exist, with the default message
                 this.appendDummyInput('LOGCONTENT_INPUT')
                     .appendField('with content')
                     .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
             } else {
                 const currentLogMessage = this.getFieldValue('LOGCONTENT');
-                if (currentLogMessage === `Click for ${duration - 1} ms` || currentLogMessage === `Click for ${duration + 1} ms` || currentLogMessage === defaultLogMessage) {
+                if (currentLogMessage === defaultLogMessage) {
                     this.setFieldValue(defaultLogMessage, 'LOGCONTENT');
                 }
             }
@@ -548,8 +618,166 @@ Blockly.Extensions.registerMutator('click_mutator', {
             }
         }
     },
-    onchange: function () {
+    onchange: function (e: Blockly.Events.Abstract) {
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
         this.updateShape(isLog);
     }
 });
+/* ============================================================================================= */
+/* ===================================== ZOOM ACTION END ======================================= */
+/* ============================================================================================= */
+
+/* ============================================================================================= */
+/* ==================================== SWIPE ACTION START ===================================== */
+/* ============================================================================================= */
+// Register swipe_mutator for dynamic log message field
+Blockly.Extensions.registerMutator('swipe_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+    },
+    updateShape: function (isLog: boolean) {
+        const direction = this.getFieldValue('DIRECTION') || "left";
+        const duration = this.getFieldValue('DURATION') || 1000;
+        const defaultLogMessage = `Swipe ${direction} for ${duration} ms`;
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
+            } else {
+                const currentLogMessage = this.getFieldValue('LOGCONTENT');
+                if (currentLogMessage === defaultLogMessage) {
+                    this.setFieldValue(defaultLogMessage, 'LOGCONTENT');
+                }
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function (e: Blockly.Events.Abstract) {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});
+/* ============================================================================================= */
+/* ===================================== SWIPE ACTION END ====================================== */
+/* ============================================================================================= */
+
+/* ============================================================================================= */
+/* ==================================== ROTATE ACTION START ==================================== */
+/* ============================================================================================= */
+// Register rotate_mutator for dynamic log message field 
+Blockly.Extensions.registerMutator('rotate_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+    },
+    updateShape: function (isLog: boolean) {
+        const direction = this.getFieldValue('DIRECTION') || "CLOCKWISE";
+        const duration = this.getFieldValue('DURATION') || 1000;
+        const degrees = this.getFieldValue('DEGREES') || 90;
+        const defaultLogMessage = `Rotate ${direction} for ${duration} ms by ${degrees} degrees`;
+
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
+            } else {
+                const currentLogMessage = this.getFieldValue('LOGCONTENT');
+                if (currentLogMessage === defaultLogMessage) {
+                    this.setFieldValue(defaultLogMessage, 'LOGCONTENT');
+                }
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function (e: Blockly.Events.Abstract) {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});
+/* ============================================================================================= */
+/* ===================================== ROTATE ACTION END ===================================== */
+/* ============================================================================================= */
+
+/* ============================================================================================= */
+/* ==================================== PASTE ACTION START ===================================== */
+/* ============================================================================================= */
+//Register paste_mutator for dynamic log message field
+Blockly.Extensions.registerMutator('paste_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+    },
+    updateShape: function (isLog: boolean) {
+        const pasteContent = this.getFieldValue('PASTE_CONTENT') || "text";
+        const defaultLogMessage = `Input "${pasteContent}"`;
+
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
+            } else {
+                const currentLogMessage = this.getFieldValue('LOGCONTENT');
+                if (currentLogMessage === defaultLogMessage) {
+                    this.setFieldValue(defaultLogMessage, 'LOGCONTENT');
+                }
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function (e: Blockly.Events.Abstract) {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});
+/* ============================================================================================= */
+/* ===================================== PASTE ACTION END ====================================== */
+/* ============================================================================================= */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

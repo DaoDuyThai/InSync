@@ -144,9 +144,11 @@ export const Header = () => {
                                 <Button variant={"ghost"}>
                                     <SignOutButton redirectUrl="/">Sign out</SignOutButton>
                                 </Button>
-                                <Button variant={"default"}>
-                                    <Link href="/dashboard">Go to dashboard </Link><ArrowRight />
-                                </Button>
+                                <Link href="/dashboard">
+                                    <Button variant={"default"}>
+                                        Go to dashboard <ArrowRight />
+                                    </Button>
+                                </Link>
                                 {/* <UserButton afterSwitchSessionUrl="/" /> */}
                             </div>
                         </SignedIn>

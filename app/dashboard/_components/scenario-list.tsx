@@ -33,7 +33,7 @@ interface Scenario {
     title: string;
     description: string;
     createdAt: string;
-    updatedAt: string | null;
+    updatedAt: string;
     stepWeb: string;
     stepAndroid: string;
     isFavorites: boolean;
@@ -320,7 +320,7 @@ export const ScenarioList = ({
                         imageUrl={scenario.imageUrl}
                         authorId={scenario.authorId}
                         authorName={scenario.authorName}
-                        createdAt={getUnixTime(new Date(scenario.createdAt)) * 1000} //milliseconds to seconds
+                        createdAt={getUnixTime(new Date(scenario.updatedAt)) * 1000} //milliseconds to seconds
                         // projectId={scenario.projectId}
                         isFavorite={scenario.isFavorites}
                         toggleFavorite={() => toggleFavorite(scenario.id)}

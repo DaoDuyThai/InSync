@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from "@/componen
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarRail, } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
+import { Hint } from "@/components/hint"
 
 export function AdminSidebar() {
 
@@ -38,10 +39,13 @@ export function AdminSidebar() {
         <SidebarGroup className="group-data-[collapsible=icon]:visible">
           <SidebarGroupContent>
             <SidebarMenu>
+
               <SidebarMenuItem>
                 <Link href="/admin">
                   <SidebarMenuButton>
-                    <ChartSpline />
+                    <Hint label="Overview" side="right">
+                      <ChartSpline />
+                    </Hint>
                     Overview{" "}
                   </SidebarMenuButton>
                 </Link>
@@ -54,9 +58,11 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link href="/admin">
+                <Link target="_blank" href="https://dashboard.stripe.com/">
                   <SidebarMenuButton>
-                    <CircleDollarSign />
+                    <Hint label="Revenue Stream" side="right">
+                      <CircleDollarSign />
+                    </Hint>
                     Revenue Stream{" "}
                   </SidebarMenuButton>
                 </Link>
@@ -69,9 +75,11 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link href="/admin">
+                <Link target="_blank" href="https://dashboard.clerk.com/apps/app_2kbW1OvrtyILeR6bpqw2DrSzsBP/instances/ins_2kbW1PFE9yt3wdELemX8oiVQG1O">
                   <SidebarMenuButton>
-                    <UserCog />
+                    <Hint label="Users Management" side="right">
+                      <UserCog />
+                    </Hint>
                     Users Management{" "}
                   </SidebarMenuButton>
                 </Link>
@@ -84,9 +92,11 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link href="/admin">
+                <Link href="/admin/projects">
                   <SidebarMenuButton>
-                    <FolderCog />
+                    <Hint label="Projects Management" side="right">
+                      <FolderCog />
+                    </Hint>
                     Projects Management{" "}
                   </SidebarMenuButton>
                 </Link>
@@ -101,7 +111,9 @@ export function AdminSidebar() {
               <SidebarMenuItem>
                 <Link href="/admin">
                   <SidebarMenuButton>
-                    <CalendarCog />
+                    <Hint label="Subscriptions Management" side="right">
+                      <CalendarCog />
+                    </Hint>
                     Subscriptions Management{" "}
                   </SidebarMenuButton>
                 </Link>
@@ -118,7 +130,9 @@ export function AdminSidebar() {
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton >
-                      <FolderCog />
+                      <Hint label="Pages Management" side="right">
+                        <FolderCog />
+                      </Hint>
                       Pages Management{" "}
                       <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
@@ -126,28 +140,28 @@ export function AdminSidebar() {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/about">
+                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/about">
                           About Us
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/term">
+                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/term">
                           Term of Service
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/policy">
+                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/policy">
                           Privacy Policy
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/faq">
+                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/faq">
                           FAQs
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -166,7 +180,9 @@ export function AdminSidebar() {
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton >
-                      <FileCog />
+                      <Hint label="Docs Management" side="right">
+                        <FileCog />
+                      </Hint>
                       Docs Management{" "}
                       <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>

@@ -7,8 +7,8 @@ import * as React from "react";
 
 const AdminPolicyPage = () => {
   return (
-    <div className="w-full flex flex-col p-6 h-full overflow-y-auto pb-10">
-      aaaaaaaaaaaaa
+    <div className="w-full h-full overflow-y-auto">
+      
     </div>
   );
 }
