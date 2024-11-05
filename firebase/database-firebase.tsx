@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { getApp, initializeApp } from "firebase/app";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { getDatabase, onValue, ref, get } from "firebase/database";
-import { use } from "react";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, get } from "firebase/database";
+import firebase from 'firebase/app'
+import 'firebase/database'
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,27 +11,39 @@ const firebaseConfig = {
     storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
     messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL
+    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+};
+
+export const fetchScenarios = async () => {
+    const dbRef = ref(getDatabase());
+    const snapshot = await get(dbRef);
+    if (snapshot.exists()) {
+        return snapshot.val();  
+    } else {
+        console.log("No data available");
+        return null;
+    }
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db = getDatabase();
 
-async function fetchScenarios() {
-    const scenariosRef = ref(db, 'scenarios');
-    const snapshot = await get(scenariosRef);
-    const data = snapshot.val();
+// async function fetchScenarios() {
+//     const logsRef = ref(db, 'scenario');
+//     const snapshot = await get(logsRef);
+//     const data = snapshot.val();
 
-    const scenarios = data
-        ? Object.keys(data).map((key) => ({
-            id: key,
-            ...data[key],
-        }))
-        : [];
+//     const scenarios = data
+//         ? Object.keys(data).map((key) => ({
+//             id: key,
+//             ...data[key],
+//         }))
+//         : [];
         
 
-    return scenarios;
-}
+//     return scenarios;
+// }
 
-export default fetchScenarios;
+export default db;

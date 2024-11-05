@@ -18,7 +18,6 @@ interface ImageInterface {
 }
 
 export default function ImagePage() {
-    const mount = useRef(false);
     const router = useRouter();
     const [images, setImages] = useState([] as ImageInterface[]);
 
@@ -29,7 +28,7 @@ export default function ImagePage() {
             try {
                 const selectedProjectId = localStorage.getItem("selectedProjectId");
                 if(selectedProjectId) {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${selectedProjectId}`)
+                    await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${selectedProjectId}`)
                     .then(res => res.json()).then(data => setImages(data.data)).catch(err => console.log(err));
                 } else {
                     toast.error("No project selected");
@@ -55,6 +54,7 @@ export default function ImagePage() {
                 <div>
                     <div className="text-lg bg-[#f2f6fa] py-2 px-4">
                         <CalendarFoldIcon size="24" className="inline-block" />
+                        {/* {images?.map((image, index) => {})} */}
                         <span className="mx-2">20/09/2023</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
