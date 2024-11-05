@@ -288,7 +288,7 @@ export const ScenarioList = ({
                         <form onSubmit={handleCreate} className="space-y-4">
                             <Input
                                 required
-                                maxLength={60}
+                                maxLength={30}
                                 minLength={5}
                                 placeholder="Enter scenario title"
                                 // value={title} // Pre-filled with the current title

@@ -169,7 +169,8 @@ export const ProjectSettings = () => {
                             <form onSubmit={handleRename} className="space-y-4">
                                 <Input
                                     required
-                                    maxLength={60}
+                                    maxLength={20}
+                                    minLength={5}
                                     placeholder="Enter new title"
                                     value={newTitle} // Pre-filled with the current project name
                                     onChange={(e) => setNewTitle(e.target.value)}

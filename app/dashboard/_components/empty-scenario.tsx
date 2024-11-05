@@ -70,7 +70,7 @@ export const EmptyScenario = ({
                             <form onSubmit={handleCreate} className="space-y-4">
                                 <Input
                                     required
-                                    maxLength={60}
+                                    maxLength={20}
                                     minLength={5}
                                     placeholder="Enter scenario title"
                                     // value={title} // Pre-filled with the current title

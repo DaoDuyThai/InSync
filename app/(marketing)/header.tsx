@@ -155,7 +155,7 @@ export const Header = () => {
                         <SignedOut>
                             <div className="flex align-middle gap-2 items-center justify-between md:w-fit w-full">
                                 <SignInButton mode="modal" forceRedirectUrl="/dashboard" fallbackRedirectUrl="/dashboard">
-                                    <Button variant={"ghost"}>Login</Button>
+                                    <Button variant={"ghost"}>Sign In</Button>
                                 </SignInButton>
                                 <SignUpButton mode="modal" forceRedirectUrl="/dashboard" fallbackRedirectUrl="/dashboard">
                                     <Button >Get InSync for free</Button>

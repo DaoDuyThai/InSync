@@ -105,7 +105,7 @@ export const Actions = ({
                         <form onSubmit={handleRename} className="space-y-4">
                             <Input
                                 required
-                                maxLength={60}
+                                maxLength={30}
                                 minLength={5}
                                 placeholder="Enter new title"
                                 // value={title} // Pre-filled with the current title
