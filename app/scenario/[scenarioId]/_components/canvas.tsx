@@ -595,6 +595,7 @@ export const Canvas = ({
                             ))}
                         </div>
                     </TabsContent>
+
                     <TabsContent value="logs" className="flex-1 overflow-auto m-0">
                         <div className="w-full h-[calc(100vh-119px)]">
                             <Table className="w-full">
@@ -640,6 +641,7 @@ export const Canvas = ({
                             </Table>
                         </div>
                     </TabsContent>
+                    
                     <TabsContent value="code" className="flex-1 overflow-auto m-0">
                         <div className="w-full h-[calc(100vh-119px)]">
                             <CodeMirror
