@@ -1,6 +1,7 @@
 'use client';
 import { Loading } from "@/components/loading";
 import { fetchScenarios } from "@/firebase/database-firebase";
+import { useAuth } from "@clerk/nextjs";
 import { useEffect, useRef, useState } from "react";
 
 
@@ -36,14 +37,26 @@ interface LogObject {
 }
 
 
-
 export default function LogPage() {
     const [logsContainer, setLogsContainer] = useState<LogsContainer | null>(null);
     const [logsSession, setLogsSession] = useState<Array<LogsSessionsObject> | null>(null);
     const [logs, setLogs] = useState<Array<LogObject> | null>(null);
-    const logSessionsRef = useRef<[]>(null);
+    const [scenariosId, setScenariosId] = useState<Array<string> | null>(null);
+    const {userId} = useAuth();
+    const mount = useRef(true);
     useEffect(() => {
+        const projectId = localStorage.getItem("selectedProjectId");
 
+        async function fetchScenariosId() {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    setScenariosId(data.data.map((scenario: any) => scenario.id));
+                })
+                .catch(err => console.log(err));
+        }
+
+        fetchScenariosId();
 
         const value = fetchScenarios();
         value.then(data => setLogsContainer(data)).catch(err => console.log(err));
@@ -76,6 +89,8 @@ export default function LogPage() {
         });
 
 
+
+
     }, [logsContainer])
 
     function formatDate(dateString: string) {
@@ -97,11 +112,6 @@ export default function LogPage() {
 
         return `${hours}:${minutes}:${seconds}`;
     }
-
-    function handleClick() {
-
-    }
-
 
     const render = () => {
         const [currentPage, setCurrentPage] = useState(1);
@@ -126,7 +136,9 @@ export default function LogPage() {
                    
                     <div className="flex flex-wrap gap-1">
                         {/* <div> */}
-                        {currentSessions.map(session => (
+                        {currentSessions.filter(currentSession => 
+                            scenariosId?.includes(currentSession.scenario_id)
+                        ).map(session => (
                             <div key={session.session_id} className=" w-[48%] mt-5 log-sessions">
                                 <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] ">
                                     <strong>{session.session_name}</strong>
