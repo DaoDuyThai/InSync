@@ -66,7 +66,7 @@ export const ProjectSidebar = () => {
             return;
         }
         try {
-            const portalLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_LINK_URL!}`;
+            const portalLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_LINK_URL!}?prefilled_email=${user.primaryEmailAddress}`;
             window.location.href = portalLinkUrl;
         } catch (error) {
             console.error(error);
