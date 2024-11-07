@@ -19,6 +19,7 @@ import { RootState, AppDispatch } from '@/store/store';
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { ProjectSelector } from "./project-selector";
+import { useProModal } from "@/store/use-pro-modal";
 
 
 
@@ -47,9 +48,13 @@ export const ProjectSidebar = () => {
         }
     }, [dispatch]);
 
-   
+
 
     // TODO: Implement Stripe
+    const { onOpen } = useProModal();
+    const onClick = () => {
+        onOpen();
+    }
     // const { organization } = useOrganization();
     // const isSubscribed = useQuery(api.subscriptions.getIsSubscribed, {
     //     orgId: organization?.id,
@@ -93,7 +98,7 @@ export const ProjectSidebar = () => {
             </Link>
 
 
-            <ProjectSelector/>
+            <ProjectSelector />
 
 
             <div className="space-y-1 w-full">
@@ -134,11 +139,11 @@ export const ProjectSidebar = () => {
                         <FileClock className="h-4 w-4 mr-2" /> Project Logs
                     </Link>
                 </Button>
-                <Button disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                {/* TODO: Upgrade to Pro */}
+                {/* {isSubscribed ? "Payment Settings" : "Upgrade to Pro"} */}
+                <Button onClick={onClick} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                     <Banknote className="h-4 w-4 mr-2" />
-                    {/* TODO: Upgrade to Pro */}
                     Upgrade to Pro
-                    {/* {isSubscribed ? "Payment Settings" : "Upgrade to Pro"} */}
                 </Button>
             </div>
         </div>
