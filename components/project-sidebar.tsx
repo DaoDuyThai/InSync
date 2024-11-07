@@ -169,7 +169,7 @@ export const ProjectSidebar = () => {
                 </Button>
                 <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                     <Banknote className="h-4 w-4 mr-2" />
-                    Upgrade to Pro
+                    My Billing & Plan
                 </Button>
             </div>
         </div>
