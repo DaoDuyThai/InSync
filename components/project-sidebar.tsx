@@ -48,12 +48,34 @@ export const ProjectSidebar = () => {
         }
     }, [dispatch]);
 
-
+    const { user } = useUser();
 
     // TODO: Implement Stripe
     const { onOpen } = useProModal();
-    const onClick = () => {
+    const onClickPay = () => {
         onOpen();
+    }
+
+
+    const onClickPortal = () => {
+        setPending(true);
+
+        if (!user) {
+            toast.error("Please log in to continue.");
+            setPending(false);
+            return;
+        }
+        try {
+            const portalLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_LINK_URL!}`;
+            window.location.href = portalLinkUrl;
+        } catch (error) {
+            console.error(error);
+            toast.error("An error occurred. Please try again later.");
+            return
+        } finally {
+            setPending(false);
+        }
+
     }
     // const { organization } = useOrganization();
     // const isSubscribed = useQuery(api.subscriptions.getIsSubscribed, {
@@ -141,7 +163,11 @@ export const ProjectSidebar = () => {
                 </Button>
                 {/* TODO: Upgrade to Pro */}
                 {/* {isSubscribed ? "Payment Settings" : "Upgrade to Pro"} */}
-                <Button onClick={onClick} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                <Button onClick={onClickPay} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                    <Banknote className="h-4 w-4 mr-2" />
+                    Upgrade to Pro
+                </Button>
+                <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                     <Banknote className="h-4 w-4 mr-2" />
                     Upgrade to Pro
                 </Button>
