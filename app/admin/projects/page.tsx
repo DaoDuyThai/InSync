@@ -57,6 +57,7 @@ const ProjectsPage = () => {
         method: "DELETE",
       });
       toast.success("Project deleted successfully!");
+      fetchProjects()
     } catch (error) {
       console.error("Error deleting project:", error);
       toast.error("Failed to delete project.");
@@ -144,7 +145,7 @@ const ProjectsPage = () => {
   ];
 
   if (loading) {
-    return Loading;
+    return <Loading />;
   }
 
   return (

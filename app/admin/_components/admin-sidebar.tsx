@@ -109,7 +109,7 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link href="/admin">
+                <Link href="/admin/subscriptions">
                   <SidebarMenuButton>
                     <Hint label="Subscriptions Management" side="right">
                       <CalendarCog />
