@@ -33,6 +33,27 @@ export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   onBlur?: (content: Content) => void
 }
 
+// Cloudinary upload helper function
+const uploadImageToCloudinary = async (file: File): Promise<string | null> => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+
+  try {
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+      method: "POST",
+      body: formData,
+    });
+    if (!response.ok) throw new Error("Image upload failed.");
+    const data = await response.json();
+    return data.secure_url; // Cloudinary URL to use in the editor
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+    toast.error("Image upload to Cloudinary failed.");
+    return null;
+  }
+};
+
 const createExtensions = (placeholder: string) => [
   StarterKit.configure({
     horizontalRule: false,
@@ -50,19 +71,14 @@ const createExtensions = (placeholder: string) => [
   Image.configure({
     allowedMimeTypes: ['image/*'],
     maxFileSize: 5 * 1024 * 1024,
-    allowBase64: true,
-    uploadFn: async file => {
-      // NOTE: This is a fake upload function. Replace this with your own upload logic.
-      // This function should return the uploaded image URL.
-
-      // wait 3s to simulate upload
-      await new Promise(resolve => setTimeout(resolve, 3000))
-
-      const src = await fileToBase64(file)
-
-      // either return { id: string | number, src: string } or just src
-      // return src;
-      return { id: randomId(), src }
+    allowBase64: false,
+    uploadFn: async (file: File) => {
+      const src = await uploadImageToCloudinary(file);
+      if (src) {
+        return { id: Math.random().toString(36).substring(2, 9), src };
+      } else {
+        throw new Error("Image upload to Cloudinary failed.");
+      }
     },
     onImageRemoved({ id, src }) {
       console.log('Image removed', { id, src })
