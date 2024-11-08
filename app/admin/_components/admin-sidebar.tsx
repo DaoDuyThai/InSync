@@ -58,7 +58,7 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link target="_blank" href="https://dashboard.stripe.com/">
+                <Link target="_blank" href="https://dashboard.stripe.com/test/payments">
                   <SidebarMenuButton>
                     <Hint label="Revenue Stream" side="right">
                       <CircleDollarSign />
