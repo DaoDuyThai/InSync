@@ -33,7 +33,7 @@ const components: { title: string; href: string; description: string }[] = [
     },
     {
         title: "Term of Service",
-        href: "/terms",
+        href: "/term",
         description:
             "The terms and conditions that govern the use of InSync.",
     },

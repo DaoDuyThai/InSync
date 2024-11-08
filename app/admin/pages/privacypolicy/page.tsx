@@ -6,7 +6,7 @@ import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 
 
 
-const AdminPolicyPage = () => {
+const AdminPrivacyPolicyPage = () => {
   const [value, setValue] = React.useState<any>('')
 
   
@@ -27,4 +27,4 @@ const AdminPolicyPage = () => {
   );
 }
 
-export default AdminPolicyPage;
+export default AdminPrivacyPolicyPage;
