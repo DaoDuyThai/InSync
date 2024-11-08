@@ -1,4 +1,3 @@
-// components/RichTextEditor.tsx
 import React, { useCallback } from 'react';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -33,11 +32,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ onSave }) => {
         inline: true,
         HTMLAttributes: {
           class: 'editor-image',
-        },
-        addAttributes: {
-          src: {
-            default: null,
-          },
+          // You can add other attributes here, if necessary
         },
       }),
       Placeholder.configure({
