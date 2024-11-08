@@ -75,7 +75,7 @@ export const ProModal = () => {
       return;
     }
     try {
-      const paymentLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_URL!}?prefilled_email=${user.primaryEmailAddress}&subscription_plan_id=${SubscriptionPlans[1].id}&userIdClerk=${user.id}`;
+      const paymentLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_URL!}?client_reference_id=${SubscriptionPlans[1].id}&prefilled_email=${user.primaryEmailAddress}`;
       window.location.href = paymentLinkUrl;
     } catch (error) {
       console.error(error);

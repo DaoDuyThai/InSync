@@ -10,6 +10,8 @@ import { Suspense } from "react";
 import { Loading } from "@/components/loading";
 import { Toaster } from "sonner";
 import { ModalProvider } from "@/provider/modal-provider";
+import { TooltipProvider } from '@/components/ui/tooltip'
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,7 +39,9 @@ export default function RootLayout({
             <Toaster />
             <ModalProvider />
             <Provider store={store}>
-              {children}
+              <TooltipProvider>
+                {children}
+              </TooltipProvider>
             </Provider>
           </ClerkProvider>
         </Suspense>
