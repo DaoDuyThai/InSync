@@ -154,7 +154,7 @@ export function AdminSidebar() {
                     </SidebarMenuSub>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/policy">
+                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/privacypolicy">
                           Privacy Policy
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
