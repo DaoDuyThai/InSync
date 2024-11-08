@@ -1,14 +1,11 @@
 'use client';
 import { Loading } from "@/components/loading";
-import { fetchScenarios } from "@/firebase/database-firebase";
 import { useAuth } from "@clerk/nextjs";
-import { useEffect, useRef, useState } from "react";
-
-
-interface LogsContainer {
-    log_sessions: LogsSessions,
-    logs: Logs
-}
+import { MouseEvent, useEffect, useState, useSyncExternalStore } from "react";
+import { ref, onValue } from "firebase/database";
+import 'firebase/database'
+import { db } from "@/firebase/database-firebase";
+import { useLocalStorage } from "react-use";
 
 interface LogsSessions {
     [key: string]: LogsSessionsObject
@@ -36,62 +33,60 @@ interface LogObject {
     status: boolean
 }
 
-
 export default function LogPage() {
-    const [logsContainer, setLogsContainer] = useState<LogsContainer | null>(null);
     const [logsSession, setLogsSession] = useState<Array<LogsSessionsObject> | null>(null);
     const [logs, setLogs] = useState<Array<LogObject> | null>(null);
     const [scenariosId, setScenariosId] = useState<Array<string> | null>(null);
-    const {userId} = useAuth();
-    const mount = useRef(true);
+    const { userId } = useAuth();
+    const [projectId, setProjectId] = useState<string | null>(null);
+
+
     useEffect(() => {
-        const projectId = localStorage.getItem("selectedProjectId");
+        setInterval(() => {
+            const projectId = localStorage.getItem("selectedProjectId");
+            if (projectId)
+                setProjectId(projectId);
+        }, 500);
+        if (projectId) {
+            console.log(projectId);
 
-        async function fetchScenariosId() {
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    setScenariosId(data.data.map((scenario: any) => scenario.id));
-                })
-                .catch(err => console.log(err));
-        }
+            const fetchScenariosId = async () => {
+                if (projectId === '') return;
+                console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`);
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        setScenariosId(data.data.map((scenario: any) => scenario.id));
+                    })
+                    .catch(err => console.log(err));
+            }
 
-        fetchScenariosId();
+            fetchScenariosId();
 
-        const value = fetchScenarios();
-        value.then(data => setLogsContainer(data)).catch(err => console.log(err));
-        if (logsContainer?.log_sessions) {
-            const sessionsArray = Object.keys(logsContainer.log_sessions).map(key => {
-                return {
-                    ...logsContainer.log_sessions[key]
-                };
-            });
-            setLogsSession(sessionsArray)
-        }
 
-        if (logsContainer?.logs) {
-            const logsArray = Object.keys(logsContainer.logs).map(logsId => {
-                return {
-                    ...logsContainer.logs[logsId]
-                };
-            });
-            setLogs(logsArray);
-        }
+            const logsRef = ref(db, 'logs');
+            const logSessionsRef = ref(db, 'log_sessions');
 
-        const logSessionsRef = document.querySelectorAll(".log-sessions");
-        const logsRef = document.querySelectorAll(".logs");
-        logSessionsRef.forEach((logSession, index) => {
-            logSession.addEventListener("click", () => {
-                if (logs) {
-                    logsRef[index].classList.toggle("hidden");
+            onValue(logsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    setLogs(Object.keys(data).map(logId => ({
+                        ...data[logId]
+                    })));
                 }
             });
-        });
 
+            onValue(logSessionsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    setLogsSession(Object.keys(data).map(sessionId => ({
+                        ...data[sessionId]
+                    })))
+                }
+            });
+        }
 
-
-
-    }, [logsContainer])
+    }, [projectId]);
 
     function formatDate(dateString: string) {
         const date = new Date(dateString);
@@ -121,26 +116,46 @@ export default function LogPage() {
             setCurrentPage(pageNumber);
         };
 
+        const handleClick = (e: MouseEvent) => {
+            try {
+                const target = e.target as HTMLDivElement;
+                const parentTarget = target.parentElement;
+                console.log(parentTarget);
+
+                const logSessionsRef = document.querySelectorAll(".log-sessions");
+                const logsRef = document.querySelectorAll(".logs");
+                if (parentTarget) {
+                    const index = Array.from(logSessionsRef).indexOf(parentTarget);
+                    if (index !== -1) {
+                        logsRef[index].classList.toggle("hidden");
+                    }
+                }
+
+            } catch (error) {
+                console.warn(error);
+            }
+        }
+
         if (logsSession && logs) {
+            const totalLogSession = logsSession.filter((logSess) => scenariosId?.includes(logSess.scenario_id));
             const indexOfLastItem = currentPage * itemsPerPage;
             const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-            const currentSessions = logsSession.slice(indexOfFirstItem, indexOfLastItem);
-
+            const currentSessions = totalLogSession.slice(indexOfFirstItem, indexOfLastItem);
             const pageNumbers = [];
-            for (let i = 1; i <= Math.ceil(logsSession.length / itemsPerPage); i++) {
+            for (let i = 1; i <= Math.ceil(totalLogSession.length / itemsPerPage); i++) {
                 pageNumbers.push(i);
             }
-
             return (
                 <div className="max-w-[1500px] container">
-                   
+
                     <div className="flex flex-wrap gap-1">
-                        {/* <div> */}
-                        {currentSessions.filter(currentSession => 
+                        {currentSessions.filter(currentSession =>
                             scenariosId?.includes(currentSession.scenario_id)
                         ).map(session => (
-                            <div key={session.session_id} className=" w-[48%] mt-5 log-sessions">
-                                <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] ">
+                            <div
+                                onClick={e => handleClick(e)}
+                                key={session.session_id} className=" w-[48%] mt-5 ">
+                                <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] log-sessions">
                                     <strong>{session.session_name}</strong>
                                     <div className="float-right">{formatDate(session.date_created)}</div>
                                     <div><strong>Device: </strong>{session.device_name}</div>

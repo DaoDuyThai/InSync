@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get } from "firebase/database";
+import { getDatabase, ref, get, onValue } from "firebase/database";
 import firebase from 'firebase/app'
 import 'firebase/database'
 
@@ -30,20 +30,6 @@ export const fetchScenarios = async () => {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
-// async function fetchScenarios() {
-//     const logsRef = ref(db, 'scenario');
-//     const snapshot = await get(logsRef);
-//     const data = snapshot.val();
 
-//     const scenarios = data
-//         ? Object.keys(data).map((key) => ({
-//             id: key,
-//             ...data[key],
-//         }))
-//         : [];
         
-
-//     return scenarios;
-// }
-
-export default db;
+export {app, db};

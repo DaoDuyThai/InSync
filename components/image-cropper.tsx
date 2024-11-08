@@ -166,6 +166,9 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
         // Draw the image on the canvas once it's loaded
         img.crossOrigin = "Anonymous";
         img.onload = function () {
+            if(img.height !== 600) {
+                scale = 600 / img.height;
+            } 
             drawImageAndRectangles(ctx, canvas, img, rectangles);
         };
 
