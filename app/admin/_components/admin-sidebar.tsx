@@ -58,7 +58,7 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link target="_blank" href="https://dashboard.stripe.com/">
+                <Link target="_blank" href="https://dashboard.stripe.com/test/payments">
                   <SidebarMenuButton>
                     <Hint label="Revenue Stream" side="right">
                       <CircleDollarSign />
@@ -109,7 +109,7 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link href="/admin">
+                <Link href="/admin/subscriptions">
                   <SidebarMenuButton>
                     <Hint label="Subscriptions Management" side="right">
                       <CalendarCog />
@@ -154,7 +154,7 @@ export function AdminSidebar() {
                     </SidebarMenuSub>
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/policy">
+                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/privacypolicy">
                           Privacy Policy
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

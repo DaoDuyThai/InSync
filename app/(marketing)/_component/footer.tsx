@@ -26,7 +26,7 @@ export const Footer = () => {
                         <div className="font-bold pb-2">ABOUT</div>
                         <Link href="/about">About InSync</Link>
                         <Link href="/faq">FAQs</Link>
-                        <Link href="/terms">Term of Service</Link>
+                        <Link href="/term">Term of Service</Link>
                         <Link href="/privacypolicy">Privacy Policy</Link>
                     </div>
                     <div className="flex flex-col gap-4">

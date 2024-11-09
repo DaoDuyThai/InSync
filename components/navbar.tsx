@@ -29,7 +29,7 @@ export const Navbar = (
             <div className="hidden lg:flex-1 lg:flex ">
                 <SearchInput searchLink={searchLink} searchEntity={searchEntity} />
             </div>
-            <Link className="lg:hidden block" href="/">
+            <Link className="lg:hidden block" href="/dashboard">
                 <div className="flex items-center gap-x-2">
                     <Image priority src="/logo.svg" alt="logo" height={60} width={60} />
                     <span className={cn(

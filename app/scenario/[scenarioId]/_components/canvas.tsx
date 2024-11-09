@@ -393,7 +393,7 @@ export const Canvas = ({
                                 <form onSubmit={handleRename} className="space-y-4">
                                     <Input
                                         required
-                                        maxLength={60}
+                                        maxLength={30}
                                         minLength={5}
                                         placeholder={title}
                                         // value={title} // Pre-filled with the current title
@@ -550,7 +550,7 @@ export const Canvas = ({
                                                             <form onSubmit={(e) => handleRenameAsset(e, asset.id)} className="space-y-4">
                                                                 <Input
                                                                     required
-                                                                    maxLength={60}
+                                                                    maxLength={30}
                                                                     minLength={5}
                                                                     placeholder={asset.assetName}
                                                                     onChange={(e) => {
@@ -595,51 +595,53 @@ export const Canvas = ({
                             ))}
                         </div>
                     </TabsContent>
+
                     <TabsContent value="logs" className="flex-1 overflow-auto m-0">
                         <div className="w-full h-[calc(100vh-119px)]">
                             <Table className="w-full">
                                 <TableBody className="w-full">
-                                {Object.keys(logData.logs).map((logId) => {
-                            const log = logData.logs[logId as keyof typeof logData.logs];
-                            const logSession = logData.log_sessions[log.session_id as keyof typeof logData.log_sessions];
+                                    {Object.keys(logData.logs).map((logId) => {
+                                        const log = logData.logs[logId as keyof typeof logData.logs];
+                                        const logSession = logData.log_sessions[log.session_id as keyof typeof logData.log_sessions];
 
-                            return (
-                                <TableRow key={logId} className="h-fit border-none w-full">
-                                    <HoverCard>
-                                        <HoverCardTrigger>
-                                            <TableCell className="text-base font-medium font-mono h-fit py-1 w-[50px]">
-                                                {
-                                                    new Date(log.date_created).toLocaleTimeString(undefined, {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                        second: "2-digit",
-                                                        fractionalSecondDigits: 3,
-                                                    })
-                                                }
-                                            </TableCell>
-                                        </HoverCardTrigger>
-                                        <HoverCardContent side="right"  className="w-full">
-                                            {logSession ? (
-                                                <>
-                                                    <div className="text-base font-medium font-mono"><span className="font-semibold">Date Created:</span> {new Date(logSession.date_created).toLocaleString()}</div>
-                                                    <div className="text-base font-medium font-mono"><span className="font-semibold">Device Name:</span> {logSession.device_name}</div>
-                                                    <div className="text-base font-medium font-mono"><span className="font-semibold">Need Resolve:</span> {logSession.need_resolve ? 'Yes' : 'No'}</div>
-                                                </>
-                                            ) : (
-                                                <div>No session data available</div>
-                                            )}
-                                        </HoverCardContent>
-                                    </HoverCard>
-                                    <TableCell className="text-base font-normal font-mono h-fit py-1">
-                                        {log.note}. {log.description}
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                                        return (
+                                            <TableRow key={logId} className="h-fit border-none w-full">
+                                                <HoverCard>
+                                                    <HoverCardTrigger>
+                                                        <TableCell className="text-base font-medium font-mono h-fit py-1 w-[50px]">
+                                                            {
+                                                                new Date(log.date_created).toLocaleTimeString(undefined, {
+                                                                    hour: "2-digit",
+                                                                    minute: "2-digit",
+                                                                    second: "2-digit",
+                                                                    fractionalSecondDigits: 3,
+                                                                })
+                                                            }
+                                                        </TableCell>
+                                                    </HoverCardTrigger>
+                                                    <HoverCardContent side="right" className="w-full">
+                                                        {logSession ? (
+                                                            <>
+                                                                <div className="text-base font-medium font-mono"><span className="font-semibold">Date Created:</span> {new Date(logSession.date_created).toLocaleString()}</div>
+                                                                <div className="text-base font-medium font-mono"><span className="font-semibold">Device Name:</span> {logSession.device_name}</div>
+                                                                <div className="text-base font-medium font-mono"><span className="font-semibold">Need Resolve:</span> {logSession.need_resolve ? 'Yes' : 'No'}</div>
+                                                            </>
+                                                        ) : (
+                                                            <div>No session data available</div>
+                                                        )}
+                                                    </HoverCardContent>
+                                                </HoverCard>
+                                                <TableCell className="text-base font-normal font-mono h-fit py-1">
+                                                    {log.note}. {log.description}
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                                 </TableBody>
                             </Table>
                         </div>
                     </TabsContent>
+                    
                     <TabsContent value="code" className="flex-1 overflow-auto m-0">
                         <div className="w-full h-[calc(100vh-119px)]">
                             <CodeMirror

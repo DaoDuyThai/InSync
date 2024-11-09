@@ -19,6 +19,7 @@ import { RootState, AppDispatch } from '@/store/store';
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { ProjectSelector } from "./project-selector";
+import { useProModal } from "@/store/use-pro-modal";
 
 
 
@@ -47,9 +48,35 @@ export const ProjectSidebar = () => {
         }
     }, [dispatch]);
 
-   
+    const { user } = useUser();
 
     // TODO: Implement Stripe
+    const { onOpen } = useProModal();
+    const onClickPay = () => {
+        onOpen();
+    }
+
+
+    const onClickPortal = () => {
+        setPending(true);
+
+        if (!user) {
+            toast.error("Please log in to continue.");
+            setPending(false);
+            return;
+        }
+        try {
+            const portalLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_LINK_URL!}?prefilled_email=${user.primaryEmailAddress}`;
+            window.location.href = portalLinkUrl;
+        } catch (error) {
+            console.error(error);
+            toast.error("An error occurred. Please try again later.");
+            return
+        } finally {
+            setPending(false);
+        }
+
+    }
     // const { organization } = useOrganization();
     // const isSubscribed = useQuery(api.subscriptions.getIsSubscribed, {
     //     orgId: organization?.id,
@@ -93,7 +120,7 @@ export const ProjectSidebar = () => {
             </Link>
 
 
-            <ProjectSelector/>
+            <ProjectSelector />
 
 
             <div className="space-y-1 w-full">
@@ -134,11 +161,15 @@ export const ProjectSidebar = () => {
                         <FileClock className="h-4 w-4 mr-2" /> Project Logs
                     </Link>
                 </Button>
-                <Button disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                {/* TODO: Upgrade to Pro */}
+                {/* {isSubscribed ? "Payment Settings" : "Upgrade to Pro"} */}
+                <Button onClick={onClickPay} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                     <Banknote className="h-4 w-4 mr-2" />
-                    {/* TODO: Upgrade to Pro */}
                     Upgrade to Pro
-                    {/* {isSubscribed ? "Payment Settings" : "Upgrade to Pro"} */}
+                </Button>
+                <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                    <Banknote className="h-4 w-4 mr-2" />
+                    My Billing & Plan
                 </Button>
             </div>
         </div>

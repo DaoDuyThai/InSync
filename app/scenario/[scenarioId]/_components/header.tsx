@@ -48,7 +48,7 @@ export const Header = ({
     return (
         <header className="border-b-2 border-slate-200 px-4 sticky top-0 bg-white z-10 h-16 flex justify-between items-center ">
             <div className="h-full flex">
-                <Link href="/">
+                <Link href="/dashboard">
                     <div className="flex items-center gap-x-2">
                         <Image priority src="/logo.svg" alt="logo" height={60} width={60} />
                         <span className={cn(
@@ -103,7 +103,7 @@ export const Header = ({
                     <SignedOut>
                         <div className="flex align-middle gap-2 items-center justify-between md:w-fit w-full">
                             <SignInButton mode="modal" forceRedirectUrl="/dashboard" fallbackRedirectUrl="/dashboard">
-                                <Button variant={"ghost"}>Login</Button>
+                                <Button variant={"ghost"}>Sign In</Button>
                             </SignInButton>
                             <SignUpButton mode="modal" forceRedirectUrl="/dashboard" fallbackRedirectUrl="/dashboard">
                                 <Button >Get InSync for free</Button>

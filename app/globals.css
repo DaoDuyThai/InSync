@@ -83,3 +83,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.default-style ul{
+  list-style: initial;
+  padding: 10px;
+  margin-left: 20px;
+}
+
+.default-style p{
+  padding: 10px;
+}

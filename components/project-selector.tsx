@@ -215,7 +215,7 @@ export const ProjectSelector = () => {
                                 <form onSubmit={handleCreateProject} className="space-y-4">
                                     <Input
                                         required
-                                        maxLength={60}
+                                        maxLength={18}
                                         minLength={5}
                                         placeholder="Enter project title"
                                         // value={title} // Pre-filled with the current title

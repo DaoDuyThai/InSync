@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { UserButton } from "@clerk/nextjs"
 import Link from "next/link"
+import { ChevronRight } from "lucide-react"
 
 
 type Props = {
@@ -18,10 +19,20 @@ const AdminLayout = ({ children }: Props) => {
         <SidebarProvider>
             <AdminSidebar />
             <SidebarInset>
-                <header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 justify-between">
-                    <div className="flex gap-2 items-center">
+                <header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 justify-between z-50">
+                    <div className="flex gap-2 items-center ">
                         <SidebarTrigger className="ml-1" />
                         <Separator orientation="vertical" className="mr-2 h-4" />
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/admin">Administration</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator>
+                                    <ChevronRight />
+                                </BreadcrumbSeparator>
+                            </BreadcrumbList>
+                        </Breadcrumb>
                     </div>
                     <UserButton />
                 </header>
