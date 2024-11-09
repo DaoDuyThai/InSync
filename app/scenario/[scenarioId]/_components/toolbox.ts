@@ -44,6 +44,10 @@ export const toolbox = {
     {
       'kind': 'block',
       'type': 'paste'
+    },
+    {
+      'kind': 'block',
+      'type': 'log'
     }
   ]
 };
