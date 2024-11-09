@@ -120,14 +120,14 @@ jsonGenerator.forBlock['delay'] = function (block) {
 /* ===================================== DELAY ACTION END ====================================== */
 
 /* ==================================== CLICK ACTION START ===================================== */
-jsonGenerator.forBlock['click'] = function (block) {
+jsonGenerator.forBlock['click_smart'] = function (block) {
   const element = block.getFieldValue('ON');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Click on ${element} for ${duration} ms`;
 
   let code = `{
-        "actionType": "CLICK",
+        "actionType": "CLICK_SMART",
         "on": "${element}",
         "isLog": ${isLog},
         "logContent": "",

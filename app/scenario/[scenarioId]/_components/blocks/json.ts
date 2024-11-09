@@ -122,7 +122,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "helpUrl": ""
     },
     {
-        "type": "click",
+        "type": "click_smart",
         "message0": "click on %1\nfor %2 ms",
         "args0": [
             {
