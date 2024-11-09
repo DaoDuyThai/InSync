@@ -1,7 +1,6 @@
 "use client"
 import { Navbar } from "@/components/navbar";
 import { ProjectSidebar } from "@/components/project-sidebar";
-import { useEffect, useState } from "react";
 
 type Props = {
     children: React.ReactNode

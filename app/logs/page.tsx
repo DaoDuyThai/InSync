@@ -1,11 +1,12 @@
 'use client';
 import { Loading } from "@/components/loading";
 import { useAuth } from "@clerk/nextjs";
-import { MouseEvent, useEffect, useState, useSyncExternalStore } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import 'firebase/database'
 import { db } from "@/firebase/database-firebase";
-import { useLocalStorage } from "react-use";
+import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 interface LogsSessions {
     [key: string]: LogsSessionsObject
@@ -39,6 +40,9 @@ export default function LogPage() {
     const [scenariosId, setScenariosId] = useState<Array<string> | null>(null);
     const { userId } = useAuth();
     const [projectId, setProjectId] = useState<string | null>(null);
+    const [isReverse, setIsReverse] = useState<boolean>(false);
+    const searchParams = useSearchParams();
+    const [searchKey, setSearchKey] = useState<string | null>(null);
 
 
     useEffect(() => {
@@ -47,9 +51,8 @@ export default function LogPage() {
             if (projectId)
                 setProjectId(projectId);
         }, 500);
-        if (projectId) {
-            console.log(projectId);
-
+        if (projectId) {            
+            setSearchKey(searchParams.get("search"));
             const fetchScenariosId = async () => {
                 if (projectId === '') return;
                 console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`);
@@ -72,7 +75,7 @@ export default function LogPage() {
                 if (data) {
                     setLogs(Object.keys(data).map(logId => ({
                         ...data[logId]
-                    })));
+                    })).sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime()));
                 }
             });
 
@@ -81,12 +84,14 @@ export default function LogPage() {
                 if (data) {
                     setLogsSession(Object.keys(data).map(sessionId => ({
                         ...data[sessionId]
-                    })))
+                    })).sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime()));
                 }
             });
         }
 
-    }, [projectId]);
+
+
+    }, [projectId, searchParams]);
 
     function formatDate(dateString: string) {
         const date = new Date(dateString);
@@ -137,20 +142,57 @@ export default function LogPage() {
         }
 
         if (logsSession && logs) {
-            const totalLogSession = logsSession.filter((logSess) => scenariosId?.includes(logSess.scenario_id));
+            const totalLogSession = logsSession.filter((logSess) => scenariosId?.includes(logSess.scenario_id) && (searchKey === null || logSess.session_name.toLowerCase().includes(searchKey.toLowerCase())));
             const indexOfLastItem = currentPage * itemsPerPage;
             const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-            const currentSessions = totalLogSession.slice(indexOfFirstItem, indexOfLastItem);
+            let currentSessions = totalLogSession.slice(indexOfFirstItem, indexOfLastItem);
+            if (!isReverse) {
+                currentSessions = totalLogSession.slice(indexOfFirstItem, indexOfLastItem);
+            } else {
+                currentSessions = totalLogSession.slice(indexOfFirstItem, indexOfLastItem).reverse();
+            }
             const pageNumbers = [];
             for (let i = 1; i <= Math.ceil(totalLogSession.length / itemsPerPage); i++) {
                 pageNumbers.push(i);
             }
             return (
-                <div className="max-w-[1500px] container">
+                <div className="max-w-[1500px] container select-none">
+                    <div className="flex justify-end">
+                        <div
+                            role="tablist"
+                            aria-orientation="horizontal"
+                            className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground"
+                            tabIndex={0}
+                            data-orientation="horizontal"
+                            style={{ "outline": "none" }}>
+                            <button
+                                type="button"
+                                role="tab"
+                                aria-selected="false"
+                                aria-controls="radix-:r6j:-content-podcasts"
+                                data-state="inactive" id="radix-:r6j:-trigger-podcasts"
+                                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow"
+                                tabIndex={-1}
+                                data-orientation="horizontal"
+                                data-radix-collection-item="">Date</button>
+                            <button
+                                type="button"
+                                role="tab"
+                                onClick={() => { setIsReverse(!isReverse) }}
+                                aria-selected="true"
+                                aria-controls="radix-:r6j:-content-music"
+                                data-state="active" id="radix-:r6j:-trigger-music"
+                                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow relative"
+                                tabIndex={0}
+                                data-orientation="horizontal"
+                                data-radix-collection-item="">{!isReverse ? <ArrowDownWideNarrowIcon size={15} /> : <ArrowUpWideNarrowIcon size={15} />}</button>
 
+                        </div>
+                    </div>
                     <div className="flex flex-wrap gap-1">
                         {currentSessions.filter(currentSession =>
-                            scenariosId?.includes(currentSession.scenario_id)
+                            scenariosId?.includes(currentSession.scenario_id as string) &&
+                            (searchKey === null || currentSession.session_name.toLowerCase().includes(searchKey.toLowerCase()))
                         ).map(session => (
                             <div
                                 onClick={e => handleClick(e)}
