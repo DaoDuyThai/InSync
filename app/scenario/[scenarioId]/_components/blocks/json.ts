@@ -136,7 +136,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             {
                 "type": "field_number",
                 "name": "DURATION",
-                "value": 1000,
+                "value": 100,
                 "min": 0,
                 "precision": 1
             }
@@ -174,7 +174,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             {
                 "type": "field_number",
                 "name": "DURATION",
-                "value": 1000,
+                "value": 100,
                 "min": 0,
                 "precision": 1
             }
@@ -214,7 +214,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             {
                 "type": "field_number",
                 "name": "DURATION",
-                "value": 1000,
+                "value": 100,
                 "min": 0,
                 "precision": 1
             }
@@ -252,7 +252,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             {
                 "type": "field_number",
                 "name": "DURATION",
-                "value": 1000,
+                "value": 100,
                 "min": 0,
                 "precision": 1
             },
@@ -473,7 +473,7 @@ Blockly.Extensions.registerMutator('delay_mutator', {
 
 
 /* ============================================================================================= */
-/* ==================================== CLICK ACTION START ===================================== */
+/* ================================= SMART CLICK ACTION START ================================== */
 /* ============================================================================================= */
 // Update click_mutator to ensure ON field is managed
 Blockly.Extensions.registerMutator('click_mutator', {
@@ -499,7 +499,7 @@ Blockly.Extensions.registerMutator('click_mutator', {
         }
     },
     updateShape: function (isLog: boolean) {
-        const duration = this.getFieldValue('DURATION') || 1000;
+        const duration = this.getFieldValue('DURATION') || 100;
         const defaultLogMessage = `Click for ${duration} ms`;
 
         if (isLog) {
@@ -579,7 +579,7 @@ class FieldImageDrop extends Blockly.FieldImage {
 // Register the custom field
 Blockly.fieldRegistry.register('field_image_drop', FieldImageDrop);
 /* ============================================================================================= */
-/* ===================================== CLICK ACTION END ====================================== */
+/* ================================== SMART CLICK ACTION END =================================== */
 /* ============================================================================================= */
 
 /* ============================================================================================= */
@@ -599,7 +599,7 @@ Blockly.Extensions.registerMutator('zoom_mutator', {
     },
     updateShape: function (isLog: boolean) {
         const direction = this.getFieldValue('DIRECTION') || "in";
-        const duration = this.getFieldValue('DURATION') || 1000;
+        const duration = this.getFieldValue('DURATION') || 100;
         const defaultLogMessage = `Zoom ${direction} for ${duration} ms`;
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {
@@ -644,7 +644,7 @@ Blockly.Extensions.registerMutator('swipe_mutator', {
     },
     updateShape: function (isLog: boolean) {
         const direction = this.getFieldValue('DIRECTION') || "left";
-        const duration = this.getFieldValue('DURATION') || 1000;
+        const duration = this.getFieldValue('DURATION') || 100;
         const defaultLogMessage = `Swipe ${direction} for ${duration} ms`;
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {
@@ -689,7 +689,7 @@ Blockly.Extensions.registerMutator('rotate_mutator', {
     },
     updateShape: function (isLog: boolean) {
         const direction = this.getFieldValue('DIRECTION') || "CLOCKWISE";
-        const duration = this.getFieldValue('DURATION') || 1000;
+        const duration = this.getFieldValue('DURATION') || 100;
         const degrees = this.getFieldValue('DEGREES') || 90;
         const defaultLogMessage = `Rotate ${direction} for ${duration} ms by ${degrees} degrees`;
 
