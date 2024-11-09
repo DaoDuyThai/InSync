@@ -35,12 +35,12 @@ export default function ImagePage() {
     const [images, setImages] = useState<GroupedImagesByDate>({});
     const [searchKey, setSearchKey] = useState("");
     const [isReverse, setIsReverse] = useState(false);
+    const [notFound, setNotFound] = useState(false);  
 
     useEffect(() => {
         // Set page title
         document.title = "InSync - Assets Management";
         const search = searchParams.get('search');
-        const imageLoading = document.querySelector('.image-loading');
         setSearchKey(search || "");
 
 
@@ -117,6 +117,10 @@ export default function ImagePage() {
         };
 
         fetchImageThroughAPI();
+
+        setTimeout(() => {
+            setNotFound(true);
+        }, 10000);
 
     }, [searchParams, images]);
 
@@ -209,9 +213,17 @@ export default function ImagePage() {
 
         return (
             <div className="px-10 py-5 max-w-[1500px] image-loading">
-                {Object.keys(filteredImagesByDate).length === 0 ? <Loading /> :
-                    <div>
-                        <div className="flex justify-end">
+                {Object.keys(filteredImagesByDate).length === 0 ? (
+                    <div className="flex justify-center items-center h-[300px]">
+                        <div className="text-center">
+                            <img src="/logo.svg" alt="No assets found" className="w-[200px] h-[200px] mx-auto animate-pulse" />
+                            <h1 className="text-2xl">Assest - Insync</h1>
+                            <p className="text-muted-foreground">{notFound ?'Asset is not found' : 'Powered by InSync' }</p>
+                        </div>
+                    </div>
+                ) :
+                    <div className="relative">
+                        <div className="flex absolute top-0 right-0 justify-end">
                             <div
                                 role="tablist"
                                 aria-orientation="horizontal"

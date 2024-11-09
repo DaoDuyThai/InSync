@@ -173,89 +173,105 @@ export default function LogPage() {
             for (let i = 1; i <= Math.ceil(totalLogSession.length / itemsPerPage); i++) {
                 pageNumbers.push(i);
             }
+
             return (
                 <div className="max-w-[1500px] container select-none">
-                    <div className="flex justify-end gap-2">
-                        <div
-                            role="tablist"
-                            aria-orientation="horizontal"
-                            className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground"
-                            tabIndex={0}
-                            data-orientation="horizontal"
-                            style={{ "outline": "none" }}>
-                            <button
-                                type="button"
-                                role="tab"
-                                aria-selected="false"
-                                aria-controls="radix-:r6j:-content-podcasts"
-                                data-state="inactive" id="radix-:r6j:-trigger-podcasts"
-                                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow"
-                                tabIndex={-1}
-                                data-orientation="horizontal"
-                                data-radix-collection-item="">Date</button>
-                            <button
-                                type="button"
-                                role="tab"
-                                onClick={() => { setIsReverse(!isReverse) }}
-                                aria-selected="true"
-                                aria-controls="radix-:r6j:-content-music"
-                                data-state="active" id="radix-:r6j:-trigger-music"
-                                className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow relative"
-                                tabIndex={0}
-                                data-orientation="horizontal"
-                                data-radix-collection-item="">{!isReverse ? <ArrowDownWideNarrowIcon size={15} /> : <ArrowUpWideNarrowIcon size={15} />}</button>
+                    {
+                        currentSessions.length > 0 ? (
+                            <div>
+                                <div className="flex justify-end gap-2">
+                                    <div
+                                        role="tablist"
+                                        aria-orientation="horizontal"
+                                        className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground"
+                                        tabIndex={0}
+                                        data-orientation="horizontal"
+                                        style={{ "outline": "none" }}>
+                                        <button
+                                            type="button"
+                                            role="tab"
+                                            aria-selected="false"
+                                            aria-controls="radix-:r6j:-content-podcasts"
+                                            data-state="inactive" id="radix-:r6j:-trigger-podcasts"
+                                            className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow"
+                                            tabIndex={-1}
+                                            data-orientation="horizontal"
+                                            data-radix-collection-item="">Date</button>
+                                        <button
+                                            type="button"
+                                            role="tab"
+                                            onClick={() => { setIsReverse(!isReverse) }}
+                                            aria-selected="true"
+                                            aria-controls="radix-:r6j:-content-music"
+                                            data-state="active" id="radix-:r6j:-trigger-music"
+                                            className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow relative"
+                                            tabIndex={0}
+                                            data-orientation="horizontal"
+                                            data-radix-collection-item="">{!isReverse ? <ArrowDownWideNarrowIcon size={15} /> : <ArrowUpWideNarrowIcon size={15} />}</button>
 
-                        </div>
-                    </div>
-                    <div className="flex flex-wrap gap-[2%]">
-                        {currentSessions.filter(currentSession =>
-                            scenariosId?.includes(currentSession.scenario_id as string) &&
-                            (searchKey === null || currentSession.session_name.toLowerCase().includes(searchKey.toLowerCase()))
-                        ).map(session => (
-                            <div
-                                onClick={e => handleClick(e)}
-                                key={session.session_id} className=" w-[49%] mt-5 relative">
-                                <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] log-sessions z-0">
-                                    <strong>{session.session_name}</strong>
-                                    <div className="float-right">{formatDate(session.date_created)}</div>
-                                    <div><strong>Scenario: </strong>{scenarios?.filter(scenario => scenario.id == session.scenario_id)[0].title}</div>
-                                    <div><strong>Device: </strong>{session.device_name}</div>
-                                    <div>{session.session_id}</div>
+                                    </div>
                                 </div>
-
-                                <div className="logs hidden overflow-y-auto h-[300px] bg-white rounded shadow-lg transform
-                                 scale-95 transition-all duration-200 ease-out origin-top mt-2 z-10 absolute top-full left-0 w-full">
-                                    {logs.filter(log => log.session_id === session.session_id).map(log => (
-                                        <div key={log.session_id} className="ml-[50px] mt-5 flex gap-2 z-10">
-                                            <div>{formatTime(log.date_created)}</div>
-                                            <div className="w-[1px] h-[100px] border-black border-2"></div>
-                                            <div>
-                                                <div>{log.description}</div>
-                                                <div>{log.log_scenarios_id}</div>
-                                                <div>{log.note}</div>
-                                                <div>{log.status}</div>
+                                <div className="flex flex-wrap gap-[2%]">
+                                    {currentSessions.filter(currentSession =>
+                                        scenariosId?.includes(currentSession.scenario_id as string) &&
+                                        (searchKey === null || currentSession.session_name.toLowerCase().includes(searchKey.toLowerCase()))
+                                    ).map(session => (
+                                        <div
+                                            onClick={e => handleClick(e)}
+                                            key={session.session_id} className=" w-[49%] mt-5 relative">
+                                            <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] log-sessions z-0">
+                                                <strong>{session.session_name}</strong>
+                                                <div className="float-right">{formatDate(session.date_created)}</div>
+                                                <div><strong>Scenario: </strong>{scenarios?.filter(scenario => scenario.id == session.scenario_id)[0].title}</div>
+                                                <div><strong>Device: </strong>{session.device_name}</div>
+                                                <div>{session.session_id}</div>
                                             </div>
+
+                                            <div className="logs border-[#e1e8f0] border-[1px] hidden overflow-y-auto h-[300px] bg-white rounded shadow-lg transform
+                                 scale-95 transition-all duration-200 ease-out origin-top mt-2 z-10 absolute top-full left-0 w-full">
+                                                {logs.filter(log => log.session_id === session.session_id).map(log => (
+                                                    <div key={log.session_id} className="ml-[50px] mt-5 flex gap-2 z-10">
+                                                        <div>{formatTime(log.date_created)}</div>
+                                                        <div className="w-[1px] h-[100px] border-black border-2"></div>
+                                                        <div>
+                                                            <div>{log.description}</div>
+                                                            <div>{log.log_scenarios_id}</div>
+                                                            <div>{log.note}</div>
+                                                            <div>{log.status}</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+
                                         </div>
                                     ))}
                                 </div>
-
+                                <div className="pagination flex justify-center gap-2 mt-5 mb-5">
+                                    {pageNumbers.map(number => (
+                                        <button key={number} onClick={() => handlePageChange(number)} className={`page-number ${currentPage === number ? 'active bg-gray-300' : 'bg-white'} border-[1px] border-[#e6e6e8] rounded-lg px-[10px] hover:bg-gray-300`}>
+                                            {number}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                    <div className="pagination flex justify-center gap-2 mt-5 mb-5">
-                        {pageNumbers.map(number => (
-                            <button key={number} onClick={() => handlePageChange(number)} className={`page-number ${currentPage === number ? 'active bg-gray-300' : 'bg-white'} border-[1px] border-[#e6e6e8] rounded-lg px-[10px] hover:bg-gray-300`}>
-                                {number}
-                            </button>
-                        ))}
-                    </div>
+                        ) : (
+                            <div className="flex justify-center items-center h-[300px]">
+                                <div className="text-center">
+                                    <img src="/logo.svg" alt="empty" className="w-[200px] h-[200px] mx-auto animate-pulse" />
+                                    <h1 className="text-2xl">Logs - Insync</h1>
+                                    <p className="text-muted-foreground">Powered by InSync</p>
+                                </div>
+                            </div>
+                        )
+                    }
                 </div>
 
 
             )
-        } else {
-            return <Loading />
-        }
+        } 
+        // else {
+        //     return <Loading />
+        // }
     }
 
 
