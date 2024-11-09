@@ -43,6 +43,7 @@ export default function LogPage() {
     const [isReverse, setIsReverse] = useState<boolean>(false);
     const searchParams = useSearchParams();
     const [searchKey, setSearchKey] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
 
     useEffect(() => {
@@ -113,8 +114,7 @@ export default function LogPage() {
         return `${hours}:${minutes}:${seconds}`;
     }
 
-    const render = () => {
-        const [currentPage, setCurrentPage] = useState(1);
+    const Render = () => {
         const itemsPerPage = 6;
 
         const handlePageChange = (pageNumber: number) => {
@@ -241,7 +241,7 @@ export default function LogPage() {
 
     return (
         <>
-            {render()}
+            <Render/>
         </>
     )
 }
