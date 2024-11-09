@@ -91,7 +91,7 @@ const SubscriptionsPage = () => {
 
   if (loading) {
     return
-      <Loading />;
+    <Loading />;
   }
 
   return (
@@ -228,7 +228,7 @@ const EditDialog: React.FC<EditDialogProps> = ({ plan, onEdit, isLoading, open, 
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] h-full overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Subscription Plan</DialogTitle>
         </DialogHeader>
@@ -352,7 +352,7 @@ const EditDialog: React.FC<EditDialogProps> = ({ plan, onEdit, isLoading, open, 
             />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex justify-center">
           <Button onClick={() => onEdit(plan.id, editedPlan)} disabled={isLoading}>
             Save changes
           </Button>
