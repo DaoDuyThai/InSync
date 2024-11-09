@@ -175,7 +175,7 @@ export default function LogPage() {
             }
             return (
                 <div className="max-w-[1500px] container select-none">
-                    <div className="flex justify-end">
+                    <div className="flex justify-end gap-2">
                         <div
                             role="tablist"
                             aria-orientation="horizontal"
@@ -207,15 +207,15 @@ export default function LogPage() {
 
                         </div>
                     </div>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-[2%]">
                         {currentSessions.filter(currentSession =>
                             scenariosId?.includes(currentSession.scenario_id as string) &&
                             (searchKey === null || currentSession.session_name.toLowerCase().includes(searchKey.toLowerCase()))
                         ).map(session => (
                             <div
                                 onClick={e => handleClick(e)}
-                                key={session.session_id} className=" w-[48%] mt-5 ">
-                                <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] log-sessions">
+                                key={session.session_id} className=" w-[49%] mt-5 relative">
+                                <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] log-sessions z-0">
                                     <strong>{session.session_name}</strong>
                                     <div className="float-right">{formatDate(session.date_created)}</div>
                                     <div><strong>Scenario: </strong>{scenarios?.filter(scenario => scenario.id == session.scenario_id)[0].title}</div>
@@ -223,9 +223,10 @@ export default function LogPage() {
                                     <div>{session.session_id}</div>
                                 </div>
 
-                                <div className="logs hidden overflow-y-auto h-[300px] bg-white rounded shadow-lg transform scale-95 transition-all duration-200 ease-out origin-top">
+                                <div className="logs hidden overflow-y-auto h-[300px] bg-white rounded shadow-lg transform
+                                 scale-95 transition-all duration-200 ease-out origin-top mt-2 z-10 absolute top-full left-0 w-full">
                                     {logs.filter(log => log.session_id === session.session_id).map(log => (
-                                        <div key={log.session_id} className="ml-[50px] mt-5 flex gap-2 ">
+                                        <div key={log.session_id} className="ml-[50px] mt-5 flex gap-2 z-10">
                                             <div>{formatTime(log.date_created)}</div>
                                             <div className="w-[1px] h-[100px] border-black border-2"></div>
                                             <div>
