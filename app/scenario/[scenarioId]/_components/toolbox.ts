@@ -23,7 +23,11 @@ export const toolbox = {
     },
     {
       'kind': 'block',
-      'type': 'click'
+      'type': 'click_smart'
+    },
+    {
+      'kind': 'block',
+      'type': 'click_xy'
     },
     {
       'kind': 'block',

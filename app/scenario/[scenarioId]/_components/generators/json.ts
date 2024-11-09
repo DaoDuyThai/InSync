@@ -119,15 +119,15 @@ jsonGenerator.forBlock['delay'] = function (block) {
 };
 /* ===================================== DELAY ACTION END ====================================== */
 
-/* ==================================== CLICK ACTION START ===================================== */
-jsonGenerator.forBlock['click'] = function (block) {
+/* ================================= SMART CLICK ACTION START ================================== */
+jsonGenerator.forBlock['click_smart'] = function (block) {
   const element = block.getFieldValue('ON');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Click on ${element} for ${duration} ms`;
 
   let code = `{
-        "actionType": "CLICK",
+        "actionType": "CLICK_SMART",
         "on": "${element}",
         "isLog": ${isLog},
         "logContent": "",
@@ -147,7 +147,40 @@ jsonGenerator.forBlock['click'] = function (block) {
 
   return code;
 };
-/* ===================================== CLICK ACTION END ====================================== */
+/* ================================== SMART CLICK ACTION END =================================== */
+
+/* =================================== XY CLICK ACTION START =================================== */
+jsonGenerator.forBlock['click_xy'] = function (block) {
+  const x = block.getFieldValue('X');
+  const y = block.getFieldValue('Y');
+  const duration = block.getFieldValue('DURATION');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const defaultLogContent = `Click at (${x}, ${y}) for ${duration} ms`;
+
+  let code = `{
+        "actionType": "CLICK_XY",
+        "x": ${x},
+        "y": ${y},
+        "isLog": ${isLog},
+        "logContent": "",
+        "duration": ${duration}
+    }`;
+
+  if (isLog) {
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
+        "actionType": "CLICK_XY",
+        "x": ${x},
+        "y": ${y},
+        "isLog": true,
+        "logContent": "${logContent}",
+        "duration": ${duration}
+    }`;
+  }
+
+  return code;
+};
+/* =================================== XY CLICK ACTION END ===================================== */
 
 /* ===================================== ZOOM ACTION START ===================================== */
 jsonGenerator.forBlock['zoom'] = function (block) {
@@ -211,7 +244,7 @@ jsonGenerator.forBlock['swipe'] = function (block) {
 /* ===================================== SWIPE ACTION END ====================================== */
 
 /* ==================================== ROTATE ACTION START ==================================== */
-jsonGenerator.forBlock['rotate'] = function(block) {
+jsonGenerator.forBlock['rotate'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
   const duration = block.getFieldValue('DURATION');
   const degrees = block.getFieldValue('DEGREES');
@@ -228,8 +261,8 @@ jsonGenerator.forBlock['rotate'] = function(block) {
     }`;
 
   if (isLog) {
-      const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-      code = `{
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
         "actionType": "ROTATE",
         "direction": "${direction}",
         "duration": ${duration},
@@ -244,7 +277,7 @@ jsonGenerator.forBlock['rotate'] = function(block) {
 /* ===================================== ROTATE ACTION END ===================================== */
 
 /* ==================================== PASTE ACTION START ===================================== */
-jsonGenerator.forBlock['paste'] = function(block) {
+jsonGenerator.forBlock['paste'] = function (block) {
   const pasteContent = block.getFieldValue('PASTE_CONTENT');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Input "${pasteContent}"`;
@@ -257,8 +290,8 @@ jsonGenerator.forBlock['paste'] = function(block) {
   }`;
 
   if (isLog) {
-      const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
-      code = `{
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
           "actionType": "PASTE",
           "pasteContent": "${pasteContent}",
           "isLog": true,
