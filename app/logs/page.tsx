@@ -34,10 +34,27 @@ interface LogObject {
     status: boolean
 }
 
+interface Scenarios {
+    "id": string,
+    "projectId": string,
+    "projectName": string,
+    "title": string,
+    "description": string,
+    "createdAt": string,
+    "updatedAt": string,
+    "stepsWeb": string,
+    "stepsAndroid": string,
+    "isFavorites": string,
+    "imageUrl": string,
+    "authorId": string,
+    "authorIdGuid": string,
+    "authorName": string
+}
+
 export default function LogPage() {
     const [logsSession, setLogsSession] = useState<Array<LogsSessionsObject> | null>(null);
     const [logs, setLogs] = useState<Array<LogObject> | null>(null);
-    const [scenariosId, setScenariosId] = useState<Array<string> | null>(null);
+    const [scenarios, setScenarios] = useState<Array<Scenarios> | null>(null);
     const { userId } = useAuth();
     const [projectId, setProjectId] = useState<string | null>(null);
     const [isReverse, setIsReverse] = useState<boolean>(false);
@@ -52,7 +69,7 @@ export default function LogPage() {
             if (projectId)
                 setProjectId(projectId);
         }, 500);
-        if (projectId) {            
+        if (projectId) {
             setSearchKey(searchParams.get("search"));
             const fetchScenariosId = async () => {
                 if (projectId === '') return;
@@ -60,7 +77,7 @@ export default function LogPage() {
                 await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`)
                     .then(response => response.json())
                     .then(data => {
-                        setScenariosId(data.data.map((scenario: any) => scenario.id));
+                        setScenarios(data.data);
                     })
                     .catch(err => console.log(err));
             }
@@ -142,6 +159,7 @@ export default function LogPage() {
         }
 
         if (logsSession && logs) {
+            const scenariosId = scenarios?.map(scenario => scenario.id);
             const totalLogSession = logsSession.filter((logSess) => scenariosId?.includes(logSess.scenario_id) && (searchKey === null || logSess.session_name.toLowerCase().includes(searchKey.toLowerCase())));
             const indexOfLastItem = currentPage * itemsPerPage;
             const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -200,6 +218,7 @@ export default function LogPage() {
                                 <div className="border-[1px] border-[#e6e6e8] rounded-lg p-[10px] log-sessions">
                                     <strong>{session.session_name}</strong>
                                     <div className="float-right">{formatDate(session.date_created)}</div>
+                                    <div><strong>Scenario: </strong>{scenarios?.filter(scenario => scenario.id == session.scenario_id)[0].title}</div>
                                     <div><strong>Device: </strong>{session.device_name}</div>
                                     <div>{session.session_id}</div>
                                 </div>
@@ -241,7 +260,7 @@ export default function LogPage() {
 
     return (
         <>
-            <Render/>
+            <Render />
         </>
     )
 }

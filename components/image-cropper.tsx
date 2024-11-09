@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
-import { CropIcon, ImagesIcon, MoveIcon, UploadCloudIcon, XIcon, ZoomIn, ZoomOut } from "lucide-react";
+import { CropIcon, ImagesIcon, MoveIcon, SaveIcon, UploadCloudIcon, XIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import uploadImage from "@/app/assets/_components/uploadImage";
-import { useParams } from "next/navigation";
+import { Hint } from "./hint";
 
 /**
  * ImageCroppedPage component provides functionality for cropping and moving images on a canvas.
@@ -87,7 +87,7 @@ interface props {
     imgURL?: string;
 }
 
-export default function ImageCopper({id, imgURL} : props): JSX.Element {
+export default function ImageCopper({ id, imgURL }: props): JSX.Element {
     // const {id} = useParams();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const zoomInRef = useRef<HTMLButtonElement>(null);
@@ -102,13 +102,13 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
     const movingButtonRef = useRef<HTMLButtonElement>(null);
     const [selectedImageCanvas, setSelectedImageCanvas] = useState<Array<HTMLCanvasElement | null>>([]);
     const [openPopup, setOpenPopup] = useState(false);
-
+    const saveButtonRef = useRef<HTMLButtonElement>(null);
 
     //#region useEffect
     useEffect(() => {
         if (mount.current) return;
         console.log(`${imgURL} is loaded`);
-        
+
         document.title = "InSync  - Asset Modification"
         const canvas = canvasRef.current;
         const fixedSizeCanvas = document.createElement('canvas');
@@ -141,7 +141,7 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
         //#region declare fixed size image
         // Cài đặt hình ảnh cố định để cắt ảnh
         // const imgURL = localStorage.getItem('imageURL')?.toString();
-        
+
         if (imgURL) {
             fixedSizeImage.src = imgURL; // Update with the path to your image
             img.src = imgURL;
@@ -166,9 +166,9 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
         // Draw the image on the canvas once it's loaded
         img.crossOrigin = "Anonymous";
         img.onload = function () {
-            if(img.height !== 600) {
+            if (img.height !== 600) {
                 scale = 600 / img.height;
-            } 
+            }
             drawImageAndRectangles(ctx, canvas, img, rectangles);
         };
 
@@ -181,29 +181,33 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
             console.log("IsMovingButtonClicked is listened");
             isMovingButtonClicked = true;
             isCroppingButtonClicked = false;
-            
+
         })
 
 
         // Function to start drawing
         canvas?.addEventListener('mousedown', (e) => {
+            console.log('mousedown');
+
             if (isCroppingButtonClicked) {
                 console.log("isCroppingButtonClicked")
+                rectangles.length = 0;
                 startX = e.offsetX;
                 startY = e.offsetY;
                 isDrawing = true;
-            } else if (isMovingButtonClicked) {
+            }
+            if (isMovingButtonClicked) {
                 console.log("isMovingButtonClicked")
                 isMoving = true;
                 lastMovingX = e.offsetX;
                 lastMovingY = e.offsetY;
-                
+
             }
         });
 
         // Function to draw the rectangle while mouse is moving
         canvas?.addEventListener('mousemove', (e) => {
-            if (isCroppingButtonClicked &&  isDrawing) {
+            if (isCroppingButtonClicked && isDrawing) {
                 const currentX = e.offsetX;
                 const currentY = e.offsetY;
 
@@ -231,11 +235,11 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
             else if (isMovingButtonClicked && isMoving) {
                 let currentX = e.offsetX;
                 let currentY = e.offsetY;
-                imageX += (currentX - lastMovingX ) * 1.1 / scale;
-                imageY += (currentY - lastMovingY ) * 1.1 / scale;
+                imageX += (currentX - lastMovingX) * 1.1 / scale;
+                imageY += (currentY - lastMovingY) * 1.1 / scale;
                 lastMovingX = currentX;
                 lastMovingY = currentY;
-                
+
 
                 ctx?.clearRect(0, 0, canvas.width, canvas.height);
                 if (ctx) {
@@ -270,47 +274,63 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
         document.addEventListener('keydown', (e) => {
             try {
                 if (isCroppingButtonClicked && e.key === 'Enter') {
-                    let length = rectangles.length
-                    const rect = rectangles[length - 1]
-                    let canvas = document.createElement("canvas");
-                    let canvasContext = canvas.getContext('2d');
-                    let imageData2 = fixedSizeCtx?.getImageData(rect.realStartX / scale, rect.realStartY / scale, rect.width / scale, rect.height / scale);
-                    let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
-                    canvas.width = rect.width / scale;
-                    canvas.height = rect.height / scale;
-                    canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas');
-                    // add event listener to choose cropped image
-                    canvas.addEventListener('click', () => {
-                        canvas.classList.toggle('border-4');
-                        canvas.classList.toggle('border-green-500');
-                        canvas.classList.toggle('selected-cropped-image');
-                        seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
-                        if (seletedCroppedImage.length >= 1) {
-                            uploadImageButton?.classList.remove('hidden');
-                            setSelectedImageCanvas(Array.from(seletedCroppedImage));
-                        } else {
-                            uploadImageButton?.classList.add('hidden');
-                            setSelectedImageCanvas([]);
-                        }
-
-                    });
-                    if (imageData2) {
-                        canvasContext?.putImageData(imageData2, 0, 0);
-
-                        if (totalImagesElement) {
-                            totalImagesElement.parentElement?.classList.remove('hidden');
-                            totalImagesElement.textContent = `${++totalImages}`;
-                        }
-
-                    }
-                    canvasArea?.appendChild(canvas);
-                    rectangles.length = 0;
+                    cropImage();
                 }
             } catch (error) {
                 console.error(error);
 
             }
         });
+
+        saveButtonRef?.current?.addEventListener('click', (e) => {
+            try {
+                if (isCroppingButtonClicked) {
+                    cropImage();
+                }
+            } catch (error) {
+                console.error(error);
+
+            }
+        });
+
+
+        const cropImage = () => {
+            let length = rectangles.length
+            const rect = rectangles[length - 1]
+            let canvas = document.createElement("canvas");
+            let canvasContext = canvas.getContext('2d');
+            let imageData2 = fixedSizeCtx?.getImageData(rect.realStartX / scale, rect.realStartY / scale, rect.width / scale, rect.height / scale);
+            let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
+            canvas.width = rect.width / scale;
+            canvas.height = rect.height / scale;
+            canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas');
+            // add event listener to choose cropped image
+            canvas.addEventListener('click', () => {
+                canvas.classList.toggle('border-4');
+                canvas.classList.toggle('border-green-500');
+                canvas.classList.toggle('selected-cropped-image');
+                seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
+                if (seletedCroppedImage.length >= 1) {
+                    uploadImageButton?.classList.remove('hidden');
+                    setSelectedImageCanvas(Array.from(seletedCroppedImage));
+                } else {
+                    uploadImageButton?.classList.add('hidden');
+                    setSelectedImageCanvas([]);
+                }
+
+            });
+            if (imageData2) {
+                canvasContext?.putImageData(imageData2, 0, 0);
+
+                if (totalImagesElement) {
+                    totalImagesElement.parentElement?.classList.remove('hidden');
+                    totalImagesElement.textContent = `${++totalImages}`;
+                }
+
+            }
+            canvasArea?.appendChild(canvas);
+            rectangles.length = 0;
+        }
 
         pulseArea?.addEventListener('click', (e) => {
             if (pulseArea) {
@@ -320,7 +340,7 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
 
 
         canvas?.addEventListener('click', (e) => {
-            if (isCroppingButtonClicked ) {
+            if (isCroppingButtonClicked) {
                 const rect = canvas.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
@@ -333,22 +353,18 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
                     }
                 });
 
-                if (selectedRectIndex !== null) {
-                    // Confirm removal of the selected rectangle
-                    const confirmed = confirm('Do you want to remove the selected rectangle?');
-                    if (confirmed) {
-                        // Remove the selected rectangle
-                        rectangles.splice(selectedRectIndex, 1);
-                        selectedRectIndex = null;
-                        drawImageAndRectangles(ctx, canvas, img, rectangles);
-                    }
-                };
-            } 
-            else if (isMovingButtonClicked) {
-                isMovingButtonClicked = false;
-            } else if (!isMovingButtonClicked) {
-                isMovingButtonClicked = true;
+                // if (selectedRectIndex !== null) {
+                //     // Confirm removal of the selected rectangle
+                //     const confirmed = confirm('Do you want to remove the selected rectangle?');
+                //     if (confirmed) {
+                //         // Remove the selected rectangle
+                //         rectangles.splice(selectedRectIndex, 1);
+                //         selectedRectIndex = null;
+                //         drawImageAndRectangles(ctx, canvas, img, rectangles);
+                //     }
+                // };
             }
+
         });
 
         const drawImage = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, img: HTMLImageElement) => {
@@ -390,15 +406,28 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
         // Function to draw image and rectangles
         const drawImageAndRectangles = (ctx: any, canvas: any, img: any, rectangles: Array<any>) => {
             if (ctx && canvas) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawImage(ctx, canvas, img);
-                // Draw all rectangles
-                rectangles?.forEach(rect => {
-                    ctx.beginPath();
-                    ctx.rect(rect.startX, rect.startY, rect.width, rect.height);
-                    ctx.strokeStyle = 'white';
-                    ctx.stroke();
-                });
+                try {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawImage(ctx, canvas, img);
+                    // Draw all rectangles
+                    const rectanglesLength = rectangles.length;
+                    if (rectanglesLength > 0) {
+                        ctx.beginPath();
+                        ctx.rect(rectangles[rectanglesLength - 1].startX, rectangles[rectanglesLength - 1].startY, rectangles[rectanglesLength - 1].width, rectangles[rectanglesLength - 1].height);
+                        ctx.strokeStyle = 'white';
+                        ctx.stroke();
+                    }
+                } catch (error) {
+                    console.error(error);
+
+                }
+                // rectangles?.forEach(rect => {
+                //     ctx.beginPath();
+                //     ctx.rect(rect.startX, rect.startY, rect.width, rect.height);
+                //     ctx.strokeStyle = 'white';
+                //     ctx.stroke();
+                // });
+
             }
         }
 
@@ -434,39 +463,59 @@ export default function ImageCopper({id, imgURL} : props): JSX.Element {
                     <div className="flex justify-between border-b-[1px] text-xl border-[#e6e6e8] p-[10px] ">
                         <span className="font-semibold">Assets Modifier</span>
                         <div className="flex gap-5">
-                            <button
-                                className="hover:border-2 hover:border-black px-2 rounded-sm relative"
-                            >
-                                <ImagesIcon
-                                    onClick={() => setOpenPopup(!openPopup)}
-                                    className="relative"
-                                    size={20} />
-                                <span className="absolute flex items-center justify-center top-[-5px] left-[-5px] w-[20px] h-[20px] p-[1px] text-[14px] text-white text-center rounded-xl bg-red-700">
-                                    <span id="total-images">0</span>
-                                </span>
-                            </button>
-                            <button
-                                ref={croppingButtonRef}
-                                onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }}
-                                className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black rounded-sm px-2`}
-                            >
-                                <CropIcon size={20} />
-                            </button>
-                            <button
-                                ref={movingButtonRef}
-                                onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }}
-                                className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-2 rounded-sm`}>
-                                <MoveIcon size={20} />
-                            </button>
-                            <button
-                                ref={zoomInRef}
-                                className="hover:border-2 hover:border-black px-2 rounded-sm">
-                                <ZoomIn size={20} />
-                            </button>
-                            <button
-                                ref={zoomOutRef} className="hover:border-2 hover:border-black px-2 rounded-sm">
-                                <ZoomOut size={20} />
-                            </button>
+                            <Hint label="Cropped Images">
+                                <button
+                                    className="hover:border-2 hover:border-black px-2 rounded-sm relative"
+                                >
+                                    <ImagesIcon
+                                        onClick={() => setOpenPopup(!openPopup)}
+                                        className="relative"
+                                        size={20} />
+                                    <span className="absolute flex items-center justify-center top-[-5px] left-[-5px] w-[20px] h-[20px] p-[1px] text-[14px] text-white text-center rounded-xl bg-red-700">
+                                        <span id="total-images">0</span>
+                                    </span>
+                                </button>
+                            </Hint>
+                            <Hint label="Save">
+                                <button
+                                    className="hover:border-2 hover:border-black px-2 rounded-sm"
+                                    ref={saveButtonRef}
+                                >
+                                    <SaveIcon
+                                        className="relative"
+                                        size={20} />
+                                </button>
+                            </Hint>
+                            <Hint label="Crop Image">
+                                <button
+                                    ref={croppingButtonRef}
+                                    onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }}
+                                    className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black rounded-sm px-2`}
+                                >
+                                    <CropIcon size={20} />
+                                </button>
+                            </Hint>
+                            <Hint label="Move Image">
+                                <button
+                                    ref={movingButtonRef}
+                                    onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }}
+                                    className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-2 rounded-sm`}>
+                                    <MoveIcon size={20} />
+                                </button>
+                            </Hint>
+                            <Hint label="Zoom In">
+                                <button
+                                    ref={zoomInRef}
+                                    className="hover:border-2 hover:border-black px-2 rounded-sm">
+                                    <ZoomIn size={20} />
+                                </button>
+                            </Hint>
+                            <Hint label="Zoom Out">
+                                <button
+                                    ref={zoomOutRef} className="hover:border-2 hover:border-black px-2 rounded-sm">
+                                    <ZoomOut size={20} />
+                                </button>
+                            </Hint>
                         </div>
                     </div>
                     <div className="relative flex max-w-[1000px] max-h-[800px] p-[30px]">
