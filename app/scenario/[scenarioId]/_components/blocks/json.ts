@@ -155,8 +155,52 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "previousStatement": null,
         "nextStatement": null,
         "colour": 140,
-        "mutator": "click_mutator",
+        "mutator": "click_smart_mutator",
         "tooltip": "Clicks on the specified element for a set duration.",
+        "helpUrl": ""
+    },
+    {
+        "type": "click_xy",
+        "message0": "click on position with\n X = %1\nand Y = %2\nfor %3 ms",
+        "args0": [
+            {
+                "type": "field_number",
+                "name": "X",
+                "value": 0,
+                "min": 0,
+                "precision": 1
+            },
+            {
+                "type": "field_number",
+                "name": "Y",
+                "value": 0,
+                "min": 0,
+                "precision": 1
+            },
+            {
+                "type": "field_number",
+                "name": "DURATION",
+                "value": 100,
+                "min": 0,
+                "precision": 1
+            }
+        ],
+        "message1": "log %1",
+        "args1": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 175,
+        "mutator": "click_xy_mutator",
+        "tooltip": "Clicks at specific x and y coordinates.",
         "helpUrl": ""
     },
     {
@@ -192,7 +236,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 175,
+        "colour": 210,
         "mutator": "zoom_mutator",
         "tooltip": "Zooms in or out for a specified duration.",
         "helpUrl": ""
@@ -232,7 +276,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 210,
+        "colour": 245,
         "mutator": "swipe_mutator",
         "tooltip": "Performs a swipe action in a specified direction for a set duration.",
         "helpUrl": ""
@@ -278,7 +322,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 245,
+        "colour": 280,
         "mutator": "rotate_mutator",
         "tooltip": "Rotates in the specified direction by a given number of degrees and duration.",
         "helpUrl": ""
@@ -306,7 +350,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 280,
+        "colour": 315,
         "mutator": "paste_mutator",
         "tooltip": "Inputs specified text content.",
         "helpUrl": ""
@@ -475,8 +519,8 @@ Blockly.Extensions.registerMutator('delay_mutator', {
 /* ============================================================================================= */
 /* ================================= SMART CLICK ACTION START ================================== */
 /* ============================================================================================= */
-// Update click_mutator to ensure ON field is managed
-Blockly.Extensions.registerMutator('click_mutator', {
+// Update click_smart_mutator to ensure ON field is managed
+Blockly.Extensions.registerMutator('click_smart_mutator', {
     mutationToDom: function () {
         const container = Blockly.utils.xml.createElement('mutation');
         const isLog = this.getFieldValue('ISLOG') === 'TRUE';
@@ -580,6 +624,47 @@ class FieldImageDrop extends Blockly.FieldImage {
 Blockly.fieldRegistry.register('field_image_drop', FieldImageDrop);
 /* ============================================================================================= */
 /* ================================== SMART CLICK ACTION END =================================== */
+/* ============================================================================================= */
+
+/* ============================================================================================= */
+/* =================================== XY CLICK ACTION START =================================== */
+/* ============================================================================================= */
+
+Blockly.Extensions.registerMutator('click_xy_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+    },
+    updateShape: function (isLog: boolean) {
+        const duration = this.getFieldValue('DURATION') || 1000;
+        const defaultLogMessage = `Click at (${this.getFieldValue('X')}, ${this.getFieldValue('Y')}) for ${duration} ms`;
+
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(defaultLogMessage), 'LOGCONTENT');
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function (e: Blockly.Events.Abstract) {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});
+
+/* ============================================================================================= */
+/* ==================================== XY CLICK ACTION END ==================================== */
 /* ============================================================================================= */
 
 /* ============================================================================================= */

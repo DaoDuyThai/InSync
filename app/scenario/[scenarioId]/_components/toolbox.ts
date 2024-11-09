@@ -27,6 +27,10 @@ export const toolbox = {
     },
     {
       'kind': 'block',
+      'type': 'click_xy'
+    },
+    {
+      'kind': 'block',
       'type': 'zoom'
     },
     {
