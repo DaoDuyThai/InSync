@@ -12,6 +12,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { loadEnvConfig } from "@next/env";
+import Link from "next/link";
 
 
 export default function PricingPlanSection() {
@@ -68,13 +69,16 @@ export default function PricingPlanSection() {
                                 <div className="hidden md:block font-normal text-base text-left md:text-xl text-neutral-500">
                                     {plan.content}
                                 </div>
-                                <Button
-                                    size={"lg"}
-                                    className="my-3"
-                                    variant={plan.subscriptionsName === "Professional" ? "premium" : "default"}
-                                >
-                                    {plan.subscriptionsName === "Professional" ? `Buy ${plan.subscriptionsName}` : "Get Started"}
-                                </Button>
+                                <Link href="/dashboard">
+                                    <Button
+                                        size={"lg"}
+                                        className="my-3"
+                                        variant={plan.subscriptionsName === "Professional" ? "premium" : "default"}
+                                    >
+                                        {plan.subscriptionsName === "Professional" ? `Buy ${plan.subscriptionsName}` : "Get Started"}
+                                    </Button>
+                                </Link>
+
                             </TableHead>
                         ))}
                     </TableRow>
@@ -84,7 +88,7 @@ export default function PricingPlanSection() {
                         <TableCell className="w-1/3 text-left font-bold text-xl">Price</TableCell>
                         {pricingPlans.map((plan) => (
                             <TableCell key={plan.id} className="w-1/3 text-left text-xl">
-                                ${plan.price}
+                                đ{plan.price}
                             </TableCell>
                         ))}
                     </TableRow>

@@ -354,6 +354,22 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "mutator": "paste_mutator",
         "tooltip": "Inputs specified text content.",
         "helpUrl": ""
+    },
+    {
+        "type": "log",
+        "message0": "Log: %1",
+        "args0": [
+            {
+                "type": "field_input",
+                "name": "LOGCONTENT",
+                "text": "Enter log content"
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 350,
+        "tooltip": "Logs a message with specified content.",
+        "helpUrl": ""
     }
 ]);
 

@@ -87,31 +87,34 @@ export const ProjectSelector = () => {
     const [projects, setProjects] = React.useState<Project[]>([]);
 
     React.useEffect(() => {
-        if (user && isLoaded) {
-            const fetchProjects = async () => {
-                try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
-                    const data = await response.json();
+    if (user && isLoaded) {
+        const fetchProjects = async () => {
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
+                const data = await response.json();
 
-                    // Only set projects if data exists, preventing premature local storage clearance
-                    if (data?.data?.length > 0) {
-                        setProjects(data.data); // Adjust according to the API response structure
+                if (data?.data?.length > 0) {
+                    // Sort projects by dateCreated in descending order, treating dateCreated as a string
+                    const sortedProjects = data.data.sort((a: Project, b: Project) => 
+                        new Date(b.dateCreated ?? "").getTime() - new Date(a.dateCreated ?? "").getTime()
+                    );
 
-                        const storedProjectId = localStorage.getItem("selectedProjectId");
-                        // Only clear project if it doesn't exist in the loaded projects list
-                        if (storedProjectId && !data.data.find((project: Project) => project.id === storedProjectId)) {
-                            dispatch(clearProject());
-                            localStorage.removeItem("selectedProjectId");
-                        }
+                    setProjects(sortedProjects); // Adjust according to the API response structure
+
+                    const storedProjectId = localStorage.getItem("selectedProjectId");
+                    if (storedProjectId && !sortedProjects.find((project: Project) => project.id === storedProjectId)) {
+                        dispatch(clearProject());
+                        localStorage.removeItem("selectedProjectId");
                     }
-                } catch (error) {
-                    console.error("Error fetching projects:", error);
                 }
-            };
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        };
 
-            fetchProjects();
-        }
-    }, [user, isLoaded, projects, dispatch]);
+        fetchProjects();
+    }
+}, [user, isLoaded, projects, dispatch]);
 
     // console.log(projects);
 

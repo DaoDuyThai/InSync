@@ -302,7 +302,21 @@ jsonGenerator.forBlock['paste'] = function (block) {
   return code;
 };
 /* ===================================== PASTE ACTION END ====================================== */
+jsonGenerator.forBlock['log'] = function (block) {
+  const logContent = block.getFieldValue('LOGCONTENT') || 'Enter log content';
 
+  // Generate the JSON structure for the log action
+  const code = `{
+        "actionType": "LOG",
+        "isLog": true,
+        "logContent": "${logContent}"
+    }`;
+
+  return code;
+};
+/* ===================================== LOG ACTION START ====================================== */
+
+/* ====================================== LOG ACTION END ======================================= */
 
 jsonGenerator.scrub_ = function (block, code, thisOnly) {
   const nextBlock =

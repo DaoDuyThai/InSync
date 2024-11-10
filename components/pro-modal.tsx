@@ -75,7 +75,7 @@ export const ProModal = () => {
       return;
     }
     try {
-      const paymentLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_URL!}?client_reference_id=${SubscriptionPlans[1].id}&prefilled_email=${user.primaryEmailAddress}`;
+      const paymentLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_URL!}?client_reference_id=${SubscriptionPlans[1]?.id}&prefilled_email=${user.primaryEmailAddress}`;
       window.location.href = paymentLinkUrl;
     } catch (error) {
       console.error(error);
@@ -96,19 +96,21 @@ export const ProModal = () => {
         <div className={cn("text-neutral-700 mx-auto space-y-6 p-6", font.className)}>
           <h2 className="font-medium text-lg">🚀 Upgrade to InSync Professional today!</h2>
           <div className="pl-3">
-            {
-              SubscriptionPlans.length === 0 && loading ? <Loading /> : (
-                <ul className="text-md space-y-1 list-disc">
-                  <li>Price: {SubscriptionPlans[1].price}/month</li>
-                  <li>Max Projects: {SubscriptionPlans[1].maxProjects}</li>
-                  <li>Max Scenarios: {SubscriptionPlans[1].maxScenarios}</li>
-                  <li>Support Level: {SubscriptionPlans[1].supportLevel}</li>
-                  <li>{SubscriptionPlans[1].customFeaturesDescription}</li>
-                </ul>
-              )
-            }
+            {loading ? (
+              <Loading />
+            ) : SubscriptionPlans[1] ? (
+              <ul className="text-md space-y-1 list-disc">
+                <li>Price: {SubscriptionPlans[1].price}/month</li>
+                <li>Max Projects: {SubscriptionPlans[1].maxProjects}</li>
+                <li>Max Scenarios: {SubscriptionPlans[1].maxScenarios}</li>
+                <li>Support Level: {SubscriptionPlans[1].supportLevel}</li>
+                <li>{SubscriptionPlans[1].customFeaturesDescription}</li>
+              </ul>
+            ) : (
+              <p>No subscription plan available.</p>
+            )}
           </div>
-          <Button onClick={handleUpgradeClick} disabled={pending} size="sm" className="w-full">
+          <Button onClick={handleUpgradeClick} disabled={pending || !SubscriptionPlans[1]} size="sm" className="w-full">
             {pending ? "Loading..." : "Upgrade"}
           </Button>
         </div>

@@ -27,25 +27,25 @@ import React from "react"
 const components: { title: string; href: string; description: string }[] = [
     {
         title: "About InSync",
-        href: "/about",
+        href: "/pages/about",
         description:
             "The genius minds behind InSync and the story of how it all started.",
     },
     {
         title: "Term of Service",
-        href: "/term",
+        href: "/pages/term",
         description:
             "The terms and conditions that govern the use of InSync.",
     },
     {
         title: "FAQs",
-        href: "/faq",
+        href: "/pages/faq",
         description:
             "Frequently asked questions about InSync and its features.",
     },
     {
         title: "Privacy Policy",
-        href: "/privacypolicy",
+        href: "/pages/privacypolicy",
         description: "How we handle your data and protect your privacy.",
     },
 
@@ -89,7 +89,7 @@ export const Header = () => {
                                                     </a>
                                                 </NavigationMenuLink>
                                             </li>
-                                            <ListItem href="/introduction" title="Introduction">
+                                            <ListItem href="/pages/introduction" title="Introduction">
                                                 Custom scenario execution, real-time logging and many more.
                                             </ListItem>
                                             <ListItem href="/docs/installation" title="Installation">
