@@ -7,8 +7,80 @@ import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHead
 import Image from "next/image"
 import Link from "next/link"
 import { Hint } from "@/components/hint"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Loading } from "@/components/loading"
+
+type Pages = {
+  id: string
+  slug: string
+  title: string
+  content: string
+  note: string | null
+  dateCreated: string | null
+  dateUpdated: string | null
+}
 
 export function AdminSidebar() {
+
+  const [pages, setPages] = React.useState<Pages[]>([])
+  const [loading, setLoading] = React.useState<boolean>(true)
+  const [isCreatePageDialogOpen, setIsCreatePageDialogOpen] = React.useState<boolean>(false)
+  const [newCreatePageTitle, setNewCreatePageTitle] = React.useState<string>("")
+  const [newCreatePageSlug, setNewCreatePageSlug] = React.useState<string>("")
+
+
+
+  const fetchPages = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`)
+      if (response.ok) {
+        const data = await response.json()
+        setPages(data)
+      } else {
+        console.error("Error fetching data")
+      }
+    } catch (error) {
+      console.error("Error:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  React.useEffect(() => {
+    fetchPages()
+  }, [])
+
+  const handleCreatePage = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const newPage = {
+      title: newCreatePageTitle,
+      slug: newCreatePageSlug,
+    }
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPage),
+      })
+
+      if (response.ok) {
+        fetchPages() // Refetch the pages after adding
+        setIsCreatePageDialogOpen(false) // Close the dialog
+      } else {
+        console.error("Error creating page")
+      }
+    } catch (error) {
+      console.error("Error:", error)
+    }
+  }
+
 
   return (
 
@@ -138,32 +210,55 @@ export function AdminSidebar() {
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
+                    {pages.map((page) => (
+                      <SidebarMenuSub key={page.id}>
+                        <SidebarMenuSubItem >
+                          <SidebarMenuSubButton className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
+                            {page.title}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    ))}
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/about">
-                          About Us
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/term">
-                          Term of Service
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/privacypolicy">
-                          Privacy Policy
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/pages/faq">
-                          FAQs
-                        </SidebarMenuSubButton>
+                        <Dialog open={isCreatePageDialogOpen} onOpenChange={setIsCreatePageDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button size={"sm"} className="cursor-pointer">Create New Page</Button>
+                          </DialogTrigger>
+
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Create New Page</DialogTitle>
+                              <DialogDescription>Enter data to create a new page.</DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={handleCreatePage}>
+                              <div className="grid gap-4 py-4">
+                                <Input
+                                  type="text"
+                                  placeholder="Page Slug"
+                                  value={newCreatePageSlug}
+                                  onChange={(e) => setNewCreatePageSlug(e.target.value)}
+                                  minLength={3}
+                                  maxLength={20}
+                                  required
+                                />
+                                <Input
+                                  type="text"
+                                  placeholder="Page Title"
+                                  value={newCreatePageTitle}
+                                  onChange={(e) => setNewCreatePageTitle(e.target.value)}
+                                  minLength={3}
+                                  maxLength={100}
+                                  required
+                                />
+                              </div>
+                              <DialogFooter className="">
+                                <Button variant="outline" onClick={() => setIsCreatePageDialogOpen(false)}>Cancel</Button>
+                                <Button type="submit">Create Page</Button>
+                              </DialogFooter>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
                   </CollapsibleContent>
