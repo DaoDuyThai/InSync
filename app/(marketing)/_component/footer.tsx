@@ -18,16 +18,16 @@ export const Footer = () => {
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className="font-bold pb-2">GETTING STARTED</div>
-                        <Link href="/introduction">Introduction</Link>
+                        <Link href="/pages/introduction">Introduction</Link>
                         <Link href="/docs/installation">Installation</Link>
                         <Link href="/docs/examples">Examples</Link>
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className="font-bold pb-2">ABOUT</div>
-                        <Link href="/about">About InSync</Link>
-                        <Link href="/faq">FAQs</Link>
-                        <Link href="/term">Term of Service</Link>
-                        <Link href="/privacypolicy">Privacy Policy</Link>
+                        <Link href="/pages/about">About InSync</Link>
+                        <Link href="/pages/faq">FAQs</Link>
+                        <Link href="/pages/term">Term of Service</Link>
+                        <Link href="/pages/privacypolicy">Privacy Policy</Link>
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className="font-bold pb-2">SERVICE</div>
