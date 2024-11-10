@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
-import { CropIcon, ImagesIcon, MoveIcon, SaveIcon, UploadCloudIcon, XIcon, ZoomIn, ZoomOut } from "lucide-react";
+import { CropIcon, ImagesIcon, MoveIcon, RadarIcon, SaveIcon, UploadCloudIcon, XIcon, ZoomIn, ZoomOut } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import uploadImage from "@/app/assets/_components/uploadImage";
@@ -85,9 +85,10 @@ import { Hint } from "./hint";
 interface props {
     id?: string;
     imgURL?: string;
+    className?: string;
 }
 
-export default function ImageCopper({ id, imgURL }: props): JSX.Element {
+export default function ImageCopper({ id, imgURL, className }: props): JSX.Element {
     // const {id} = useParams();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const zoomInRef = useRef<HTMLButtonElement>(null);
@@ -103,6 +104,8 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
     const [selectedImageCanvas, setSelectedImageCanvas] = useState<Array<HTMLCanvasElement | null>>([]);
     const [openPopup, setOpenPopup] = useState(false);
     const saveButtonRef = useRef<HTMLButtonElement>(null);
+    const radarButtonRef = useRef<HTMLButtonElement>(null);
+    const [isRadar, setIsRadar] = useState(false);
 
     //#region useEffect
     useEffect(() => {
@@ -119,11 +122,13 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
         const uploadImageButton = uploadImageButtonRef.current;
         const movingButton = movingButtonRef.current;
         const croppingButton = croppingButtonRef.current;
+        const radarButton = radarButtonRef.current;
         const totalImagesElement = document.getElementById('total-images');
+        const popup = document.getElementById('popup');
         let isMovingButtonClicked = false;
         let isCroppingButtonClicked = false;
+        let isRadarButtonClicked = false;
         let seletedCroppedImage: Array<HTMLCanvasElement>;
-        let selectedRectIndex;
         let scale = 1;
         let imageX = 0;
         let imageY = 0;
@@ -172,15 +177,23 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
             drawImageAndRectangles(ctx, canvas, img, rectangles);
         };
 
+        radarButton?.addEventListener('click', (e) => {
+            isRadarButtonClicked = true;
+            isCroppingButtonClicked = false;
+            isMovingButtonClicked = false;
+        })
+
         croppingButton?.addEventListener('click', e => {
             isCroppingButtonClicked = true;
             isMovingButtonClicked = false;
+            isRadarButtonClicked = false;
         })
 
         movingButton?.addEventListener('click', (e) => {
             console.log("IsMovingButtonClicked is listened");
             isMovingButtonClicked = true;
             isCroppingButtonClicked = false;
+            isRadarButtonClicked = false;
 
         })
 
@@ -195,12 +208,22 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
                 startX = e.offsetX;
                 startY = e.offsetY;
                 isDrawing = true;
+                popup?.classList.add('hidden');
             }
             if (isMovingButtonClicked) {
                 console.log("isMovingButtonClicked")
                 isMoving = true;
                 lastMovingX = e.offsetX;
                 lastMovingY = e.offsetY;
+                popup?.classList.add('hidden');
+            }
+            if (isRadarButtonClicked) {
+                let startX = e.offsetX;
+                let startY = e.offsetY;
+                const realStartX = (startX - scale * imageX) / scale;
+                const realStartY = (startY - scale * imageY) / scale;
+                console.log(`X: ${Math.ceil(realStartX)}, Y: ${Math.ceil(realStartY)}`);
+
 
             }
         });
@@ -246,6 +269,21 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
                     drawImage(ctx, canvas, img);
                 }
                 rectangles.length = 0;
+            }
+            else if (isRadarButtonClicked) {
+                let currentX = e.offsetX;
+                let currentY = e.offsetY;
+                const realStartX = (currentX - scale * imageX) / scale;
+                const realStartY = (currentY - scale * imageY) / scale;
+                // Set the position of the popup above the mouse
+                if (popup && realStartX >= 0 && realStartY >= 0) {
+                    const mouseX = e.clientX;
+                    const mouseY = e.clientY;
+                    popup.style.left = `${mouseX}px`;
+                    popup.style.top = `${mouseY - popup.offsetHeight - 10}px`;
+                    popup.textContent = `X: ${Math.ceil(realStartX)}, Y: ${Math.ceil(realStartY)}`;
+                    popup.classList.remove('hidden');
+                }
             }
         });
 
@@ -345,24 +383,11 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
 
-                selectedRectIndex = null; // Reset selected rectangle
                 rectangles.forEach((rect, index) => {
                     if (mouseX >= rect.startX && mouseX < rect.startX + rect.width &&
                         mouseY >= rect.startY && mouseY < rect.startY + rect.height) {
-                        selectedRectIndex = index;
                     }
                 });
-
-                // if (selectedRectIndex !== null) {
-                //     // Confirm removal of the selected rectangle
-                //     const confirmed = confirm('Do you want to remove the selected rectangle?');
-                //     if (confirmed) {
-                //         // Remove the selected rectangle
-                //         rectangles.splice(selectedRectIndex, 1);
-                //         selectedRectIndex = null;
-                //         drawImageAndRectangles(ctx, canvas, img, rectangles);
-                //     }
-                // };
             }
 
         });
@@ -421,12 +446,6 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
                     console.error(error);
 
                 }
-                // rectangles?.forEach(rect => {
-                //     ctx.beginPath();
-                //     ctx.rect(rect.startX, rect.startY, rect.width, rect.height);
-                //     ctx.strokeStyle = 'white';
-                //     ctx.stroke();
-                // });
 
             }
         }
@@ -455,8 +474,10 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
     //#endregion
 
     return (
-        <div>
-            <div className="p-5 flex justify-center">
+        <div id={id} className={className}>
+            <div id="popup" className="hidden z-50 absolute bg-white text-sm text-gray-800 p-2 rounded-md shadow-lg border border-gray-200">
+            </div>
+            <div className="flex justify-center">
                 <div className=" border-[1px] 
                         border-[#e6e6e8] 
                             rounded-md">
@@ -486,10 +507,19 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
                                         size={20} />
                                 </button>
                             </Hint>
+                            <Hint label="Find X Y">
+                                <button
+                                    ref={radarButtonRef}
+                                    onClick={() => { setIsRadar(!isRadar); setIsCropping(false); setIsMoving(false) }}
+                                    className={`${isRadar ? "bg-gray-400" : ""} hover:border-2 hover:border-black rounded-sm px-2`}
+                                >
+                                    <RadarIcon size={20} />
+                                </button>
+                            </Hint>
                             <Hint label="Crop Image">
                                 <button
                                     ref={croppingButtonRef}
-                                    onClick={() => { setIsCropping(!isCropping); setIsMoving(false) }}
+                                    onClick={() => { setIsCropping(!isCropping); setIsMoving(false); setIsRadar(false) }}
                                     className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black rounded-sm px-2`}
                                 >
                                     <CropIcon size={20} />
@@ -498,7 +528,7 @@ export default function ImageCopper({ id, imgURL }: props): JSX.Element {
                             <Hint label="Move Image">
                                 <button
                                     ref={movingButtonRef}
-                                    onClick={() => { setIsMoving(!isMoving); setIsCropping(false) }}
+                                    onClick={() => { setIsMoving(!isMoving); setIsCropping(false); setIsRadar(false) }}
                                     className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-2 rounded-sm`}>
                                     <MoveIcon size={20} />
                                 </button>
