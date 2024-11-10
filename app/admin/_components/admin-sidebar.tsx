@@ -212,9 +212,9 @@ export function AdminSidebar() {
                   <CollapsibleContent>
                     {pages.map((page) => (
                       <SidebarMenuSub key={page.id}>
-                        <SidebarMenuSubItem >
+                        <SidebarMenuSubItem>
                           <SidebarMenuSubButton className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
-                            {page.title}
+                            {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       </SidebarMenuSub>
@@ -238,8 +238,7 @@ export function AdminSidebar() {
                                   placeholder="Page Slug"
                                   value={newCreatePageSlug}
                                   onChange={(e) => setNewCreatePageSlug(e.target.value)}
-                                  minLength={3}
-                                  maxLength={20}
+                                  minLength={2}
                                   required
                                 />
                                 <Input
@@ -247,8 +246,7 @@ export function AdminSidebar() {
                                   placeholder="Page Title"
                                   value={newCreatePageTitle}
                                   onChange={(e) => setNewCreatePageTitle(e.target.value)}
-                                  minLength={3}
-                                  maxLength={100}
+                                  minLength={2}
                                   required
                                 />
                               </div>
