@@ -6,16 +6,6 @@ import { Loading } from "@/components/loading";
 import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 type Page = {
     id: string;
