@@ -1,5 +1,4 @@
 import Image from "next/image"
-import { ProjectSettings } from "./project-settings"
 
 export const NoProjectSelected = () => {
     return (

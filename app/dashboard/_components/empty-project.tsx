@@ -4,15 +4,15 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
-import React, { useState } from "react";
+import * as React from "react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
 export const EmptyProject = () => {
-    const { user, isLoaded } = useUser();
     const [openDialog, setOpenDialog] = React.useState(false)
     const [title, setTitle] = React.useState<string>("Untitled");
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const { user, isLoaded } = useUser();
 
     const createProject = async (title: string) => {
         if (user && isLoaded) {
@@ -58,11 +58,9 @@ export const EmptyProject = () => {
         }
     };
 
-
-
     return (
         <div className="h-full flex flex-col items-center justify-center md-overflow-y-auto">
-            <Image src="/elements.svg" alt="empty" height={200} width={200} />
+            <Image src="/elements.svg" alt="empty" height={400} width={400} />
             <h2 className="text-2xl font-semibold mt-6">Welcome to InSync</h2>
             <p className="text-muted-foreground text-sm mt-2">
                 Create a Project to get started
@@ -87,7 +85,6 @@ export const EmptyProject = () => {
                                 maxLength={18}
                                 minLength={5}
                                 placeholder="Enter project title"
-                                // value={title} // Pre-filled with the current title
                                 onChange={(e) => {
                                     setTitle(e.target.value)
                                 }}

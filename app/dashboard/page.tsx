@@ -10,7 +10,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { selectProject } from "@/store/projectSlice";
 import { Loading } from "@/components/loading";
 
-interface Project {
+type Project = {
   id: string;
   projectName: string;
   description: string | null;
@@ -23,37 +23,35 @@ interface Project {
 
 const DashboardPage = () => {
 
-  const { user, isLoaded } = useUser();
-  const [pending, setPending] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
   const [projectList, setProjectList] = React.useState<Project[]>([]);
-
-  // Fetch projects when user is loaded
-  React.useEffect(() => {
-    if (user && isLoaded) {
-      const fetchProjects = async () => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
-          const data = await response.json();
-          setProjectList(data.data); // Adjust according to the structure of the API response
-        } catch (error) {
-          console.error("Error fetching projects:", error);
-        } finally {
-          setPending(false);
-        }
-      };
-      fetchProjects();
-    }
-  }, [user, isLoaded]);
-
-
+  const { user, isLoaded } = useUser();
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || undefined;
   const favorites = searchParams.get("favorites") || undefined
-
   const hasProjects = projectList.length > 0;
-
   const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
   const dispatch = useDispatch<AppDispatch>();
+
+  // Fetch projects when user is loaded
+  const fetchProjects = async () => {
+    if (user && isLoaded) {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
+        const data = await response.json();
+        setProjectList(data.data); // Adjust according to the structure of the API response
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  // Load selected project details
+  React.useEffect(() => {
+    fetchProjects();
+  }, [user, isLoaded]);
 
   // Load selected project from localStorage when component mounts
   React.useEffect(() => {
@@ -63,12 +61,11 @@ const DashboardPage = () => {
     }
   }, [dispatch]);
 
-  if (pending) {
+  if (loading) {
     return <Loading />;
   } else {
     return (
       <div className="w-full flex flex-col p-6 h-full overflow-y-auto pb-10">
-
         {!hasProjects ? (
           <EmptyProject />
         ) : (
@@ -80,6 +77,8 @@ const DashboardPage = () => {
       </div>
     );
   }
+
+
 
 
 };
