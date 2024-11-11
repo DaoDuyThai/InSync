@@ -272,6 +272,7 @@ export default function ImagePage() {
                                                     id="file-upload"
                                                     onChange={(e) => handleUpload(e)}
                                                     type="file"
+                                                    accept="image/*"
                                                     className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
                                                 />
                                             </div>

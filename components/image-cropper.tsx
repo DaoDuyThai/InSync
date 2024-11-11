@@ -485,8 +485,9 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                         <span className="font-semibold">Assets Modifier</span>
                         <div className="flex gap-5">
                             <Hint label="Cropped Images">
-                                <button
-                                    className="hover:border-2 hover:border-black px-2 rounded-sm relative"
+                                <Button
+                                    variant={"ghost"}
+                                    className="px-2 rounded-sm relative"
                                 >
                                     <ImagesIcon
                                         onClick={() => setOpenPopup(!openPopup)}
@@ -495,56 +496,62 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                                     <span className="absolute flex items-center justify-center top-[-5px] left-[-5px] w-[20px] h-[20px] p-[1px] text-[14px] text-white text-center rounded-xl bg-red-700">
                                         <span id="total-images">0</span>
                                     </span>
-                                </button>
+                                </Button>
                             </Hint>
                             <Hint label="Save">
-                                <button
-                                    className="hover:border-2 hover:border-black px-2 rounded-sm"
+                                <Button
+                                    variant={"ghost"}
+                                    className=" px-2 rounded-sm"
                                     ref={saveButtonRef}
                                 >
                                     <SaveIcon
                                         className="relative"
                                         size={20} />
-                                </button>
+                                </Button>
                             </Hint>
                             <Hint label="Find X Y">
-                                <button
+                                <Button
+                                    variant={"ghost"}
                                     ref={radarButtonRef}
                                     onClick={() => { setIsRadar(!isRadar); setIsCropping(false); setIsMoving(false) }}
-                                    className={`${isRadar ? "bg-gray-400" : ""} hover:border-2 hover:border-black rounded-sm px-2`}
+                                    className={`${isRadar ? "bg-gray-400" : ""} rounded-sm px-2`}
                                 >
                                     <RadarIcon size={20} />
-                                </button>
+                                </Button>
                             </Hint>
                             <Hint label="Crop Image">
-                                <button
+                                <Button
+                                    variant={"ghost"}
                                     ref={croppingButtonRef}
                                     onClick={() => { setIsCropping(!isCropping); setIsMoving(false); setIsRadar(false) }}
-                                    className={`${isCropping ? "bg-gray-400" : ""} hover:border-2 hover:border-black rounded-sm px-2`}
+                                    className={`${isCropping ? "bg-gray-400" : ""} rounded-sm px-2`}
                                 >
                                     <CropIcon size={20} />
-                                </button>
+                                </Button>
                             </Hint>
                             <Hint label="Move Image">
-                                <button
+                                <Button
+                                    variant={"ghost"}
                                     ref={movingButtonRef}
                                     onClick={() => { setIsMoving(!isMoving); setIsCropping(false); setIsRadar(false) }}
-                                    className={`${isMoving ? "bg-gray-400" : ""} hover:border-2 hover:border-black px-2 rounded-sm`}>
+                                    className={`${isMoving ? "bg-gray-400" : ""} px-2 rounded-sm`}>
                                     <MoveIcon size={20} />
-                                </button>
+                                </Button>
                             </Hint>
                             <Hint label="Zoom In">
-                                <button
+                                <Button
+                                    variant={"ghost"}
                                     ref={zoomInRef}
-                                    className="hover:border-2 hover:border-black px-2 rounded-sm">
+                                    className="px-2 rounded-sm">
                                     <ZoomIn size={20} />
-                                </button>
+                                </Button>
                             </Hint>
                             <Hint label="Zoom Out">
-                                <button
-                                    ref={zoomOutRef} className="hover:border-2 hover:border-black px-2 rounded-sm">
+                                <Button
+                                    variant={"ghost"}
+                                    ref={zoomOutRef} className="px-2 rounded-sm">
                                     <ZoomOut size={20} />
-                                </button>
+                                </Button>
                             </Hint>
                         </div>
                     </div>
