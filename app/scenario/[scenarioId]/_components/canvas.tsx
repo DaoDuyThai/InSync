@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useRef, useState } from "react";
+import * as React from "react";
 import * as Blockly from 'blockly';
 import { blocks } from './blocks/json';
 import { save, load } from './serialization';
@@ -63,23 +63,23 @@ export const Canvas = ({
     saveScenario,
     projectId
 }: CanvasProps) => {
-    const blocklyDivRef = useRef<HTMLDivElement | null>(null);
-    const workspaceRef = useRef<Blockly.WorkspaceSvg | null>(null);
-    const [code, setCode] = useState<string>("");
-    const [activeTab, setActiveTab] = useState("assets");
-    const [isFullScreen, setIsFullScreen] = useState(false);
-    const [saved, setSaved] = useState(true);
+    const blocklyDivRef = React.useRef<HTMLDivElement | null>(null);
+    const workspaceRef = React.useRef<Blockly.WorkspaceSvg | null>(null);
+    const [code, setCode] = React.useState<string>("");
+    const [activeTab, setActiveTab] = React.useState("assets");
+    const [isFullScreen, setIsFullScreen] = React.useState(false);
+    const [saved, setSaved] = React.useState(true);
     const [newTitle, setNewTitle] = React.useState<string>(title);
-    const [loadingPage, setLoadingPage] = useState(true);
+    const [loadingPage, setLoadingPage] = React.useState(true);
     const [loadingScenarioRenameInput, setLoadingScenarioRenameInput] = React.useState<boolean>(false);
     const [openRenameScenarioDialog, setOpenRenameScenarioDialog] = React.useState<boolean>(false);
     const [assets, setAssets] = React.useState<Asset[]>([]);
     const [filteredAssets, setFilteredAssets] = React.useState<Asset[]>([]);
-    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [searchTerm, setSearchTerm] = React.useState<string>("");
     const [openRenameAssetDialog, setOpenRenameAssetDialog] = React.useState<boolean>(false);
     const [loadingAssetRenameInput, setLoadingAssetRenameInput] = React.useState<boolean>(false);
     const [newAssetName, setNewAssetName] = React.useState<string>("");
-    const [logData, setLogData] = useState<LogData>({ logs: {}, log_sessions: {} });
+    const [logData, setLogData] = React.useState<LogData>({ logs: {}, log_sessions: {} });
 
     const handlePublicId = (publicId: string) => {
         if (projectId !== "") {
@@ -142,7 +142,7 @@ export const Canvas = ({
     }, [projectId]);
 
     // Update filtered assets based on search term
-    useEffect(() => {
+    React.useEffect(() => {
         const updatedFilteredAssets = searchTerm
             ? assets.filter(asset =>
                 asset.assetName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -161,7 +161,7 @@ export const Canvas = ({
         }
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
         const handleFullScreenChange = () => {
             setIsFullScreen(Boolean(document.fullscreenElement));
         };
@@ -253,7 +253,7 @@ export const Canvas = ({
         }
     };
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (!workspaceRef.current && blocklyDivRef.current) {
             Blockly.common.defineBlocks(blocks);
 
@@ -362,15 +362,15 @@ export const Canvas = ({
         }
     }
 
-    useEffect(() => {
-            const logsRef = ref(db);
-            onValue(logsRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    setLogData(data);
-                }
-            })
-        }, []);
+    React.useEffect(() => {
+        const logsRef = ref(db);
+        onValue(logsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setLogData(data);
+            }
+        })
+    }, []);
 
     return (
         <div className="flex h-[calc(100vh-70px)] ">
