@@ -63,7 +63,11 @@ const PageSlug = () => {
         if (slug) fetchData();
     }, [slug]);
 
-    if (loading) return <Loading />;
+    if (loading) return (
+        <div className="w-full min-h-[calc(100vh-480px)] flex items-center">
+            <Loading />
+        </div>
+    )
 
     return (
         <div className="container">

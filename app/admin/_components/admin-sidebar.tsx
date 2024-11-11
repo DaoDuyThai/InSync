@@ -38,7 +38,10 @@ export function AdminSidebar() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`)
       if (response.ok) {
         const data = await response.json()
-        setPages(data)
+        
+        const sortedPages = data.sort((a: Pages, b: Pages) => a.title.localeCompare(b.title))
+
+        setPages(sortedPages)
       } else {
         console.error("Error fetching data")
       }

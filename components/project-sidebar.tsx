@@ -37,6 +37,35 @@ export const ProjectSidebar = () => {
     const searchParams = useSearchParams();
     const favorites = searchParams.get("favorites");
 
+    const { user, isLoaded } = useUser();
+    const [isSubscribed, setIsSubscribed] = React.useState(false);
+
+    const checkIsSubscribed = async () => {
+        try {
+            if (!user) {
+                console.error('User is not loaded');
+                return;
+            }
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+            );
+
+            if (!response.ok) {
+                console.error('Failed to fetch subscription status');
+                return
+            }
+            const data = await response.json();
+            setIsSubscribed(data.isSubscribed);
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+        }
+    }
+
+    React.useEffect(() => {
+        checkIsSubscribed();
+    }, [user, isLoaded]);
+
     // Get the current project from Redux
     const dispatch = useDispatch<AppDispatch>();
 
@@ -48,7 +77,6 @@ export const ProjectSidebar = () => {
         }
     }, [dispatch]);
 
-    const { user } = useUser();
 
     // TODO: Implement Stripe
     const { onOpen } = useProModal();
@@ -111,11 +139,15 @@ export const ProjectSidebar = () => {
                         "font-semibold text-2xl",
                         font.className,
                     )}>INSYNC</span>
-                    <Badge variant="secondary">
-                        Free
-                        {/* TODO: is subscribed */}
-                        {/* {isSubscribed ? "Pro" : "Free"} */}
-                    </Badge>
+                    {isSubscribed ? (
+                        <Badge variant="secondaryGold">
+                            Pro
+                        </Badge>
+                    ) : (
+                        <Badge variant="secondary">
+                            Free
+                        </Badge>
+                    )}
                 </div>
             </Link>
 
