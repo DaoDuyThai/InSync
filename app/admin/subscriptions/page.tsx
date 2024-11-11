@@ -40,6 +40,7 @@ const SubscriptionsPage = () => {
   const [loading, setLoading] = React.useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [selectedPlanId, setSelectedPlanId] = React.useState<string | null>(null);
 
   const fetchSubscriptionPlans = async () => {
     try {
@@ -121,7 +122,7 @@ const SubscriptionsPage = () => {
           <TableRow>
             <TableCell className="font-medium text-center">Price</TableCell>
             {subscriptionPlans.map((plan) => (
-              <TableCell key={plan.id}>${plan.price.toFixed(2)}</TableCell>
+              <TableCell key={plan.id}>đ{plan.price.toFixed(3)}</TableCell>
             ))}
           </TableRow>
           <TableRow>
@@ -149,7 +150,7 @@ const SubscriptionsPage = () => {
             ))}
           </TableRow>
           <TableRow>
-            <TableCell className="font-medium">Storage Limit (GB)</TableCell>
+            <TableCell className="font-medium">Storage Limit (blocks/scenario)</TableCell>
             {subscriptionPlans.map((plan) => (
               <TableCell key={plan.id}>{plan.storageLimit}</TableCell>
             ))}
@@ -200,7 +201,20 @@ const SubscriptionsPage = () => {
             <TableCell className="font-medium">Actions</TableCell>
             {subscriptionPlans.map((plan) => (
               <TableCell key={plan.id}>
-                <EditDialog plan={plan} onEdit={handleEdit} isLoading={isLoading} open={open} setOpen={setOpen} />
+                <EditDialog
+                  plan={plan}
+                  onEdit={handleEdit}
+                  isLoading={isLoading}
+                  open={open && selectedPlanId === plan.id} // Open the dialog for the selected plan
+                  setOpen={(isOpen) => {
+                    if (isOpen) {
+                      setSelectedPlanId(plan.id); // Set the selected plan ID when the dialog is opened
+                    } else {
+                      setSelectedPlanId(null); // Reset the selected plan ID when the dialog is closed
+                    }
+                    setOpen(isOpen);
+                  }}
+                />
               </TableCell>
             ))}
           </TableRow>
