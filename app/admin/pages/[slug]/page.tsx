@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { Trash2 } from "lucide-react";
+import '@/components/rich-text.css';
 
 type Page = {
     id: string;
@@ -160,8 +161,8 @@ const AdminPageSlug = () => {
             <MinimalTiptapEditor
                 value={value}
                 onChange={setValue}
-                className="w-full flex-1 overflow-y-auto my-4"
-                editorContentClassName="p-5 h-full"
+                className="w-full flex-1 overflow-y-auto my-4 rich-text"
+                editorContentClassName="p-5 border-none"
                 output="html"
                 placeholder="Type your description here..."
                 autofocus={true}

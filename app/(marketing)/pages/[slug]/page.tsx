@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { Trash2 } from "lucide-react";
+import '@/components/rich-text.css';
 
 type Page = {
     id: string;
@@ -73,7 +74,7 @@ const PageSlug = () => {
         <div className="container">
             <h1 className="font-bold text-center text-2xl uppercase">{pageData?.title}</h1>
             <div
-                className="rich-text default-style"
+                className="rich-text"
                 dangerouslySetInnerHTML={{ __html: pageData?.content || '' }}
             />
 

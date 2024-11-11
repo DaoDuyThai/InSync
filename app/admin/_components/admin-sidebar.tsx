@@ -234,7 +234,7 @@ export function AdminSidebar() {
                       <SidebarMenuSubItem >
                         <Dialog open={isCreatePageDialogOpen} onOpenChange={setIsCreatePageDialogOpen}>
                           <DialogTrigger asChild>
-                            <Button size={"sm"} className="cursor-pointer">Create New Page</Button>
+                            <Button size={"sm"} variant={"outline"} className="cursor-pointer">Create New Page</Button>
                           </DialogTrigger>
 
                           <DialogContent>
