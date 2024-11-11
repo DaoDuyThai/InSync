@@ -83,7 +83,7 @@ export const ScenarioList = ({
     const [totalScenarios, setTotalScenarios] = React.useState<number>(0);
 
     const { onOpen } = useProModal();
-    const fetchTotalScenairios = async () => {
+    const fetchTotalScenarios = async () => {
         try {
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-user-clerk/${user?.id}`
@@ -147,7 +147,7 @@ export const ScenarioList = ({
     React.useEffect(() => {
         if (projectId !== "" && user && isLoaded) {
             fetchScenarios();
-            fetchTotalScenairios();
+            fetchTotalScenarios();
             setPending(false);
         }
     }, [projectId, user, isLoaded, pending]);

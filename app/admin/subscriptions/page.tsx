@@ -28,7 +28,7 @@ type SubscriptionPlan = {
   maxScenarios: number,
   maxUsersAccess: number,
   storageLimit: number,
-  supportLevel: "standard" | "advanced",
+  supportLevel: "Standard" | "Advanced",
   customFeaturesDescription: string,
   dataRetentionPeriod: number,
   prioritySupport: boolean,
@@ -319,7 +319,7 @@ const EditDialog: React.FC<EditDialogProps> = ({ plan, onEdit, isLoading, open, 
             <Label htmlFor="supportLevel" className="text-right">Support Level</Label>
             <Select
               value={editedPlan.supportLevel}
-              onValueChange={(value) => setEditedPlan({ ...editedPlan, supportLevel: value as "standard" | "advanced" })}
+              onValueChange={(value) => setEditedPlan({ ...editedPlan, supportLevel: value as "Standard" | "Advanced" })}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select support level" />
