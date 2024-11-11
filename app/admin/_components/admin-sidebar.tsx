@@ -11,6 +11,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loading } from "@/components/loading"
+import { set } from "date-fns"
+import { toast } from "sonner"
 
 type Pages = {
   id: string
@@ -29,6 +31,7 @@ export function AdminSidebar() {
   const [isCreatePageDialogOpen, setIsCreatePageDialogOpen] = React.useState<boolean>(false)
   const [newCreatePageTitle, setNewCreatePageTitle] = React.useState<string>("")
   const [newCreatePageSlug, setNewCreatePageSlug] = React.useState<string>("")
+  const [createButtonPending, setCreateButtonPending] = React.useState<boolean>(false)
 
 
 
@@ -57,6 +60,7 @@ export function AdminSidebar() {
   }, [])
 
   const handleCreatePage = async (e: React.FormEvent) => {
+    setCreateButtonPending(true)
     e.preventDefault()
 
     const newPage = {
@@ -74,13 +78,18 @@ export function AdminSidebar() {
       })
 
       if (response.ok) {
+        toast.success("Page created successfully")
         fetchPages() // Refetch the pages after adding
         setIsCreatePageDialogOpen(false) // Close the dialog
       } else {
+        toast.error("Error creating page")
         console.error("Error creating page")
       }
     } catch (error) {
+      toast.error("Error creating page")
       console.error("Error:", error)
+    } finally {
+      setCreateButtonPending(false)
     }
   }
 
@@ -254,7 +263,7 @@ export function AdminSidebar() {
                               </div>
                               <DialogFooter className="">
                                 <Button variant="outline" onClick={() => setIsCreatePageDialogOpen(false)}>Cancel</Button>
-                                <Button type="submit">Create Page</Button>
+                                <Button disabled={createButtonPending} type="submit">Create Page</Button>
                               </DialogFooter>
                             </form>
                           </DialogContent>
