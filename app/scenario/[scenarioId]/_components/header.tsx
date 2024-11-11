@@ -35,15 +35,11 @@ const font = Poppins({
 interface HeaderProps {
     id: string;
     title: string;
-    deleteScenario: () => void;
-    renameScenario: (id: string, newTitle: string) => Promise<void>;
 }
 
 export const Header = ({
     id,
     title,
-    deleteScenario,
-    renameScenario
 }: HeaderProps) => {
     const [isSubscribed, setIsSubscribed] = React.useState(null);
 
