@@ -28,6 +28,7 @@ import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Input } from "./ui/input";
+import { useProModal } from "@/store/use-pro-modal";
 
 
 
@@ -47,6 +48,29 @@ interface Project {
     isPublish: boolean | null;
 }
 
+type SubscriptionPlan = {
+    id: string,
+    subscriptionsName: string,
+    status: boolean,
+    price: number,
+    userId: string,
+    userIdGuid: string,
+    displayName: string,
+    content: string,
+    dateCreated: string,
+    dateUpdated: string | null,
+    maxProjects: number,
+    maxAssets: number,
+    maxScenarios: number,
+    maxUsersAccess: number,
+    storageLimit: number,
+    supportLevel: "standard" | "advanced",
+    customFeaturesDescription: string,
+    dataRetentionPeriod: number,
+    prioritySupport: boolean,
+    monthlyReporting: boolean
+}
+
 export const ProjectSelector = () => {
     // TODO: Fetch and display projects
 
@@ -59,6 +83,51 @@ export const ProjectSelector = () => {
     // Get the current project from Redux
     const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
     const dispatch = useDispatch<AppDispatch>();
+
+    const { onOpen } = useProModal();
+
+    const { user, isLoaded } = useUser();
+    const [isSubscribed, setIsSubscribed] = React.useState(false);
+    const [subscriptionPlans, setSubscriptionPlans] = React.useState<SubscriptionPlan[]>([]);
+
+    const fetchSubscriptionPlans = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`);
+            if (!response.ok) throw new Error("Failed to fetch subscription plans");
+            const data = await response.json();
+            setSubscriptionPlans(data.data);
+        } catch (error) {
+            console.error("Error fetching subscription plans:", error);
+        }
+    };
+
+    const checkIsSubscribed = async () => {
+        try {
+            if (!user) {
+                return;
+            }
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+            );
+
+            if (!response.ok) {
+                console.error('Failed to fetch subscription status');
+                return
+            }
+            const data = await response.json();
+            setIsSubscribed(data.isSubscribed);
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+        }
+    }
+
+    React.useEffect(() => {
+        fetchSubscriptionPlans();
+        checkIsSubscribed();
+    }, [user, isLoaded]);
+
+    // const fetch
 
     // Load selected project from localStorage when component mounts
     React.useEffect(() => {
@@ -82,39 +151,37 @@ export const ProjectSelector = () => {
         setOpenPopOver(false);
     };
 
-    const { user, isLoaded } = useUser();
 
     const [projects, setProjects] = React.useState<Project[]>([]);
 
     React.useEffect(() => {
-    if (user && isLoaded) {
-        const fetchProjects = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
-                const data = await response.json();
+        if (user && isLoaded) {
+            const fetchProjects = async () => {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
+                    const data = await response.json();
 
-                if (data?.data?.length > 0) {
-                    // Sort projects by dateCreated in descending order, treating dateCreated as a string
-                    const sortedProjects = data.data.sort((a: Project, b: Project) => 
-                        new Date(b.dateCreated ?? "").getTime() - new Date(a.dateCreated ?? "").getTime()
-                    );
+                    if (data?.data?.length > 0) {
+                        // Sort projects by dateCreated in descending order, treating dateCreated as a string
+                        const sortedProjects = data.data.sort((a: Project, b: Project) =>
+                            new Date(b.dateCreated ?? "").getTime() - new Date(a.dateCreated ?? "").getTime()
+                        );
 
-                    setProjects(sortedProjects); // Adjust according to the API response structure
+                        setProjects(sortedProjects); // Adjust according to the API response structure
 
-                    const storedProjectId = localStorage.getItem("selectedProjectId");
-                    if (storedProjectId && !sortedProjects.find((project: Project) => project.id === storedProjectId)) {
-                        dispatch(clearProject());
-                        localStorage.removeItem("selectedProjectId");
+                        const storedProjectId = localStorage.getItem("selectedProjectId");
+                        if (storedProjectId && !sortedProjects.find((project: Project) => project.id === storedProjectId)) {
+                            dispatch(clearProject());
+                            localStorage.removeItem("selectedProjectId");
+                        }
                     }
+                } catch (error) {
+                    console.error("Error fetching projects:", error);
                 }
-            } catch (error) {
-                console.error("Error fetching projects:", error);
-            }
-        };
-
-        fetchProjects();
-    }
-}, [user, isLoaded, projects, dispatch]);
+            };
+            fetchProjects();
+        }
+    }, [user, isLoaded, projects, dispatch]);
 
     // console.log(projects);
 
@@ -135,7 +202,7 @@ export const ProjectSelector = () => {
                     body: JSON.stringify(body),
                 });
                 const data = await response.json();
-                // console.log(data);
+                console.log(data);
                 // console.log(response)
                 if (response.status === 200) {
                     toast.success(data.message);
@@ -154,9 +221,19 @@ export const ProjectSelector = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            await createProject(title);
+            if (!subscriptionPlans)
+                throw new Error("Subscription plans not loaded");
+            if (!isSubscribed && projects.length >= subscriptionPlans[0].maxProjects) {
+                onOpen();
+                return;
+            } else if (isSubscribed && projects.length >= subscriptionPlans[1].maxProjects) {
+                toast.error("You have reached the maximum number of projects allowed for your subscription plan. Contact Admin to upgrade your plan.");
+                return;
+            } else {
+                await createProject(title);
+            }
         } catch (error) {
-            console.error("Failed to create scenario.");
+            console.error("Failed to create scenario." + error);
         } finally {
             setIsLoading(false);
             setOpenDialog(false);

@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useProModal } from '@/store/use-pro-modal';
 
 
 interface ScenarioListProps {
@@ -42,6 +43,29 @@ interface Scenario {
     authorName: string;
 }
 
+type SubscriptionPlan = {
+    id: string,
+    subscriptionsName: string,
+    status: boolean,
+    price: number,
+    userId: string,
+    userIdGuid: string,
+    displayName: string,
+    content: string,
+    dateCreated: string,
+    dateUpdated: string | null,
+    maxProjects: number,
+    maxAssets: number,
+    maxScenarios: number,
+    maxUsersAccess: number,
+    storageLimit: number,
+    supportLevel: "standard" | "advanced",
+    customFeaturesDescription: string,
+    dataRetentionPeriod: number,
+    prioritySupport: boolean,
+    monthlyReporting: boolean
+}
+
 export const ScenarioList = ({
     projectId,
     query
@@ -54,22 +78,76 @@ export const ScenarioList = ({
     const [open, setOpen] = React.useState<boolean>(false);
     const [title, setTitle] = React.useState<string>("Untitled");
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [isSubscribed, setIsSubscribed] = React.useState(false);
+    const [subscriptionPlans, setSubscriptionPlans] = React.useState<SubscriptionPlan[]>([]);
+    const [totalScenarios, setTotalScenarios] = React.useState<number>(0);
+
+    const { onOpen } = useProModal();
+    const fetchTotalScenairios = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-user-clerk/${user?.id}`
+            );
+            const data = await response.json();
+            setTotalScenarios(data.data.length);
+        } catch (error) {
+            console.error("Error fetching scenarios:", error);
+        }
+    }
+
+    const fetchSubscriptionPlans = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`);
+            if (!response.ok) throw new Error("Failed to fetch subscription plans");
+            const data = await response.json();
+            setSubscriptionPlans(data.data);
+        } catch (error) {
+            console.error("Error fetching subscription plans:", error);
+        }
+    };
+
+    const checkIsSubscribed = async () => {
+        try {
+            if (!user) {
+                return;
+            }
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+            );
+
+            if (!response.ok) {
+                console.error('Failed to fetch subscription status');
+                return
+            }
+            const data = await response.json();
+            setIsSubscribed(data.isSubscribed);
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+        }
+    }
+
+    React.useEffect(() => {
+        fetchSubscriptionPlans();
+        checkIsSubscribed();
+    }, [user, isLoaded]);
 
     // Fetch scenarios based on the project ID and user
+    const fetchScenarios = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${user?.id}`
+            );
+            const data = await response.json();
+            setScenarioList(data.data);
+        } catch (error) {
+            console.error("Error fetching scenarios:", error);
+        }
+    };
     React.useEffect(() => {
         if (projectId !== "" && user && isLoaded) {
-            const fetchScenarios = async () => {
-                try {
-                    const response = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${user.id}`
-                    );
-                    const data = await response.json();
-                    setScenarioList(data.data);
-                } catch (error) {
-                    console.error("Error fetching scenarios:", error);
-                }
-            };
             fetchScenarios();
+            fetchTotalScenairios();
             setPending(false);
         }
     }, [projectId, user, isLoaded, pending]);
@@ -135,30 +213,41 @@ export const ScenarioList = ({
     const createScenario = async (title: string) => {
         if (!user || !isLoaded) return;
         try {
-            const randomImage = images[Math.floor(Math.random() * images.length)]
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/byuserclerk`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(
-                    {
-                        projectId: projectId,
-                        scenarioName: title,
-                        userIdClerk: user.id,
-                        description: "Description",
-                        isFavorites: false,
-                        imageUrl: randomImage,
-                    }
-                ),
-            });
-            const data = await response.json();
-            if (response.status === 200) {
-                toast.success(data.message);
+            if (!subscriptionPlans)
+                throw new Error("Subscription plans not loaded");
+
+            if (!isSubscribed && totalScenarios >= subscriptionPlans[0].maxScenarios) {
+                onOpen();
+                return;
+            } else if (isSubscribed && totalScenarios >= subscriptionPlans[1].maxScenarios) {
+                toast.error("You have reached the maximum number of scenarios allowed for your subscription plan. Contact Admin to upgrade your plan.");
+                return;
             } else {
-                toast.error(data.title);
+                const randomImage = images[Math.floor(Math.random() * images.length)]
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/byuserclerk`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(
+                        {
+                            projectId: projectId,
+                            scenarioName: title,
+                            userIdClerk: user.id,
+                            description: "Description",
+                            isFavorites: false,
+                            imageUrl: randomImage,
+                        }
+                    ),
+                });
+                const data = await response.json();
+                if (response.status === 200) {
+                    toast.success(data.message);
+                } else {
+                    toast.error(data.title);
+                }
+                setPending(true);
             }
-            setPending(true);
         } catch (error) {
             console.error("Error creating project:", error);
         }
@@ -170,7 +259,7 @@ export const ScenarioList = ({
         try {
             await createScenario(title);
         } catch (error) {
-            console.error("Failed to rename scenario.");
+            console.error("Failed to create scenario." + error);
         } finally {
             setIsLoading(false);
             setOpen(false);

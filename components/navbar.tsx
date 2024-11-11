@@ -30,7 +30,7 @@ export const Navbar = (
     const checkIsSubscribed = async () => {
         try {
             if (!user) {
-                console.error('User is not loaded');
+                
                 return;
             }
 
