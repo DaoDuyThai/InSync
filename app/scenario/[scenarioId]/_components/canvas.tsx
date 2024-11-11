@@ -8,6 +8,7 @@ import { jsonGenerator } from "./generators/json";
 import './blockly.css';
 import { toast } from "sonner";
 import { Loading } from "@/components/loading";
+import ImageCropper from "@/components/image-cropper";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, Plus, MoreVertical, FilePenLine } from "lucide-react"
@@ -80,6 +81,7 @@ export const Canvas = ({
     const [loadingAssetRenameInput, setLoadingAssetRenameInput] = React.useState<boolean>(false);
     const [newAssetName, setNewAssetName] = React.useState<string>("");
     const [logData, setLogData] = React.useState<LogData>({ logs: {}, log_sessions: {} });
+    const [assetFilePath, setAssetFilePath] = React.useState<string>("");
 
     const handlePublicId = (publicId: string) => {
         if (projectId !== "") {
@@ -363,14 +365,31 @@ export const Canvas = ({
     }
 
     React.useEffect(() => {
-        const logsRef = ref(db);
-        onValue(logsRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                setLogData(data);
-            }
-        })
-    }, []);
+            const logsRef = ref(db);
+            onValue(logsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    setLogData(data);
+                }
+            })
+        }, []);
+
+    const handleEditAsset = (e: React.MouseEvent, filePath: string) => {
+        try {
+            setAssetFilePath(filePath);
+        } catch (error) {
+            console.error("Error opening image cropper:", error);
+        }
+    }
+
+    const handleHiddenModal = (e: React.MouseEvent) => {
+        console.log(e.target);
+        console.log(e.currentTarget);
+        
+        if (e.target === e.currentTarget) {
+            setAssetFilePath("");
+        }
+    };
 
     return (
         <div className="flex h-[calc(100vh-70px)] ">
@@ -585,10 +604,8 @@ export const Canvas = ({
                                                         </DialogContent>
                                                     </Dialog>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem asChild className="w-full h-full flex justify-center cursor-pointer font-medium">
-                                                    <a target="_blank" href={`/assets/${asset.id}`}>
-                                                        <FilePenLine className="h-4 w-4 mr-4 border-0" /> Edit Asset
-                                                    </a>
+                                                <DropdownMenuItem onClick={(e) => handleEditAsset(e, asset.filePath)} asChild className="w-full h-full flex justify-center cursor-pointer font-medium">
+                                                    <span><FilePenLine className="h-4 w-4 mr-4 border-0" /> Edit Asset</span>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem asChild className="w-full h-full">
                                                     <ConfirmModal
@@ -614,43 +631,53 @@ export const Canvas = ({
                         <div className="w-full h-[calc(100vh-119px)]">
                             <Table className="w-full">
                                 <TableBody className="w-full">
-                                    {Object.keys(logData.logs).map((logId) => {
-                                        const log = logData.logs[logId as keyof typeof logData.logs];
-                                        const logSession = logData.log_sessions[log.session_id as keyof typeof logData.log_sessions];
+                                    {Object.keys(logData.logs)
+                                        .sort((a, b) => new Date(logData.logs[b].date_created).getTime() - new Date(logData.logs[a].date_created).getTime())
+                                        .map((logId) => {
+                                            const log = logData.logs[logId as keyof typeof logData.logs];
+                                            const logSession = logData.log_sessions[log.session_id as keyof typeof logData.log_sessions];
 
-                                        return (
-                                            <TableRow key={logId} className="h-fit border-none w-full">
-                                                <HoverCard>
-                                                    <HoverCardTrigger>
-                                                        <TableCell className="text-base font-medium font-mono h-fit py-1 w-[50px]">
-                                                            {
-                                                                new Date(log.date_created).toLocaleTimeString(undefined, {
-                                                                    hour: "2-digit",
-                                                                    minute: "2-digit",
-                                                                    second: "2-digit",
-                                                                    fractionalSecondDigits: 3,
-                                                                })
-                                                            }
-                                                        </TableCell>
-                                                    </HoverCardTrigger>
-                                                    <HoverCardContent side="right" className="w-full">
-                                                        {logSession ? (
-                                                            <>
-                                                                <div className="text-base font-medium font-mono"><span className="font-semibold">Date Created:</span> {new Date(logSession.date_created).toLocaleString()}</div>
-                                                                <div className="text-base font-medium font-mono"><span className="font-semibold">Device Name:</span> {logSession.device_name}</div>
-                                                                <div className="text-base font-medium font-mono"><span className="font-semibold">Need Resolve:</span> {logSession.need_resolve ? 'Yes' : 'No'}</div>
-                                                            </>
-                                                        ) : (
-                                                            <div>No session data available</div>
-                                                        )}
-                                                    </HoverCardContent>
-                                                </HoverCard>
-                                                <TableCell className="text-base font-normal font-mono h-fit py-1">
-                                                    {log.note}. {log.description}
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
+                                            const logDate = new Date(log.date_created);
+                                            const today = new Date();
+                                            const isToday = logDate.toDateString() === today.toDateString();
+
+                                            if (logSession.scenario_id !== id || !isToday) {
+                                                return null;
+                                            }
+
+                                            return (
+                                                <TableRow key={logId} className="h-fit border-none w-full">
+                                                    <HoverCard>
+                                                        <HoverCardTrigger>
+                                                            <TableCell className="text-base font-medium font-mono h-fit py-1 w-[50px]">
+                                                                {
+                                                                    logDate.toLocaleTimeString(undefined, {
+                                                                        hour: "2-digit",
+                                                                        minute: "2-digit",
+                                                                        second: "2-digit",
+                                                                        fractionalSecondDigits: 3,
+                                                                    })
+                                                                }
+                                                            </TableCell>
+                                                        </HoverCardTrigger>
+                                                        <HoverCardContent side="right" className="w-full">
+                                                            {logSession ? (
+                                                                <>
+                                                                    <div className="text-base font-medium font-mono"><span className="font-semibold">Date Created:</span> {new Date(logSession.date_created).toLocaleString()}</div>
+                                                                    <div className="text-base font-medium font-mono"><span className="font-semibold">Device Name:</span> {logSession.device_name}</div>
+                                                                    <div className="text-base font-medium font-mono"><span className="font-semibold">Need Resolve:</span> {logSession.need_resolve ? 'Yes' : 'No'}</div>
+                                                                </>
+                                                            ) : (
+                                                                <div>No session data available</div>
+                                                            )}
+                                                        </HoverCardContent>
+                                                    </HoverCard>
+                                                    <TableCell className="text-base font-normal font-mono h-fit py-1">
+                                                        {log.note}. {log.description}
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
                                 </TableBody>
                             </Table>
                         </div>
@@ -686,6 +713,14 @@ export const Canvas = ({
                     </div>
                 )
             }
+            {assetFilePath
+                && (<div id="image-cropper-area">
+                    <div onClick={(e) => handleHiddenModal(e)} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="relative flex items-center justify-center h-fit">
+                            <ImageCropper imgURL={assetFilePath} id="image-cropper" className="block bg-white rounded-sm z-10" />
+                        </div>
+                    </div>
+                </div>)}
         </div >
     );
 };
