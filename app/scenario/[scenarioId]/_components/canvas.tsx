@@ -716,7 +716,7 @@ export const Canvas = ({
             {assetFilePath
                 && (<div id="image-cropper-area">
                     <div onClick={(e) => handleHiddenModal(e)} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div className="relative flex items-center justify-center h-full">
+                        <div className="relative flex items-center justify-center h-fit">
                             <ImageCropper imgURL={assetFilePath} id="image-cropper" className="block bg-white rounded-sm z-10" />
                         </div>
                     </div>
