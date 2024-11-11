@@ -25,12 +25,12 @@ export const Navbar = (
     { searchLink, searchEntity }: NavbarProps
 ) => {
     const { user, isLoaded } = useUser();
-    const [isSubscribed, setIsSubscribed] = React.useState(false);
+    const [isSubscribed, setIsSubscribed] = React.useState(null);
 
     const checkIsSubscribed = async () => {
         try {
             if (!user) {
-                
+
                 return;
             }
 
@@ -65,13 +65,9 @@ export const Navbar = (
                         "font-semibold text-2xl hidden md:block",
                         font.className,
                     )}>INSYNC</span>
-                    {isSubscribed ? (
-                        <Badge variant="secondaryGold">
-                            Pro
-                        </Badge>
-                    ) : (
-                        <Badge variant="secondary">
-                            Free
+                    {isSubscribed === null ? null : (
+                        <Badge variant={isSubscribed ? "secondaryGold" : "secondary"}>
+                            {isSubscribed ? "Pro" : "Free"}
                         </Badge>
                     )}
                 </div>

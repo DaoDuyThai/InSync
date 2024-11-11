@@ -38,12 +38,12 @@ export const ProjectSidebar = () => {
     const favorites = searchParams.get("favorites");
 
     const { user, isLoaded } = useUser();
-    const [isSubscribed, setIsSubscribed] = React.useState(false);
+    const [isSubscribed, setIsSubscribed] = React.useState(null);
 
     const checkIsSubscribed = async () => {
         try {
             if (!user) {
-                
+
                 return;
             }
 
@@ -116,13 +116,9 @@ export const ProjectSidebar = () => {
                         "font-semibold text-2xl",
                         font.className,
                     )}>INSYNC</span>
-                    {isSubscribed ? (
-                        <Badge variant="secondaryGold">
-                            Pro
-                        </Badge>
-                    ) : (
-                        <Badge variant="secondary">
-                            Free
+                    {isSubscribed === null ? null : (
+                        <Badge variant={isSubscribed ? "secondaryGold" : "secondary"}>
+                            {isSubscribed ? "Pro" : "Free"}
                         </Badge>
                     )}
                 </div>
@@ -171,13 +167,13 @@ export const ProjectSidebar = () => {
                     </Link>
                 </Button>
                 {/* TODO: Upgrade to Pro */}
-                {isSubscribed ? (
+
+                {isSubscribed === null ? null : isSubscribed ? (
                     <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                         <Banknote className="h-4 w-4 mr-2" />
                         My Billing & Plan
                     </Button>
                 ) : (
-
                     <Button onClick={onClickPay} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                         <Banknote className="h-4 w-4 mr-2" />
                         Upgrade to Pro

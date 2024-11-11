@@ -78,7 +78,7 @@ export const ScenarioList = ({
     const [open, setOpen] = React.useState<boolean>(false);
     const [title, setTitle] = React.useState<string>("Untitled");
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
-    const [isSubscribed, setIsSubscribed] = React.useState(false);
+    const [isSubscribed, setIsSubscribed] = React.useState(null);
     const [subscriptionPlans, setSubscriptionPlans] = React.useState<SubscriptionPlan[]>([]);
     const [totalScenarios, setTotalScenarios] = React.useState<number>(0);
 

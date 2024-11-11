@@ -87,7 +87,7 @@ export const ProjectSelector = () => {
     const { onOpen } = useProModal();
 
     const { user, isLoaded } = useUser();
-    const [isSubscribed, setIsSubscribed] = React.useState(false);
+    const [isSubscribed, setIsSubscribed] = React.useState(null);
     const [subscriptionPlans, setSubscriptionPlans] = React.useState<SubscriptionPlan[]>([]);
 
     const fetchSubscriptionPlans = async () => {
