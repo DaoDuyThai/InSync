@@ -27,7 +27,7 @@ export const Navbar = (
     const { user, isLoaded } = useUser();
     const [isSubscribed, setIsSubscribed] = React.useState(null);
 
-    const checkIsSubscribed = async () => {
+    const fetchIsSubscribed = async () => {
         try {
             if (!user) {
 
@@ -50,7 +50,7 @@ export const Navbar = (
     }
 
     React.useEffect(() => {
-        checkIsSubscribed();
+        fetchIsSubscribed();
     }, [user, isLoaded]);
 
     return (

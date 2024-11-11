@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CalendarCog, ChartSpline, ChevronRight, CircleDollarSign, FileCog, FolderCog, UserCog, } from "lucide-react"
+import { CalendarCog, ChartSpline, ChevronRight, CircleDollarSign, FileCog, FolderCog, House, UserCog, } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from "@/components/ui/collapsible"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarRail, } from "@/components/ui/sidebar"
 import Image from "next/image"
@@ -38,7 +38,7 @@ export function AdminSidebar() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`)
       if (response.ok) {
         const data = await response.json()
-        
+
         const sortedPages = data.sort((a: Pages, b: Pages) => a.title.localeCompare(b.title))
 
         setPages(sortedPages)
@@ -110,8 +110,7 @@ export function AdminSidebar() {
 
       </SidebarHeader>
       <SidebarContent >
-
-        <SidebarGroup className="group-data-[collapsible=icon]:visible">
+        <SidebarGroup className="group-data-[collapsible=icon]:visible group-data-[collapsible=icon]:pt-14">
           <SidebarGroupContent>
             <SidebarMenu>
 

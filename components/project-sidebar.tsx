@@ -40,7 +40,7 @@ export const ProjectSidebar = () => {
     const { user, isLoaded } = useUser();
     const [isSubscribed, setIsSubscribed] = React.useState(null);
 
-    const checkIsSubscribed = async () => {
+    const fetchIsSubscribed = async () => {
         try {
             if (!user) {
 
@@ -63,7 +63,7 @@ export const ProjectSidebar = () => {
     }
 
     React.useEffect(() => {
-        checkIsSubscribed();
+        fetchIsSubscribed();
     }, [user, isLoaded]);
 
     // Get the current project from Redux

@@ -1,10 +1,5 @@
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger
-} from "@/components/ui/tooltip"
-import React from "react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import * as React from "react"
 
 export interface HintProps {
     label: string
@@ -30,7 +25,7 @@ export const Hint = ({
                 <TooltipTrigger asChild>
                     {children}
                 </TooltipTrigger>
-                <TooltipContent className="text-white bg-black border-black" side={side} align={align} sideOffset={sideOffset} alignOffset={alignOffset}>
+                <TooltipContent className="text-white bg-black border-black z-50" side={side} align={align} sideOffset={sideOffset} alignOffset={alignOffset}>
                     <p className="font-semibold capitalize">
                         {label}
                     </p>
@@ -38,11 +33,4 @@ export const Hint = ({
             </Tooltip>
         </TooltipProvider>
     )
-
-
 }
-
-
-{/* <Hint label={name} side="right" align="start" sideOffset={18}>
-    {children}
-</Hint> */}

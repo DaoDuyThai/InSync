@@ -1,6 +1,5 @@
-import { set } from "date-fns";
 import { Loader, Plus } from "lucide-react";
-import { createContext, useEffect, useState, ReactNode } from "react";
+import * as React from "react";
 import { toast } from "sonner";
 
 // Extend the Window interface to include the cloudinary property
@@ -23,18 +22,18 @@ interface CloudinaryScriptContextType {
 }
 
 // Create a context to manage the script loading state
-const CloudinaryScriptContext = createContext<CloudinaryScriptContextType | undefined>(undefined);
+const CloudinaryScriptContext = React.createContext<CloudinaryScriptContextType | undefined>(undefined);
 
 interface CloudinaryUploadWidgetProps {
     uwConfig: CloudinaryUploadWidgetConfig; // Expecting Cloudinary config
     setPublicId: (publicId: string) => void; // Function to set the public ID
     projectId: string; // Project ID
-    children?: ReactNode; // Optional children
+    children?: React.ReactNode; // Optional children
 }
 
 const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfig, setPublicId, children, projectId }) => {
-    const [loaded, setLoaded] = useState(false);
-    const [loading, setLoading] = useState(false); // State to manage loading indicator
+    const [loaded, setLoaded] = React.useState(false);
+    const [loading, setLoading] = React.useState(false); // State to manage loading indicator
 
     const uploadAsset = async (assetName: string, filePath: string, projectId: string, type: string) => {
         setLoading(true); // Show loading indicator
@@ -53,9 +52,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                 },
                 body: JSON.stringify(body),
             });
-
             const data = await response.json();
-
             if (response.status === 200) {
                 toast.success(data.message);
             } else {
@@ -67,8 +64,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
         setLoading(false); // Hide loading
     };
 
-    useEffect(() => {
-        // Check if the script is already loaded
+    React.useEffect(() => {
         if (!loaded) {
             const uwScript = document.getElementById("uw");
             if (!uwScript) {
@@ -83,9 +79,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                 });
                 document.body.appendChild(script);
             } else {
-                // If already loaded, update the state
                 setLoaded(true);
-                // setLoading(false); // Hide loading if script is already loaded
             }
         }
     }, [loaded]);
@@ -133,7 +127,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                         <p className="text-sm text-white font-light">New Asset</p>
                     </button>
                 )}
-                {children} {/* Render any child components if needed */}
+                {children} 
             </div>
         </CloudinaryScriptContext.Provider>
     );

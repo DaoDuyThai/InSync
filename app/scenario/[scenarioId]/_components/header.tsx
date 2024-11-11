@@ -45,7 +45,7 @@ export const Header = ({
 
     const { user, isLoaded } = useUser();
 
-    const checkIsSubscribed = async () => {
+    const fetchIsSubscribed = async () => {
         try {
             if (!user) {
 
@@ -68,7 +68,7 @@ export const Header = ({
     }
 
     React.useEffect(() => {
-        checkIsSubscribed();
+        fetchIsSubscribed();
     }, [user, isLoaded]);
 
 

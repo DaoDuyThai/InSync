@@ -15,8 +15,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from "@/components/ui/input";
 import { useProModal } from "@/store/use-pro-modal";
 
-
-interface Project {
+type Project = {
     id: string;
     projectName: string;
     description: string | null;
@@ -58,11 +57,11 @@ export const ProjectSelector = () => {
     const [projects, setProjects] = React.useState<Project[]>([]);
     const [isSubscribed, setIsSubscribed] = React.useState(null);
     const [subscriptionPlans, setSubscriptionPlans] = React.useState<SubscriptionPlan[]>([]);
-    const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
-    const dispatch = useDispatch<AppDispatch>();
     const { onOpen } = useProModal();
     const { user, isLoaded } = useUser();
-
+    const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
+    const dispatch = useDispatch<AppDispatch>();
+    
     const fetchProjects = async () => {
         if (user && isLoaded) {
             try {
@@ -97,7 +96,7 @@ export const ProjectSelector = () => {
         }
     };
 
-    const checkIsSubscribed = async () => {
+    const fetchIsSubscribed = async () => {
         try {
             if (!user) {
                 return;
@@ -117,8 +116,12 @@ export const ProjectSelector = () => {
     }
 
     React.useEffect(() => {
+        fetchProjects();
+    }, [user, isLoaded, dispatch]);
+
+    React.useEffect(() => {
         fetchSubscriptionPlans();
-        checkIsSubscribed();
+        fetchIsSubscribed();
     }, [user, isLoaded]);
 
 
@@ -142,10 +145,6 @@ export const ProjectSelector = () => {
         }
         setOpenPopOver(false);
     };
-
-    React.useEffect(() => {
-        fetchProjects();
-    }, [user, isLoaded, dispatch]);
 
     const createProject = async (title: string) => {
         if (user && isLoaded) {
@@ -282,11 +281,8 @@ export const ProjectSelector = () => {
                             </Dialog>
                         </CommandItem>
                     )}
-
                 </Command>
             </PopoverContent>
         </Popover>
     )
 }
-
-
