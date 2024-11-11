@@ -81,7 +81,7 @@ export const Canvas = ({
     const [loadingAssetRenameInput, setLoadingAssetRenameInput] = React.useState<boolean>(false);
     const [newAssetName, setNewAssetName] = React.useState<string>("");
     const [logData, setLogData] = React.useState<LogData>({ logs: {}, log_sessions: {} });
-    const [assetFilePath, setAssetFilePath] = useState<string>("");
+    const [assetFilePath, setAssetFilePath] = React.useState<string>("");
 
     const handlePublicId = (publicId: string) => {
         if (projectId !== "") {
@@ -364,7 +364,7 @@ export const Canvas = ({
         }
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
             const logsRef = ref(db);
             onValue(logsRef, (snapshot) => {
                 const data = snapshot.val();

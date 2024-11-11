@@ -1,10 +1,13 @@
 'use client'
 
 import { Loading } from "@/components/loading";
+import { set } from "date-fns";
 import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
+import uploadImage from "./_components/uploadImage";
+
 
 interface ImageInterface {
     "id": string,
@@ -35,12 +38,16 @@ export default function ImagePage() {
     const [images, setImages] = useState<GroupedImagesByDate>({});
     const [searchKey, setSearchKey] = useState("");
     const [isReverse, setIsReverse] = useState(false);
-    const [notFound, setNotFound] = useState(false);  
+    const [notFound, setNotFound] = useState(false);
+    const [projectId, setProjectId] = useState("");
+    const [openModal, setOpenModal] = useState(false);
 
     useEffect(() => {
         // Set page title
         document.title = "InSync - Assets Management";
         const search = searchParams.get('search');
+        const id = localStorage.getItem("selectedProjectId");
+        setProjectId(id || "");
         setSearchKey(search || "");
 
 
@@ -87,17 +94,6 @@ export default function ImagePage() {
             }, {});
         }
 
-        const loading = `
-            <div class='animate-pulse flex space-x-4'>
-                <div class='flex-1 space-y-4 py-1'>
-                    <div class='h-4 bg-gray-200 rounded w-3/4'></div>
-                    <div class='space-y-2'>
-                        <div class='h-4 bg-gray-200 rounded'></div>
-                        <div class='h-4 bg-gray-200 rounded w-5/6'></div>
-                    </div>
-                </div>
-            </div>`;
-
 
         const fetchImageThroughAPI = async () => {
             try {
@@ -131,6 +127,7 @@ export default function ImagePage() {
             if (filteredImages?.length > 0) {
                 acc[date] = filteredImages;
             }
+
             if (isReverse && acc[date]?.length > 1) {
                 // Sort the grouped images by date in descending order
                 return Object.keys(img).sort((a, b) => {
@@ -209,21 +206,107 @@ export default function ImagePage() {
             }
         }
 
+        const handleOpenModal = () => {
+            setOpenModal(true);
+        }
 
+        const handleUpload = (e: ChangeEvent) => {
+            e.preventDefault();
+            try {
+                const imageData = e.target as HTMLInputElement;
+                const file = imageData.files?.[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onloadend = () => {
+                        const base64Image = reader.result?.toString();
+                        if (base64Image) {
+                            uploadImage(base64Image);
+                            toast.success("Image uploaded successfully");
+                            setOpenModal(false);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        const handleClickUploadButton = (e: MouseEvent) => {
+            e.preventDefault();
+            const uploadImage = document.querySelector('#file-upload');
+            if (uploadImage) {
+                (uploadImage as HTMLInputElement).click();
+            }
+        }
 
         return (
             <div className="px-10 py-5 max-w-[1500px] image-loading">
+
                 {Object.keys(filteredImagesByDate).length === 0 ? (
                     <div className="flex justify-center items-center h-[300px]">
                         <div className="text-center">
                             <img src="/logo.svg" alt="No assets found" className="w-[200px] h-[200px] mx-auto animate-pulse" />
                             <h1 className="text-2xl">Assest - Insync</h1>
-                            <p className="text-muted-foreground">{notFound ?'Asset is not found' : 'Powered by InSync' }</p>
+                            <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
                         </div>
                     </div>
                 ) :
                     <div className="relative">
-                        <div className="flex absolute top-0 right-0 justify-end">
+                        {openModal &&
+                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+                                <div className="bg-white w-[600px] h-[600px] rounded-lg z-50">
+                                    <div className="p-4 relative">
+                                        <div className="absolute top-0 right-0 p-4">
+                                            <button onClick={() => setOpenModal(false)} className="text-2xl font-semibold">&times;</button>
+                                        </div>
+                                        <h2 className="text-xl text-center font-semibold mb-4">Upload New Asset</h2>
+                                        <form>
+                                            <div className="mb-4 flex flex-col items-center justify-center">
+                                                <div className="w-[450px] h-[450px] ">
+                                                    <img className="w-full h-full" src="upload.svg" alt="upload-image" />
+                                                </div>
+                                            </div>
+                                            <div className="mb-4 hidden">
+                                                <input
+                                                    id="file-upload"
+                                                    onChange={(e) => handleUpload(e)}
+                                                    type="file"
+                                                    className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                                                />
+                                            </div>
+                                            <div className="flex justify-center">
+                                                <button
+                                                    type="submit"
+                                                    onClick={(e) => handleClickUploadButton(e)}
+                                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                >
+                                                    Upload
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>}
+                        <div className="flex gap-2 absolute top-0 right-0 justify-end">
+                            <button
+                                onClick={() => handleOpenModal()}
+                                className="inline-flex items-center 
+                                justify-center gap-2 whitespace-nowrap 
+                                rounded-md text-sm font-medium transition-colors 
+                                focus-visible:outline-none focus-visible:ring-1 
+                                focus-visible:ring-ring disabled:pointer-events-none 
+                                disabled:opacity-50 [&amp;_svg]:pointer-events-none 
+                                [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary 
+                                text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    className="lucide lucide-circle-plus ">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M8 12h8"></path><path d="M12 8v8"></path>
+                                </svg>Add asset</button>
                             <div
                                 role="tablist"
                                 aria-orientation="horizontal"
@@ -261,7 +344,6 @@ export default function ImagePage() {
                                     <div className="flex items-center justify-between my-2">
                                         <div className="space-y-1">
                                             <h2 className="text-2xl font-semibold tracking-tight">{dateCreated}</h2>
-                                            <p className="text-sm text-muted-foreground">Powered by InSync</p>
                                         </div>
                                     </div>
                                 }
