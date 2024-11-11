@@ -1,6 +1,6 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 
 import React from "react";
 import { cn } from "@/lib/utils";
@@ -24,6 +24,35 @@ const font = Poppins({
 export const Navbar = (
     { searchLink, searchEntity }: NavbarProps
 ) => {
+    const { user, isLoaded } = useUser();
+    const [isSubscribed, setIsSubscribed] = React.useState(null);
+
+    const fetchIsSubscribed = async () => {
+        try {
+            if (!user) {
+
+                return;
+            }
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+            );
+
+            if (!response.ok) {
+                console.error('Failed to fetch subscription status');
+                return
+            }
+            const data = await response.json();
+            setIsSubscribed(data.isSubscribed);
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+        }
+    }
+
+    React.useEffect(() => {
+        fetchIsSubscribed();
+    }, [user, isLoaded]);
+
     return (
         <div className="flex justify-between items-center w-full gap-x-4 p-5 ">
             <div className="hidden lg:flex-1 lg:flex ">
@@ -36,11 +65,11 @@ export const Navbar = (
                         "font-semibold text-2xl hidden md:block",
                         font.className,
                     )}>INSYNC</span>
-                    <Badge variant="secondary">
-                        Free
-                        {/* TODO: is subscribed */}
-                        {/* {isSubscribed ? "Pro" : "Free"} */}
-                    </Badge>
+                    {isSubscribed === null ? null : (
+                        <Badge variant={isSubscribed ? "secondaryGold" : "secondary"}>
+                            {isSubscribed ? "Pro" : "Free"}
+                        </Badge>
+                    )}
                 </div>
             </Link>
             <div className="w-fit lg:hidden block items-center justify-center">

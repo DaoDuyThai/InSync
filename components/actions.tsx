@@ -1,26 +1,12 @@
 "use client";
 
 import { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-    DropdownMenuItem
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Link2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmModal } from "@/components/confirm-modal";
-import { Button } from "./ui/button";
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import * as React from "react";
 
@@ -85,9 +71,6 @@ export const Actions = ({
                     <Link2 className="h-4 w-4 mr-2" />
                     Copy scenario link
                 </DropdownMenuItem>
-
-                {/* Rename Dialog */}
-
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
                         <Button variant="ghost" className="cursor-pointer text-sm w-full justify-start font-normal">
@@ -126,9 +109,6 @@ export const Actions = ({
                         </form>
                     </DialogContent>
                 </Dialog>
-
-
-                {/* Delete Scenario */}
                 <ConfirmModal
                     header="Delete Scenario?"
                     description="This will delete the scenario and all of its contents."

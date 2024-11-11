@@ -19,7 +19,7 @@ const AdminLayout = ({ children }: Props) => {
         <SidebarProvider>
             <AdminSidebar />
             <SidebarInset>
-                <header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 justify-between z-50">
+                <header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 justify-between z-10">
                     <div className="flex gap-2 items-center ">
                         <SidebarTrigger className="ml-1" />
                         <Separator orientation="vertical" className="mr-2 h-4" />

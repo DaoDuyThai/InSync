@@ -37,6 +37,35 @@ export const ProjectSidebar = () => {
     const searchParams = useSearchParams();
     const favorites = searchParams.get("favorites");
 
+    const { user, isLoaded } = useUser();
+    const [isSubscribed, setIsSubscribed] = React.useState(null);
+
+    const fetchIsSubscribed = async () => {
+        try {
+            if (!user) {
+
+                return;
+            }
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+            );
+
+            if (!response.ok) {
+                console.error('Failed to fetch subscription status');
+                return
+            }
+            const data = await response.json();
+            setIsSubscribed(data.isSubscribed);
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+        }
+    }
+
+    React.useEffect(() => {
+        fetchIsSubscribed();
+    }, [user, isLoaded]);
+
     // Get the current project from Redux
     const dispatch = useDispatch<AppDispatch>();
 
@@ -48,7 +77,6 @@ export const ProjectSidebar = () => {
         }
     }, [dispatch]);
 
-    const { user } = useUser();
 
     // TODO: Implement Stripe
     const { onOpen } = useProModal();
@@ -67,7 +95,7 @@ export const ProjectSidebar = () => {
         }
         try {
             const portalLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_LINK_URL!}?prefilled_email=${user.primaryEmailAddress}`;
-            window.location.href = portalLinkUrl;
+            window.open(portalLinkUrl, "_blank");
         } catch (error) {
             console.error(error);
             toast.error("An error occurred. Please try again later.");
@@ -75,32 +103,9 @@ export const ProjectSidebar = () => {
         } finally {
             setPending(false);
         }
-
     }
-    // const { organization } = useOrganization();
-    // const isSubscribed = useQuery(api.subscriptions.getIsSubscribed, {
-    //     orgId: organization?.id,
-    // })
 
-    // const portal = useAction(api.stripe.portal)
-    // const pay = useAction(api.stripe.pay)
     const [pending, setPending] = React.useState(false);
-    // const onClick = async () => {
-    //     if (!organization?.id) return
-    //     setPending(true)
-    //     try {
-    //         const action = isSubscribed ? portal : pay
-    //         const redirectUrl = await action({
-    //             orgId: organization.id,
-    //         })
-    //         window.location.href = redirectUrl
-    //     } catch {
-    //         toast.error("Something went wrong")
-    //     } finally {
-    //         setPending(false)
-    //     }
-    // }
-
 
     return (
         <div className=" hidden lg:flex flex-col space-y-6 w-[206px] pl-5 pt-5">
@@ -111,11 +116,11 @@ export const ProjectSidebar = () => {
                         "font-semibold text-2xl",
                         font.className,
                     )}>INSYNC</span>
-                    <Badge variant="secondary">
-                        Free
-                        {/* TODO: is subscribed */}
-                        {/* {isSubscribed ? "Pro" : "Free"} */}
-                    </Badge>
+                    {isSubscribed === null ? null : (
+                        <Badge variant={isSubscribed ? "secondaryGold" : "secondary"}>
+                            {isSubscribed ? "Pro" : "Free"}
+                        </Badge>
+                    )}
                 </div>
             </Link>
 
@@ -162,15 +167,20 @@ export const ProjectSidebar = () => {
                     </Link>
                 </Button>
                 {/* TODO: Upgrade to Pro */}
-                {/* {isSubscribed ? "Payment Settings" : "Upgrade to Pro"} */}
-                <Button onClick={onClickPay} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
-                    <Banknote className="h-4 w-4 mr-2" />
-                    Upgrade to Pro
-                </Button>
-                <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
-                    <Banknote className="h-4 w-4 mr-2" />
-                    My Billing & Plan
-                </Button>
+
+                {isSubscribed === null ? null : isSubscribed ? (
+                    <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                        <Banknote className="h-4 w-4 mr-2" />
+                        My Billing & Plan
+                    </Button>
+                ) : (
+                    <Button onClick={onClickPay} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                        <Banknote className="h-4 w-4 mr-2" />
+                        Upgrade to Pro
+                    </Button>
+                )}
+
+
             </div>
         </div>
     )

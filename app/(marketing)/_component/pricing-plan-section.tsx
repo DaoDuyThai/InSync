@@ -39,11 +39,12 @@ export default function PricingPlanSection() {
 
     // Define the keys and their display labels
     const displayKeys: Record<string, string> = {
+        content: "Target",
         maxProjects: "Maximum Projects",
         maxAssets: "Maximum Assets",
         maxScenarios: "Maximum Scenarios",
         maxUsersAccess: "Maximum User Access",
-        storageLimit: "Storage Limit",
+        storageLimit: "Storage Limit (blocks/scenario)",
         supportLevel: "Support Level",
         customFeaturesDescription: "Custom Features Description"
     };
@@ -88,7 +89,7 @@ export default function PricingPlanSection() {
                         <TableCell className="w-1/3 text-left font-bold text-xl">Price</TableCell>
                         {pricingPlans.map((plan) => (
                             <TableCell key={plan.id} className="w-1/3 text-left text-xl">
-                                đ{plan.price}
+                                {plan.price === 0 ? "Free" : `đ${plan.price.toFixed(3)}`}
                             </TableCell>
                         ))}
                     </TableRow>
@@ -162,52 +163,3 @@ export const PricingPlanSkeleton = function PricingPlanSkeleton() {
         </section>
     );
 };
-
-
-
-const temp: Array<Record<string, string | number | boolean | null | Array<any>>> | null = [
-    {
-        "id": "e366c43e-a634-442b-a654-3aeecf6ffc24",
-        "subscriptionsName": "Starter",
-        "status": true,
-        "price": 549,
-        "userId": "933b6f98-8853-46aa-bafc-1b55709c1b8f",
-        "content": "Basic plan for individual users.",
-        "dateCreated": "2024-08-01T08:00:00",
-        "dateUpdated": "2024-08-01T08:00:00",
-        "maxProjects": 5,
-        "maxAssets": 100,
-        "maxScenarios": 10,
-        "maxUsersAccess": 1,
-        "storageLimit": 5000,
-        "supportLevel": "Standard",
-        "customFeaturesDescription": "Access to standard features with limited customization.",
-        "dataRetentionPeriod": 365,
-        "prioritySupport": false,
-        "monthlyReporting": false,
-        "user": null,
-        "userSubscriptions": []
-    },
-    {
-        "id": "cbab902f-779e-4013-8121-a3dc8f70c454",
-        "subscriptionsName": "Professional",
-        "status": true,
-        "price": 49.99,
-        "userId": "933b6f98-8853-46aa-bafc-1b55709c1b8f",
-        "content": "Advanced plan for small teams.",
-        "dateCreated": "2024-08-02T09:15:00",
-        "dateUpdated": "2024-08-02T09:15:00",
-        "maxProjects": 20,
-        "maxAssets": 500,
-        "maxScenarios": 50,
-        "maxUsersAccess": 5,
-        "storageLimit": 20000,
-        "supportLevel": "Enhanced",
-        "customFeaturesDescription": "Includes additional features and priority support.",
-        "dataRetentionPeriod": 730,
-        "prioritySupport": true,
-        "monthlyReporting": true,
-        "user": null,
-        "userSubscriptions": []
-    }
-]

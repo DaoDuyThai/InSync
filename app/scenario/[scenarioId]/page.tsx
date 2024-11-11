@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import * as React from "react";
 import { Canvas } from "./_components/canvas";
 import { Loading } from "@/components/loading";
 import { toast } from "sonner";
@@ -30,49 +30,48 @@ interface ScenarioIdPageProps {
 }
 
 const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
-    const [scenario, setScenario] = useState<Scenario | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [scenario, setScenario] = React.useState<Scenario | null>(null);
+    const [loading, setLoading] = React.useState(true);
     const { user, isLoaded } = useUser();
-    const [pending, setPending] = React.useState(false);
 
-    useEffect(() => {
-        const fetchScenario = async () => {
-            try {
-                localStorage.removeItem("jsonWeb");
-                localStorage.removeItem("jsonMobile");
-                const selectedProjectId = localStorage.getItem("selectedProjectId");
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/${params.scenarioId}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                if (selectedProjectId !== data.projectId) {
-                    throw new Error("Scenario not found. Redirecting...");
-                } else {
-                    setScenario(data);
-
-                    const jsonWeb = data.stepsWeb;
-                    if (isValidJSON(jsonWeb) && jsonWeb) {
-                        localStorage.setItem("jsonWeb", jsonWeb);
-                    } else if (!jsonWeb) {
-                        localStorage.removeItem("jsonWeb");
-                    }
-                }
-
-            } catch (error) {
-                toast.error("Scenario not found. Redirecting...");
-                setTimeout(() => {
-                    window.location.href = '/dashboard'; // Redirects to the previous page after 3 seconds
-                }, 3000);
-            } finally {
-                setLoading(false);
+    const fetchScenario = async () => {
+        try {
+            localStorage.removeItem("jsonWeb");
+            localStorage.removeItem("jsonMobile");
+            const selectedProjectId = localStorage.getItem("selectedProjectId");
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/${params.scenarioId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
+            const data = await response.json();
+            if (selectedProjectId !== data.projectId) {
+                throw new Error("Scenario not found. Redirecting...");
+            } else {
+                setScenario(data);
 
+                const jsonWeb = data.stepsWeb;
+                if (isValidJSON(jsonWeb) && jsonWeb) {
+                    localStorage.setItem("jsonWeb", jsonWeb);
+                } else if (!jsonWeb) {
+                    localStorage.removeItem("jsonWeb");
+                }
+            }
+
+        } catch (error) {
+            toast.error("Scenario not found. Redirecting...");
+            setTimeout(() => {
+                window.location.href = '/dashboard'; // Redirects to the previous page after 3 seconds
+            }, 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    React.useEffect(() => {
         fetchScenario();
     }, [params.scenarioId]);
 
-    useEffect(() => {
+    React.useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.ctrlKey && event.key === 's') {
                 event.preventDefault();
@@ -112,11 +111,10 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             const data = await response.json();
             if (response.status === 200) {
                 toast.success(data.message);
-                setPending(true);
             } else {
                 toast.error(data.title);
             }
-            setPending(true);
+            fetchScenario();
         } catch (error) {
             toast.error("Failed to rename scenario.");
             console.error("Error renaming scenario:", error);
@@ -138,7 +136,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             } else {
                 toast.error(data.title);
             }
-            setPending(true);
+            fetchScenario();
         } catch (error) {
             console.error("Error deleting scenario:", error);
         }
@@ -171,6 +169,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             } else {
                 toast.error("Failed to save scenario!");
             }
+            fetchScenario();
         } catch (error) {
             console.error("Error saving scenario:", error);
             toast.error("Failed to save scenario.");
@@ -183,9 +182,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
         <div className="w-screen h-screen">
             <Header
                 id={scenario.id}
-                title={scenario?.title}
-                deleteScenario={() => deleteScenario(scenario.id)}
-                renameScenario={renameScenario} />
+                title={scenario?.title} />
             {scenario ? (
                 <>
                     <Canvas
@@ -194,7 +191,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                         deleteScenario={() => deleteScenario(scenario.id)}
                         renameScenario={renameScenario}
                         saveScenario={handleSaveScenario}
-                        projectId = {scenario.projectId}
+                        projectId={scenario.projectId}
                     />
                 </>
             ) : null}

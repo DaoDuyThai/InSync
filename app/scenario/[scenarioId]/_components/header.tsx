@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 import { ArrowRight, File, Lightbulb, Loader, MoreHorizontal, Settings } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -35,16 +35,43 @@ const font = Poppins({
 interface HeaderProps {
     id: string;
     title: string;
-    deleteScenario: () => void;
-    renameScenario: (id: string, newTitle: string) => Promise<void>;
 }
 
 export const Header = ({
     id,
     title,
-    deleteScenario,
-    renameScenario
 }: HeaderProps) => {
+    const [isSubscribed, setIsSubscribed] = React.useState(null);
+
+    const { user, isLoaded } = useUser();
+
+    const fetchIsSubscribed = async () => {
+        try {
+            if (!user) {
+
+                return;
+            }
+
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+            );
+
+            if (!response.ok) {
+                console.error('Failed to fetch subscription status');
+                return
+            }
+            const data = await response.json();
+            setIsSubscribed(data.isSubscribed);
+        } catch (error) {
+            console.error('Error checking subscription:', error);
+        }
+    }
+
+    React.useEffect(() => {
+        fetchIsSubscribed();
+    }, [user, isLoaded]);
+
+
     return (
         <header className="border-b-2 border-slate-200 px-4 sticky top-0 bg-white z-10 h-16 flex justify-between items-center ">
             <div className="h-full flex">
@@ -55,11 +82,11 @@ export const Header = ({
                             "font-semibold text-2xl",
                             font.className,
                         )}>INSYNC</span>
-                        <Badge variant="secondary">
-                            Free
-                            {/* TODO: is subscribed */}
-                            {/* {isSubscribed ? "Pro" : "Free"} */}
-                        </Badge>
+                        {isSubscribed === null ? null : (
+                            <Badge variant={isSubscribed ? "secondaryGold" : "secondary"}>
+                                {isSubscribed ? "Pro" : "Free"}
+                            </Badge>
+                        )}
                     </div>
                 </Link>
             </div>
@@ -112,9 +139,6 @@ export const Header = ({
                     </SignedOut>
                 </ClerkLoaded>
             </div>
-
-
-
         </header>
     )
 }

@@ -2,9 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import { useOrganization, useUser } from "@clerk/nextjs"
-// import { useApiMutation } from "@/hooks/use-api-mutation"
-import { toast } from "sonner"
 import { ProjectSettings } from "./project-settings"
 import React from "react"
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog"
@@ -23,6 +20,7 @@ export const EmptyScenario = ({
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [open, setOpen] = React.useState<boolean>(false);
 
+    // Create a new scenario
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -36,12 +34,9 @@ export const EmptyScenario = ({
         }
     };
 
-
-
     return (
         <div className="w-full h-full md-overflow-y-auto">
             <div className='flex justify-end align-middle'>
-                {/* TODO: Add functionality menu for project settings */}
                 <ProjectSettings />
             </div>
             <div className="h-full flex flex-col items-center justify-center">
@@ -73,7 +68,6 @@ export const EmptyScenario = ({
                                     maxLength={18}
                                     minLength={5}
                                     placeholder="Enter scenario title"
-                                    // value={title} // Pre-filled with the current title
                                     onChange={(e) => {
                                         setTitle(e.target.value)
                                     }}
@@ -91,11 +85,8 @@ export const EmptyScenario = ({
                             </form>
                         </DialogContent>
                     </Dialog>
-                    
                 </div>
-
             </div>
         </div>
-
     )
 }
