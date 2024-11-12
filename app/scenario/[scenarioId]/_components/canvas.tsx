@@ -28,7 +28,6 @@ import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
-import Image from "next/image";
 import CloudinaryUploadWidget from "@/components/cloudinary-upload-widget";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"

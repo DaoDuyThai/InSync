@@ -240,53 +240,105 @@ export default function ImagePage() {
 
         return (
             <div className="px-10 py-5 max-w-[1500px] image-loading">
-
-                {Object.keys(filteredImagesByDate).length === 0 ? (
-                    <div className="flex justify-center items-center h-[calc(100vh - 100px)]">
-                        <div className="text-center">
-                            <img src="/loading-asset.svg" alt="No assets found" className="w-auto h-[300px] mx-auto animate-pulse" />
-                            <h1 className="text-2xl">Assest - Insync</h1>
-                            <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
+                {openModal &&
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+                        <div className="bg-white w-[600px] h-[600px] rounded-lg z-50">
+                            <div className="p-4 relative">
+                                <div className="absolute top-0 right-0 p-4">
+                                    <button onClick={() => setOpenModal(false)} className="text-2xl font-semibold">&times;</button>
+                                </div>
+                                <h2 className="text-xl text-center font-semibold mb-4">Upload New Asset</h2>
+                                <form>
+                                    <div className="mb-4 flex flex-col items-center justify-center">
+                                        <div className="w-[450px] h-[450px] ">
+                                            <img className="w-full h-full" src="upload.svg" alt="upload-image" />
+                                        </div>
+                                    </div>
+                                    <div className="mb-4 hidden">
+                                        <input
+                                            id="file-upload"
+                                            onChange={(e) => handleUpload(e)}
+                                            type="file"
+                                            accept="image/*"
+                                            className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <button
+                                            type="submit"
+                                            onClick={(e) => handleClickUploadButton(e)}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        >
+                                            Upload
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    </div>}
+                {Object.keys(filteredImagesByDate).length === 0 ? (
+                    <>
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                onClick={() => handleOpenModal()}
+                                className="inline-flex items-center 
+                        justify-center gap-2 whitespace-nowrap 
+                        rounded-md text-sm font-medium transition-colors 
+                        focus-visible:outline-none focus-visible:ring-1 
+                        focus-visible:ring-ring disabled:pointer-events-none 
+                        disabled:opacity-50 [&amp;_svg]:pointer-events-none 
+                        [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary 
+                        text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    className="lucide lucide-circle-plus ">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M8 12h8"></path><path d="M12 8v8"></path>
+                                </svg>Add asset</button>
+                            <div
+                                role="tablist"
+                                aria-orientation="horizontal"
+                                className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground"
+                                tabIndex={0}
+                                data-orientation="horizontal"
+                                style={{ "outline": "none" }}>
+                                <button
+                                    type="button"
+                                    role="tab"
+                                    aria-selected="false"
+                                    aria-controls="radix-:r6j:-content-podcasts"
+                                    data-state="inactive" id="radix-:r6j:-trigger-podcasts"
+                                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow"
+                                    tabIndex={-1}
+                                    data-orientation="horizontal"
+                                    data-radix-collection-item="">Date</button>
+                                <button
+                                    type="button"
+                                    role="tab"
+                                    onClick={() => { setIsReverse(!isReverse) }}
+                                    aria-selected="true"
+                                    aria-controls="radix-:r6j:-content-music"
+                                    data-state="active" id="radix-:r6j:-trigger-music"
+                                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow relative"
+                                    tabIndex={0}
+                                    data-orientation="horizontal"
+                                    data-radix-collection-item="">{isReverse ? <ArrowDownWideNarrowIcon size={15} /> : <ArrowUpWideNarrowIcon size={15} />}</button>
+
+                            </div>
+                        </div>
+                        <div className="flex justify-center items-center h-[calc(100vh - 100px)]">
+                            <div className="text-center">
+                                <img src="/loading-asset.svg" alt="No assets found" className="w-auto h-[300px] mx-auto animate-pulse" />
+                                <h1 className="text-2xl">Assest - Insync</h1>
+                                <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
+                            </div>
+                        </div>
+                    </>
                 ) :
                     <div className="relative">
-                        {openModal &&
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
-                                <div className="bg-white w-[600px] h-[600px] rounded-lg z-50">
-                                    <div className="p-4 relative">
-                                        <div className="absolute top-0 right-0 p-4">
-                                            <button onClick={() => setOpenModal(false)} className="text-2xl font-semibold">&times;</button>
-                                        </div>
-                                        <h2 className="text-xl text-center font-semibold mb-4">Upload New Asset</h2>
-                                        <form>
-                                            <div className="mb-4 flex flex-col items-center justify-center">
-                                                <div className="w-[450px] h-[450px] ">
-                                                    <img className="w-full h-full" src="upload.svg" alt="upload-image" />
-                                                </div>
-                                            </div>
-                                            <div className="mb-4 hidden">
-                                                <input
-                                                    id="file-upload"
-                                                    onChange={(e) => handleUpload(e)}
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-                                                />
-                                            </div>
-                                            <div className="flex justify-center">
-                                                <button
-                                                    type="submit"
-                                                    onClick={(e) => handleClickUploadButton(e)}
-                                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                >
-                                                    Upload
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>}
+
                         <div className="flex gap-2 absolute top-0 right-0 justify-end">
                             <button
                                 onClick={() => handleOpenModal()}
