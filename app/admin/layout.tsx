@@ -1,6 +1,5 @@
-// import { Navbar } from "@/components/navbar";
-// import { ProjectSidebar } from "@/components/project-sidebar";
 "use client"
+
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AdminSidebar } from "./_components/admin-sidebar"
 import { Separator } from "@/components/ui/separator"
@@ -42,13 +41,6 @@ const AdminLayout = ({ children }: Props) => {
                 </div>
             </SidebarInset>
         </SidebarProvider>
-
-
-
-
-
-
-
     )
 }
 
