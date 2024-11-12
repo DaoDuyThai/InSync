@@ -394,7 +394,7 @@ export function AdminSidebar() {
                           <SidebarMenuSubItem>
                             <CollapsibleTrigger asChild>
                               <SidebarMenuSubButton className="cursor-pointer">
-                                <Link href={`/admin/docsmanagement/${category.id}`}>
+                                <Link href={`/admin/docscategory/${category.id}`}>
                                   {category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}
                                 </Link>
                                 {category.documents?.length === 0 ? null : <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />}
@@ -402,16 +402,14 @@ export function AdminSidebar() {
                             </CollapsibleTrigger>
                             <CollapsibleContent className="ml-2">
                               {category.documents?.map((doc) => (
-                                <Hint label={`/docs/${doc.slug}`} key={doc.id} side="right">
-                                  <SidebarMenuSubItem >
-                                    <SidebarMenuSubButton
-                                      className="cursor-pointer"
-                                      href={`/admin/docs/${doc.id}`}
-                                    >
-                                      {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
-                                    </SidebarMenuSubButton>
-                                  </SidebarMenuSubItem>
-                                </Hint>
+                                <SidebarMenuSubItem key={doc.id}>
+                                  <SidebarMenuSubButton
+                                    className="cursor-pointer"
+                                    href={`/admin/docs/${doc.id}`}
+                                  >
+                                    {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
                               ))}
                             </CollapsibleContent>
                           </SidebarMenuSubItem>
