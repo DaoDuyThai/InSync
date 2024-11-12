@@ -4,9 +4,10 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AdminSidebar } from "./_components/admin-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { UserButton } from "@clerk/nextjs"
+import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Loader } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 
 type Props = {
@@ -33,7 +34,17 @@ const AdminLayout = ({ children }: Props) => {
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
-                    <UserButton />
+                    <ClerkLoading >
+                        <Loader className="h-5 w-5 text-muted-foreground animate-spin" />
+                    </ClerkLoading>
+                    <ClerkLoaded>
+                        <SignedIn >
+                            <UserButton />
+                        </SignedIn>
+                        <SignedOut>
+                            
+                        </SignedOut>
+                    </ClerkLoaded>
                 </header>
 
                 <div className="container">

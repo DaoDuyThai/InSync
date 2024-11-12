@@ -13,8 +13,9 @@ import { Button } from "@/components/ui/button"
 import { Loading } from "@/components/loading"
 import { set } from "date-fns"
 import { toast } from "sonner"
+import { Label } from "@/components/ui/label"
 
-type Pages = {
+type Page = {
   id: string
   slug: string
   title: string
@@ -24,43 +25,92 @@ type Pages = {
   dateUpdated: string | null
 }
 
+
+
+type Category = {
+  id: string
+  title: string
+  order: number
+  description: string | null
+  dateCreated: string | null
+  dateUpdated: string | null
+  documents: Docs[] | null
+}
+
+type Docs = {
+  id: string
+  slug: string
+  title: string
+  content: string
+  note: string
+  dateCreated: string | null
+  dateUpdated: string | null
+  categoryId: string | null
+  order: number
+  categoryName: string | null
+}
+
 export function AdminSidebar() {
 
-  const [pages, setPages] = React.useState<Pages[]>([])
-  const [loading, setLoading] = React.useState<boolean>(true)
+  const [pages, setPages] = React.useState<Page[]>([])
+  const [categories, setCategories] = React.useState<Category[]>([])
+  const [pageLoading, setPageLoading] = React.useState<boolean>(true)
   const [isCreatePageDialogOpen, setIsCreatePageDialogOpen] = React.useState<boolean>(false)
   const [newCreatePageTitle, setNewCreatePageTitle] = React.useState<string>("")
   const [newCreatePageSlug, setNewCreatePageSlug] = React.useState<string>("")
-  const [createButtonPending, setCreateButtonPending] = React.useState<boolean>(false)
+  const [createPageButtonPending, setCreatePageButtonPending] = React.useState<boolean>(false)
 
+  const [isCreateCategoryDialogOpen, setIsCreateCategoryDialogOpen] = React.useState<boolean>(false)
+  const [newCreateCategoryTitle, setNewCreateCategoryTitle] = React.useState<string>("")
+  const [newCreateCategoryOrder, setNewCreateCategoryOrder] = React.useState<string>("")
+  const [newCreateCategoryDescription, setNewCreateCategoryDescription] = React.useState<string>("")
+  const [createCategoryButtonPending, setCreateCategoryButtonPending] = React.useState<boolean>(false)
+
+  const fetchCategories = async () => {
+    setPageLoading(true)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`)
+      if (response.ok) {
+        const data = await response.json()
+        setCategories(data.data)
+      } else {
+        console.error("Error fetching documents")
+      }
+    } catch (error) {
+      console.error("Error:", error)
+    } finally {
+      setPageLoading(false)
+    }
+  }
 
 
   const fetchPages = async () => {
-    setLoading(true)
+    setPageLoading(true)
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`)
       if (response.ok) {
         const data = await response.json()
 
-        const sortedPages = data.sort((a: Pages, b: Pages) => a.title.localeCompare(b.title))
+        const sortedPages = data.sort((a: Page, b: Page) => a.title.localeCompare(b.title))
 
         setPages(sortedPages)
       } else {
-        console.error("Error fetching data")
+        console.error("Error fetching pages")
       }
     } catch (error) {
       console.error("Error:", error)
     } finally {
-      setLoading(false)
+      setPageLoading(false)
     }
   }
 
   React.useEffect(() => {
     fetchPages()
+    fetchCategories()
   }, [])
 
   const handleCreatePage = async (e: React.FormEvent) => {
-    setCreateButtonPending(true)
+    setCreatePageButtonPending(true)
     e.preventDefault()
 
     const newPage = {
@@ -89,9 +139,46 @@ export function AdminSidebar() {
       toast.error("Error creating page")
       console.error("Error:", error)
     } finally {
-      setCreateButtonPending(false)
+      setCreatePageButtonPending(false)
     }
   }
+
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    setCreateCategoryButtonPending(true)
+    e.preventDefault()
+
+    const newCategory = {
+      title: newCreateCategoryTitle,
+      order: newCreateCategoryOrder,
+      description: newCreateCategoryDescription,
+    }
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newCategory),
+      })
+
+      if (response.ok) {
+        toast.success("Category created successfully")
+        fetchCategories() // Refetch the categories after adding
+        setIsCreateCategoryDialogOpen(false) // Close the dialog
+      } else {
+        toast.error("Error creating category")
+        console.error("Error creating category")
+      }
+    } catch (error) {
+      toast.error("Error creating category")
+      console.error("Error:", error)
+    } finally {
+      setCreateCategoryButtonPending(false)
+    }
+  }
+
+
 
 
   return (
@@ -222,19 +309,22 @@ export function AdminSidebar() {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     {pages.map((page) => (
-                      <SidebarMenuSub key={page.id}>
-                        <SidebarMenuSubItem>
-                          <SidebarMenuSubButton className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
-                            {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      </SidebarMenuSub>
+                      <Hint label={`/pages/${page.slug}`} key={page.id} side="right">
+                        <SidebarMenuSub >
+                          <SidebarMenuSubItem>
+                            <SidebarMenuSubButton className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
+                              {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        </SidebarMenuSub>
+                      </Hint>
+
                     ))}
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
                         <Dialog open={isCreatePageDialogOpen} onOpenChange={setIsCreatePageDialogOpen}>
                           <DialogTrigger asChild>
-                            <Button size={"sm"} variant={"outline"} className="cursor-pointer">Create New Page</Button>
+                            <Button size={"sm"} variant={"outline"} className="cursor-pointer">New Page</Button>
                           </DialogTrigger>
 
                           <DialogContent>
@@ -242,28 +332,34 @@ export function AdminSidebar() {
                               <DialogTitle>Create New Page</DialogTitle>
                               <DialogDescription>Enter data to create a new page.</DialogDescription>
                             </DialogHeader>
-                            <form onSubmit={handleCreatePage}>
-                              <div className="grid gap-4 py-4">
+                            <form onSubmit={handleCreatePage} className="grid gap-4 py-4">
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="pageSlug" className="text-right">Page Slug</Label>
                                 <Input
+                                  id="pageSlug"
                                   type="text"
                                   placeholder="Page Slug"
-                                  value={newCreatePageSlug}
                                   onChange={(e) => setNewCreatePageSlug(e.target.value)}
                                   minLength={2}
                                   required
+                                  className="col-span-3"
                                 />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="pageTitle" className="text-right">Page Title</Label>
                                 <Input
+                                  id="pageTitle"
                                   type="text"
                                   placeholder="Page Title"
-                                  value={newCreatePageTitle}
                                   onChange={(e) => setNewCreatePageTitle(e.target.value)}
                                   minLength={2}
                                   required
+                                  className="col-span-3"
                                 />
                               </div>
                               <DialogFooter className="">
                                 <Button variant="outline" onClick={() => setIsCreatePageDialogOpen(false)}>Cancel</Button>
-                                <Button disabled={createButtonPending} type="submit">Create Page</Button>
+                                <Button disabled={createPageButtonPending} type="submit">Create Page</Button>
                               </DialogFooter>
                             </form>
                           </DialogContent>
@@ -283,41 +379,101 @@ export function AdminSidebar() {
               <Collapsible defaultOpen className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton >
+                    <SidebarMenuButton>
                       <Hint label="Docs Management" side="right">
                         <FileCog />
                       </Hint>
-                      Docs Management{" "}
+                      Docs Management
                       <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
+                    {categories.map((category) => (
+                      <Collapsible key={category.id} defaultOpen className="group/collapsible">
+                        <SidebarMenuSub>
+                          <SidebarMenuSubItem>
+                            <CollapsibleTrigger asChild>
+                              <SidebarMenuSubButton className="cursor-pointer">
+                                <Link href={`/admin/docsmanagement/${category.id}`}>
+                                  {category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}
+                                </Link>
+                                {category.documents?.length === 0 ? null : <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />}
+                              </SidebarMenuSubButton>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent className="ml-2">
+                              {category.documents?.map((doc) => (
+                                <Hint label={`/docs/${doc.slug}`} key={doc.id} side="right">
+                                  <SidebarMenuSubItem >
+                                    <SidebarMenuSubButton
+                                      className="cursor-pointer"
+                                      href={`/admin/docs/${doc.id}`}
+                                    >
+                                      {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
+                                    </SidebarMenuSubButton>
+                                  </SidebarMenuSubItem>
+                                </Hint>
+                              ))}
+                            </CollapsibleContent>
+                          </SidebarMenuSubItem>
+                        </SidebarMenuSub>
+                      </Collapsible>
+                    ))}
                     <SidebarMenuSub>
                       <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/docs">
-                          Introduction
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/docs">
-                          Installation
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/docs">
-                          Docs
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem >
-                        <SidebarMenuSubButton className="cursor-pointer" href="/admin/docs">
-                          Examples
-                        </SidebarMenuSubButton>
+                        <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button size={"sm"} variant={"outline"} className="cursor-pointer">New Document Category</Button>
+                          </DialogTrigger>
+
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Create New Document Category</DialogTitle>
+                              <DialogDescription>Enter data to create a new document category.</DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={handleCreateCategory} className="grid gap-4 py-4">
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="categoryTitle" className="text-right">Category Title</Label>
+                                <Input
+                                  id="categoryTitle"
+                                  type="text"
+                                  placeholder="Category Title"
+                                  onChange={(e) => setNewCreateCategoryTitle(e.target.value)}
+                                  minLength={2}
+                                  required
+                                  className="col-span-3"
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="categoryDescription" className="text-right">Category Description</Label>
+                                <Input
+                                  id="categoryDescription"
+                                  type="text"
+                                  placeholder="Description"
+                                  onChange={(e) => setNewCreateCategoryDescription(e.target.value)}
+                                  minLength={2}
+                                  required
+                                  className="col-span-3"
+                                />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="categoryOrder" className="text-right">Category Order</Label>
+                                <Input
+                                  id="categoryOrder"
+                                  type="number"
+                                  placeholder="Order"
+                                  onChange={(e) => setNewCreateCategoryOrder(e.target.value)}
+                                  minLength={2}
+                                  required
+                                  className="col-span-3"
+                                />
+                              </div>
+                              <DialogFooter className="">
+                                <Button variant="outline" onClick={() => setIsCreateCategoryDialogOpen(false)}>Cancel</Button>
+                                <Button disabled={createCategoryButtonPending} type="submit">Create Page</Button>
+                              </DialogFooter>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
                   </CollapsibleContent>
