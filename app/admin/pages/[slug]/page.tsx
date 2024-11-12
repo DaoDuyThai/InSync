@@ -183,7 +183,7 @@ const AdminPageSlug = () => {
                     <DialogHeader>
                         <DialogTitle>Edit Page Settings</DialogTitle>
                     </DialogHeader>
-                    <form onSubmit={handleEditSave}>
+                    <form onSubmit={handleEditSave} className="py-4 gap-4">
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="title" className="text-right">Title</Label>
                             <Input
