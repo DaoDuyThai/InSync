@@ -59,6 +59,11 @@ const AdminDocsCategoryPage = () => {
     const [editedDocumentNote, setEditedDocumentNote] = React.useState<string>("");
     const [buttonDocumentDialogPending, setButtonDocumentDialogPending] = React.useState<boolean>(false);
 
+    const [isCreateDocumentDialogOpen, setIsCreateDocumentDialogOpen] = React.useState<boolean>(false);
+    const [buttonCreateDocumentDialogPending, setButtonCreateDocumentDialogPending] = React.useState<boolean>(false);
+    const [createDocumentTitle, setCreateDocumentTitle] = React.useState<string>("");
+    const [createDocumentSlug, setCreateDocumentSlug] = React.useState<string>("");
+
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -138,6 +143,36 @@ const AdminDocsCategoryPage = () => {
             toast.error("Failed to delete category");
         } finally {
             setButtonCategoryDialogPending(false);
+        }
+    }
+
+    const handleCreateDocumentSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setButtonCreateDocumentDialogPending(true);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: createDocumentTitle,
+                    slug: createDocumentSlug,
+                    categoryId: id,
+                }),
+            });
+            if (response.ok) {
+                toast.success("Document created successfully");
+                setIsCreateDocumentDialogOpen(false);
+                fetchData();
+            } else {
+                toast.error("Failed to create document");
+            }
+        } catch (error) {
+            console.error("Error creating document:", error);
+            toast.error("Failed to create document");
+        } finally {
+            setButtonCreateDocumentDialogPending(false);
         }
     }
 
@@ -255,11 +290,11 @@ const AdminDocsCategoryPage = () => {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem>
-                                    <Link className="flex" href={`/admin/docs/${document.slug}`}>
+                                <Link className="w-full" href={`/admin/docs/${document.slug}`}>
+                                    <DropdownMenuItem className="cursor-pointer">
                                         <LucidePencilRuler className="h-4 w-4 mr-2" /> Edit Content
-                                    </Link>
-                                </DropdownMenuItem>
+                                    </DropdownMenuItem>
+                                </Link>
                                 <DropdownMenuItem className="cursor-pointer" onClick={() => {
                                     setIsEditDocumentId(document.id)
                                     setEditedDocumentTitle(document.title)
@@ -287,7 +322,7 @@ const AdminDocsCategoryPage = () => {
             <div>
                 <div className="flex justify-between">
                     <Button variant={"outline"} onClick={() => setIsEditCategoryDialogOpen(true)}><Settings className="h-4 w-4 mr-2" />Category Settings</Button>
-                    <Button variant={"outline"} onClick={() => { }}><Plus className="h-4 w-4 mr-2" />Add Document</Button>
+                    <Button variant={"outline"} onClick={() => { setIsCreateDocumentDialogOpen(true) }}><Plus className="h-4 w-4 mr-2" />Add Document</Button>
                 </div>
                 {/* Edit Dialog */}
                 <Dialog open={isEditCategoryDialogOpen} onOpenChange={setIsEditCategoryDialogOpen}>
@@ -295,7 +330,7 @@ const AdminDocsCategoryPage = () => {
                         <DialogHeader>
                             <DialogTitle>Edit Documents Category Settings</DialogTitle>
                         </DialogHeader>
-                        <form onSubmit={handleEditCategorySave} className="py-4 gap-4">
+                        <form onSubmit={handleEditCategorySave} className="grid py-4 gap-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="title" className="text-right">Title</Label>
                                 <Input
@@ -357,18 +392,18 @@ const AdminDocsCategoryPage = () => {
                     </DialogContent>
                 </Dialog>
 
-                <Dialog open={isEditDocumentDialogOpen} onOpenChange={setIsEditCategoryDialogOpen}>
+                <Dialog open={isEditDocumentDialogOpen} onOpenChange={setIsEditDocumentDialogOpen}>
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Edit Document Settings</DialogTitle>
                         </DialogHeader>
-                        <form onSubmit={handleEditDocumentSave} className="py-4 gap-4">
+                        <form onSubmit={handleEditDocumentSave} className="grid py-4 gap-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="title" className="text-right">Title</Label>
                                 <Input
                                     type="text"
                                     id="title"
-                                    value={editedDocumentTitle}
+                                    placeholder={editedDocumentTitle}
                                     onChange={(e) => setEditedDocumentTitle(e.target.value)}
                                     className="col-span-3"
                                     required
@@ -380,7 +415,7 @@ const AdminDocsCategoryPage = () => {
                                 <Input
                                     type="text"
                                     id="slug"
-                                    value={editedDocumentSlug}
+                                    placeholder={editedDocumentSlug}
                                     onChange={(e) => setEditedDocumentSlug(e.target.value)}
                                     className="col-span-3"
                                     required
@@ -393,7 +428,7 @@ const AdminDocsCategoryPage = () => {
                                 <Input
                                     type="number"
                                     id="order"
-                                    value={editedDocumentOrder}
+                                    placeholder={editedDocumentOrder.toString()}
                                     onChange={(e) => setEditedDocumentOrder(Number(e.target.value))}
                                     className="col-span-3"
                                     required
@@ -403,7 +438,7 @@ const AdminDocsCategoryPage = () => {
                                 <Label htmlFor="note" className="text-right">Note</Label>
                                 <Input
                                     id="order"
-                                    value={editedDocumentNote}
+                                    placeholder={editedDocumentNote}
                                     onChange={(e) => setEditedDocumentNote(e.target.value)}
                                     className="col-span-3"
                                     required
@@ -431,6 +466,51 @@ const AdminDocsCategoryPage = () => {
                                     </Button>
                                 </ConfirmModal>
                                 <Button type="submit" disabled={buttonDocumentDialogPending}>
+                                    Save
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog open={isCreateDocumentDialogOpen} onOpenChange={setIsCreateDocumentDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Create Document</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleCreateDocumentSave} className="grid py-4 gap-4">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="title" className="text-right">Title</Label>
+                                <Input
+                                    type="text"
+                                    id="title"
+                                    value={createDocumentTitle}
+                                    onChange={(e) => setCreateDocumentTitle(e.target.value)}
+                                    className="col-span-3"
+                                    required
+                                    minLength={2}
+                                />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="slug" className="text-right">Slug</Label>
+                                <Input
+                                    type="text"
+                                    id="slug"
+                                    value={createDocumentSlug}
+                                    onChange={(e) => setCreateDocumentSlug(e.target.value)}
+                                    className="col-span-3"
+                                    required
+                                    minLength={2}
+                                />
+                            </div>
+
+                            <DialogFooter className="flex justify-center py-2">
+                                <DialogClose asChild>
+                                    <Button type="button" variant="secondary">
+                                        Close
+                                    </Button>
+                                </DialogClose>
+                                <Button type="submit" disabled={buttonCreateDocumentDialogPending}>
                                     Save
                                 </Button>
                             </DialogFooter>
