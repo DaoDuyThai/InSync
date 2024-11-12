@@ -1,7 +1,5 @@
 'use client'
 
-import { Loading } from "@/components/loading";
-import { set } from "date-fns";
 import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
@@ -244,9 +242,9 @@ export default function ImagePage() {
             <div className="px-10 py-5 max-w-[1500px] image-loading">
 
                 {Object.keys(filteredImagesByDate).length === 0 ? (
-                    <div className="flex justify-center items-center h-[300px]">
+                    <div className="flex justify-center items-center h-[calc(100vh - 100px)]">
                         <div className="text-center">
-                            <img src="/logo.svg" alt="No assets found" className="w-[200px] h-[200px] mx-auto animate-pulse" />
+                            <img src="/loading-asset.svg" alt="No assets found" className="w-auto h-[300px] mx-auto animate-pulse" />
                             <h1 className="text-2xl">Assest - Insync</h1>
                             <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
                         </div>

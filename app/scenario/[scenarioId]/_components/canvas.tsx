@@ -141,7 +141,7 @@ export const Canvas = ({
         if (projectId !== "") {
             fetchAssets();
         }
-    }, [projectId]);
+    }, [projectId, assets]);
 
     // Update filtered assets based on search term
     React.useEffect(() => {
