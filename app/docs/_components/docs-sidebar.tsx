@@ -10,14 +10,27 @@ import { Separator } from "@/components/ui/separator"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarRail, SidebarTrigger, } from "@/components/ui/sidebar"
 import Link from "next/link"
 
-type Pages = {
+type Category = {
+    id: string
+    title: string
+    order: number
+    description: string | null
+    dateCreated: string | null
+    dateUpdated: string | null
+    documents: Docs[] | null
+}
+
+type Docs = {
     id: string
     slug: string
     title: string
     content: string
-    note: string | null
+    note: string
     dateCreated: string | null
     dateUpdated: string | null
+    categoryId: string | null
+    order: number
+    categoryName: string | null
 }
 
 const data = {
@@ -161,6 +174,30 @@ const data = {
 }
 
 export function DocsSidebar() {
+    const [categories, setCategories] = React.useState<Category[]>([])
+
+    const [pageLoading, setPageLoading] = React.useState<boolean>(true)
+    const fetchCategories = async () => {
+        setPageLoading(true)
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`)
+            if (response.ok) {
+                const data = await response.json()
+                console.log(data.data)
+                setCategories(data.data)
+            } else {
+                console.error("Error fetching documents")
+            }
+        } catch (error) {
+            console.error("Error:", error)
+        } finally {
+            setPageLoading(false)
+        }
+    }
+
+    React.useEffect(() => {
+        fetchCategories()
+    }, [])
 
     return (
         <Sidebar>
@@ -199,7 +236,6 @@ export function DocsSidebar() {
                 </form>
             </SidebarHeader>
             <SidebarContent className="gap-0">
-                {/* We create a collapsible SidebarGroup for each parent. */}
                 {data.navMain.map((item) => (
                     <Collapsible
                         key={item.title}
