@@ -26,7 +26,7 @@ const DocsLayout = ({ children }: Props) => {
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin">Administration</BreadcrumbLink>
+                                    <BreadcrumbLink href="/docs">Documentation</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator>
                                     <ChevronRight />

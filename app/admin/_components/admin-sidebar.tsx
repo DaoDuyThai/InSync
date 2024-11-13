@@ -75,7 +75,6 @@ export function AdminSidebar() {
   // Construct the full URL (domain + pathname + query params)
   const fullUrl = `${fullDomain}${pathname}`
 
-  console.log(fullUrl)
 
   const fetchCategories = async () => {
     setPageLoading(true)

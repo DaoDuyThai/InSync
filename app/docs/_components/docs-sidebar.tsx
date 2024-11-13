@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarInput, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarRail, SidebarTrigger, } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 type Category = {
     id: string
@@ -33,150 +34,18 @@ type Docs = {
     categoryName: string | null
 }
 
-const data = {
-    navMain: [
-        {
-            title: "Getting Started",
-            url: "#",
-            items: [
-                {
-                    title: "Installation",
-                    url: "#",
-                },
-                {
-                    title: "Project Structure",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Building Your Application",
-            url: "#",
-            items: [
-                {
-                    title: "Routing",
-                    url: "#",
-                },
-                {
-                    title: "Data Fetching",
-                    url: "#",
-                    isActive: true,
-                },
-                {
-                    title: "Rendering",
-                    url: "#",
-                },
-                {
-                    title: "Caching",
-                    url: "#",
-                },
-                {
-                    title: "Styling",
-                    url: "#",
-                },
-                {
-                    title: "Optimizing",
-                    url: "#",
-                },
-                {
-                    title: "Configuring",
-                    url: "#",
-                },
-                {
-                    title: "Testing",
-                    url: "#",
-                },
-                {
-                    title: "Authentication",
-                    url: "#",
-                },
-                {
-                    title: "Deploying",
-                    url: "#",
-                },
-                {
-                    title: "Upgrading",
-                    url: "#",
-                },
-                {
-                    title: "Examples",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "API Reference",
-            url: "#",
-            items: [
-                {
-                    title: "Components",
-                    url: "#",
-                },
-                {
-                    title: "File Conventions",
-                    url: "#",
-                },
-                {
-                    title: "Functions",
-                    url: "#",
-                },
-                {
-                    title: "next.config.js Options",
-                    url: "#",
-                },
-                {
-                    title: "CLI",
-                    url: "#",
-                },
-                {
-                    title: "Edge Runtime",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Architecture",
-            url: "#",
-            items: [
-                {
-                    title: "Accessibility",
-                    url: "#",
-                },
-                {
-                    title: "Fast Refresh",
-                    url: "#",
-                },
-                {
-                    title: "Next.js Compiler",
-                    url: "#",
-                },
-                {
-                    title: "Supported Browsers",
-                    url: "#",
-                },
-                {
-                    title: "Turbopack",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Community",
-            url: "#",
-            items: [
-                {
-                    title: "Contribution Guide",
-                    url: "#",
-                },
-            ],
-        },
-    ],
-}
-
 export function DocsSidebar() {
     const [categories, setCategories] = React.useState<Category[]>([])
 
     const [pageLoading, setPageLoading] = React.useState<boolean>(true)
+
+    const pathname = usePathname()
+
+    // Get the full domain (protocol + domain + port)
+    const fullDomain = typeof window !== 'undefined' ? window.location.origin : ''
+
+    // Construct the full URL (domain + pathname + query params)
+    const fullUrl = `${fullDomain}${pathname}`
     const fetchCategories = async () => {
         setPageLoading(true)
         try {
@@ -236,31 +105,37 @@ export function DocsSidebar() {
                 </form>
             </SidebarHeader>
             <SidebarContent className="gap-0">
-                {data.navMain.map((item) => (
-                    <Collapsible
-                        key={item.title}
-                        title={item.title}
-                        defaultOpen
-                        className="group/collapsible"
-                    >
+
+
+
+
+                {categories.map((category) => (
+                    <Collapsible key={category.id} defaultOpen className="group/collapsible">
                         <SidebarGroup>
                             <SidebarGroupLabel
                                 asChild
                                 className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                             >
                                 <CollapsibleTrigger>
-                                    {item.title}{" "}
+                                    {category.title.length >= 25 ? `${category.title.substring(0, 22)}...` : category.title}
                                     <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
                                 </CollapsibleTrigger>
+
                             </SidebarGroupLabel>
+
                             <CollapsibleContent>
                                 <SidebarGroupContent>
                                     <SidebarMenu>
-                                        {item.items.map((item) => (
-                                            <SidebarMenuItem key={item.title}>
-                                                <SidebarMenuButton asChild isActive={item.isActive}>
-                                                    <a href={item.url}>{item.title}</a>
-                                                </SidebarMenuButton>
+                                        {category.documents?.map((doc) => (
+                                            <SidebarMenuItem key={doc.id}>
+                                                <Link href={`/admin/${doc.slug}`}>
+
+                                                    <SidebarMenuButton
+                                                        isActive={fullUrl === `${fullDomain}/docs/${doc.slug}`}
+                                                    >
+                                                        {doc.title.length >= 28 ? `${doc.title.substring(0, 25)}...` : doc.title}
+                                                    </SidebarMenuButton>
+                                                </Link>
                                             </SidebarMenuItem>
                                         ))}
                                     </SidebarMenu>
