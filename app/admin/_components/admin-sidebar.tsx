@@ -322,9 +322,11 @@ export function AdminSidebar() {
                       <Hint label={`/pages/${page.slug}`} key={page.id} side="right">
                         <SidebarMenuSub >
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton isActive={fullUrl === `${fullDomain}/admin/pages/${page.slug}`} className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
-                              {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
-                            </SidebarMenuSubButton>
+                            <Link href={`/admin/pages/${page.slug}`}>
+                              <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/pages/${page.slug}`} className="cursor-pointer" >
+                                {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
+                              </SidebarMenuButton>
+                            </Link>
                           </SidebarMenuSubItem>
                         </SidebarMenuSub>
                       </Hint>
@@ -402,24 +404,25 @@ export function AdminSidebar() {
                       <Collapsible key={category.id} defaultOpen className="group/collapsible">
                         <SidebarMenuSub>
                           <SidebarMenuSubItem>
-                            <CollapsibleTrigger asChild>
-                              <SidebarMenuSubButton isActive={fullUrl === `${fullDomain}/admin/docscategory/${category.id}`} className="cursor-pointer">
-                                <span onClick={() => {
-                                  window.location.href = `/admin/docscategory/${category.id}`
-                                }}>{category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}</span>
-                                {category.documents?.length === 0 ? null : <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />}
-                              </SidebarMenuSubButton>
-                            </CollapsibleTrigger>
+                            <Link href={`/admin/docscategory/${category.id}`}>
+                              <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/docscategory/${category.id}`} className="cursor-pointer">
+                                {category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}
+                                <CollapsibleTrigger asChild>
+                                  {category.documents?.length === 0 ? null : <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />}
+                                </CollapsibleTrigger>
+                              </SidebarMenuButton>
+                            </Link>
                             <CollapsibleContent className="ml-2">
                               {category.documents?.map((doc) => (
                                 <SidebarMenuSub key={doc.id}>
-                                  <SidebarMenuSubButton
-                                    isActive={fullUrl === `${fullDomain}/admin/docs/${doc.slug}`}
-                                    className="cursor-pointer"
-                                    href={`/admin/docs/${doc.slug}`}
-                                  >
-                                    {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
-                                  </SidebarMenuSubButton>
+                                  <Link href={`/admin/docs/${doc.slug}`}>
+                                    <SidebarMenuButton
+                                      isActive={fullUrl === `${fullDomain}/admin/docs/${doc.slug}`}
+                                      className="cursor-pointer"
+                                    >
+                                      {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
+                                    </SidebarMenuButton>
+                                  </Link>
                                 </SidebarMenuSub>
                               ))}
                             </CollapsibleContent>
