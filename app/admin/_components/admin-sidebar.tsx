@@ -14,6 +14,7 @@ import { Loading } from "@/components/loading"
 import { set } from "date-fns"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
+import { usePathname, useSearchParams } from "next/navigation"
 
 type Page = {
   id: string
@@ -65,6 +66,16 @@ export function AdminSidebar() {
   const [newCreateCategoryOrder, setNewCreateCategoryOrder] = React.useState<string>("")
   const [newCreateCategoryDescription, setNewCreateCategoryDescription] = React.useState<string>("")
   const [createCategoryButtonPending, setCreateCategoryButtonPending] = React.useState<boolean>(false)
+
+  const pathname = usePathname()
+
+  // Get the full domain (protocol + domain + port)
+  const fullDomain = typeof window !== 'undefined' ? window.location.origin : ''
+
+  // Construct the full URL (domain + pathname + query params)
+  const fullUrl = `${fullDomain}${pathname}`
+
+  console.log(fullUrl)
 
   const fetchCategories = async () => {
     setPageLoading(true)
@@ -212,7 +223,7 @@ export function AdminSidebar() {
 
               <SidebarMenuItem>
                 <Link href="/admin">
-                  <SidebarMenuButton>
+                  <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin`}>
                     <Hint label="Overview" side="right">
                       <ChartSpline />
                     </Hint>
@@ -263,7 +274,7 @@ export function AdminSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <Link href="/admin/projects">
-                  <SidebarMenuButton>
+                  <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/projects`}>
                     <Hint label="Projects Management" side="right">
                       <FolderCog />
                     </Hint>
@@ -280,7 +291,7 @@ export function AdminSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <Link href="/admin/subscriptions">
-                  <SidebarMenuButton>
+                  <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/subscriptions`}>
                     <Hint label="Subscriptions Management" side="right">
                       <CalendarCog />
                     </Hint>
@@ -312,7 +323,7 @@ export function AdminSidebar() {
                       <Hint label={`/pages/${page.slug}`} key={page.id} side="right">
                         <SidebarMenuSub >
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
+                            <SidebarMenuSubButton isActive={fullUrl === `${fullDomain}/admin/pages/${page.slug}`} className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
                               {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -393,7 +404,7 @@ export function AdminSidebar() {
                         <SidebarMenuSub>
                           <SidebarMenuSubItem>
                             <CollapsibleTrigger asChild>
-                              <SidebarMenuSubButton className="cursor-pointer">
+                              <SidebarMenuSubButton isActive={fullUrl === `${fullDomain}/admin/docscategory/${category.id}`} className="cursor-pointer">
                                 <span onClick={() => {
                                   window.location.href = `/admin/docscategory/${category.id}`
                                 }}>{category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}</span>
@@ -404,6 +415,7 @@ export function AdminSidebar() {
                               {category.documents?.map((doc) => (
                                 <SidebarMenuSub key={doc.id}>
                                   <SidebarMenuSubButton
+                                    isActive={fullUrl === `${fullDomain}/admin/docs/${doc.slug}`}
                                     className="cursor-pointer"
                                     href={`/admin/docs/${doc.slug}`}
                                   >
