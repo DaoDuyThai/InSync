@@ -341,10 +341,13 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
             canvas.width = rect.width / scale;
             canvas.height = rect.height / scale;
-            canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas');
+            canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas', );
+            canvas.style.width = '120px';
+            canvas.style.height = '100px';
+            canvas.style.objectFit = 'contain';
             // add event listener to choose cropped image
             canvas.addEventListener('click', () => {
-                canvas.classList.toggle('border-4');
+                canvas.classList.toggle('border-2');
                 canvas.classList.toggle('border-green-500');
                 canvas.classList.toggle('selected-cropped-image');
                 seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
@@ -580,7 +583,7 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             <div
                 className={`popup flex items-center fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 ${openPopup ? 'block' : 'hidden'}`}
             >
-                <div className="popup-content bg-white w-[500px] h-[500px] max-h-[600px] m-auto p-5 rounded-md">
+                <div className="popup-content bg-white w-[700px] h-[500px] max-h-[600px] m-auto p-5 rounded-md">
                     <div className="flex justify-between max-h-[500px]">
                         <span className="font-semibold">Choose image to upload</span>
                         <button className="hover:border-2 hover:border-black px-2 rounded-sm">

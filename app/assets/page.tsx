@@ -1,10 +1,16 @@
 'use client'
 
-import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon } from "lucide-react";
+import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon, FilePenLine, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import uploadImage from "./_components/uploadImage";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { ConfirmModal } from "@/components/confirm-modal";
 
 
 interface ImageInterface {
@@ -383,25 +389,83 @@ export default function ImagePage() {
                                                 src={image?.filePath}
                                                 style={{ "color": "transparent" }}
                                             />
-                                            <div
-                                                key={index}
-                                                className="rounded-xl bg-white absolute top-2 right-2 p-[7px]">
-                                                <div className="relative">
-                                                    <EllipsisVerticalIcon
-                                                        className="settings"
-                                                        onClick={(e) => { handleAction(e) }}
-                                                        size={15} />
-                                                    <span className="bg-white hidden w-auto h-auto setting-list absolute top-2 right-2 cursor-pointer">
-                                                        <ul className="list-none">
-                                                            <li className="hover:bg-gray-100 p-2"><button>Rename</button></li>
-                                                            <li
-                                                                className={`hover:bg-gray-100 p-2 date-${dateCreated}`}
-                                                                onClick={(e) => { handleDelete(e, dateCreated) }}
-                                                            ><button>Delete</button></li>
-                                                        </ul>
-                                                    </span>
-                                                </div>
+                                            <div className="absolute top-0 right-0">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button className="rounded-full" variant="ghost" size="sm" aria-label="More options">
+                                                            <MoreVertical className="h-3 w-3" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent className="w-full h-full">
+                                                        <DropdownMenuLabel className="flex justify-center ">
+                                                            {/* {asset.assetName} */}
+                                                        </DropdownMenuLabel>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem asChild className="w-full h-full bg-white">
+                                                            <Dialog 
+                                                                // open={openRenameAssetDialog} 
+                                                                // onOpenChange={setOpenRenameAssetDialog}
+                                                            >
+                                                                <DialogTrigger className="w-full h-full">
+                                                                    <Button className="w-full" variant="ghost" size="sm" aria-label="Rename">
+                                                                        <Pencil className="h-4 w-4 mr-4" />Rename
+                                                                    </Button>
+                                                                </DialogTrigger>
 
+                                                                <DialogContent className="sm:max-w-md" >
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>Edit asset title</DialogTitle>
+                                                                        <DialogDescription>
+                                                                            Enter a new title for this asset.
+                                                                        </DialogDescription>
+                                                                    </DialogHeader>
+                                                                    <form 
+                                                                        // onSubmit={(e) => handleRenameAsset(e, asset.id)} className="space-y-4"
+                                                                    >
+                                                                        <Input
+                                                                            required
+                                                                            maxLength={30}
+                                                                            minLength={5}
+                                                                            // placeholder={asset.assetName}
+                                                                            onChange={(e) => {
+                                                                                // setNewAssetName(e.target.value)
+                                                                            }}
+                                                                        />
+                                                                        <DialogFooter>
+                                                                            <DialogClose asChild>
+                                                                                <Button type="button" variant="outline">
+                                                                                    Cancel
+                                                                                </Button>
+                                                                            </DialogClose>
+                                                                            <Button type="submit" 
+                                                                                // disabled={loadingAssetRenameInput}
+                                                                            >
+                                                                                {/* {loadingAssetRenameInput ? "Renaming..." : "Submit"} */}
+                                                                            </Button>
+                                                                        </DialogFooter>
+                                                                    </form>
+                                                                </DialogContent>
+                                                            </Dialog>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            // onClick={(e) => handleEditAsset(e, asset.filePath)} 
+                                                            asChild className="w-full h-full flex justify-center cursor-pointer font-medium">
+                                                            <span><FilePenLine className="h-4 w-4 mr-4 border-0" /> Edit Asset</span>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem asChild className="w-full h-full">
+                                                            <ConfirmModal
+                                                                header="Delete Asset?"
+                                                                description="This will delete the asset from the database."
+                                                                onConfirm={() => {
+                                                                    // handleDeleteAsset(asset.id);
+                                                                }}>
+                                                                <Button className="w-full" variant="ghost" size="sm" aria-label="Delete">
+                                                                    <Trash2 className="h-4 w-4 mr-4" />Delete
+                                                                </Button>
+                                                            </ConfirmModal>
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </div>
                                         </div>))}
                                 </div>

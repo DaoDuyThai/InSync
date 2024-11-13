@@ -16,8 +16,8 @@ export default function ImageCroppedPage(): JSX.Element {
 
 
     return (
-        <>
-            {imgURL !== "" && <ImageCopper imgURL={imgURL}/>}
-        </>
+        <div className="h-[calc(100vh - 70px)]">
+            {imgURL !== "" && <ImageCopper imgURL={imgURL} />}
+        </div>
     )
 }

@@ -255,11 +255,10 @@ export default function LogPage() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex justify-center items-center h-[300px]">
+                            <div className="flex justify-center items-center h-[calc(100vh - 70px)]">
                                 <div className="text-center">
-                                    <img src="/logo.svg" alt="empty" className="w-[200px] h-[200px] mx-auto animate-pulse" />
+                                    <img src="/logs-loading.svg" alt="empty" className="w-auto h-[400px] mx-auto animate-pulse" />
                                     <h1 className="text-2xl">Logs - Insync</h1>
-                                    <p className="text-muted-foreground">Powered by InSync</p>
                                 </div>
                             </div>
                         )
