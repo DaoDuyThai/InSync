@@ -403,7 +403,7 @@ export function AdminSidebar() {
                                 <SidebarMenuSub key={doc.id}>
                                   <SidebarMenuSubButton
                                     className="cursor-pointer"
-                                    href={`/admin/docs/${doc.id}`}
+                                    href={`/admin/docs/${doc.slug}`}
                                   >
                                     {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
                                   </SidebarMenuSubButton>
