@@ -393,8 +393,10 @@ export function AdminSidebar() {
                         <SidebarMenuSub>
                           <SidebarMenuSubItem>
                             <CollapsibleTrigger asChild>
-                              <SidebarMenuSubButton className="cursor-pointer" href={`/admin/docscategory/${category.id}`}>
-                                {category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}
+                              <SidebarMenuSubButton className="cursor-pointer">
+                                <span onClick={() => {
+                                  window.location.href = `/admin/docscategory/${category.id}`
+                                }}>{category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}</span>
                                 {category.documents?.length === 0 ? null : <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />}
                               </SidebarMenuSubButton>
                             </CollapsibleTrigger>
