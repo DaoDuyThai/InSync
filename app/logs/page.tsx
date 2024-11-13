@@ -175,7 +175,7 @@ export default function LogPage() {
             }
 
             return (
-                <div className="max-w-[1500px] container select-none">
+                <div className="h-[calc(100vh - 100px)] w-auto max-w-[3000px] px-[2vw] select-none">
                     {
                         currentSessions.length > 0 ? (
                             <div>

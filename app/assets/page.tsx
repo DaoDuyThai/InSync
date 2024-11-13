@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon, FilePenLine, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon, FilePenLine, LucideCirclePlus, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -45,6 +45,9 @@ export default function ImagePage() {
     const [notFound, setNotFound] = useState(false);
     const [projectId, setProjectId] = useState("");
     const [openModal, setOpenModal] = useState(false);
+    const [openRenameAssetDialog, setOpenRenameAssetDialog] = useState<boolean>(false);
+    const [loadingAssetRenameInput, setLoadingAssetRenameInput] = useState<boolean>(false);
+
 
     useEffect(() => {
         // Set page title
@@ -210,6 +213,26 @@ export default function ImagePage() {
             }
         }
 
+        const handleDeleteAsset = (id: string, dateCreated: string) => {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${id}`, { method: "DELETE" })
+                .then(res => {
+                    if (res.status === 200) {
+                        const updatedImages = images[dateCreated].filter((image, i) => image.id !== id);
+                        setImages(prevImages => ({
+                            ...prevImages,
+                            [dateCreated]: updatedImages
+                        }));
+                        toast.success("Image deleted successfully");
+                    } else {
+                        toast.error("Failed to delete image");
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    toast.error("An error occurred while deleting asset");
+                });
+        }
+
         const handleOpenModal = () => {
             setOpenModal(true);
         }
@@ -244,10 +267,12 @@ export default function ImagePage() {
             }
         }
 
+        
+
         return (
-            <div className="px-10 py-5 max-w-[1500px] image-loading">
+            <div className="px-10 py-5 h-[calc(100vh - 100px)] image-loading">
                 {openModal &&
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
                         <div className="bg-white w-[600px] h-[600px] rounded-lg z-50">
                             <div className="p-4 relative">
                                 <div className="absolute top-0 right-0 p-4">
@@ -283,7 +308,7 @@ export default function ImagePage() {
                         </div>
                     </div>}
                 {Object.keys(filteredImagesByDate).length === 0 ? (
-                    <>
+                    <div className="h-calc(100vh - 100px)">
                         <div className="flex gap-2 justify-end">
                             <button
                                 onClick={() => handleOpenModal()}
@@ -295,23 +320,16 @@ export default function ImagePage() {
                         disabled:opacity-50 [&amp;_svg]:pointer-events-none 
                         [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary 
                         text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    className="lucide lucide-circle-plus ">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M8 12h8"></path><path d="M12 8v8"></path>
-                                </svg>Add asset</button>
+                                Add asset</button>
                         </div>
-                        <div className="flex justify-center items-center h-[calc(100vh - 100px)]">
+                        <div className="flex justify-center items-center h-[calc(100vh - 100px)] w-aut">
                             <div className="text-center">
                                 <img src="/loading-asset.svg" alt="No assets found" className="w-auto h-[300px] mx-auto animate-pulse" />
                                 <h1 className="text-2xl">Assest - Insync</h1>
                                 <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
                             </div>
                         </div>
-                    </>
+                    </div>
                 ) :
                     <div className="relative">
 
@@ -370,7 +388,7 @@ export default function ImagePage() {
                                 {
                                     <div className="flex items-center justify-between my-2">
                                         <div className="space-y-1">
-                                            <h2 className="text-2xl font-semibold tracking-tight">{dateCreated}</h2>
+                                            <h2 className="text-2xl 2xl:text-5xl font-semibold tracking-tight">{dateCreated}</h2>
                                         </div>
                                     </div>
                                 }
@@ -385,26 +403,26 @@ export default function ImagePage() {
                                                 loading="lazy"
                                                 decoding="async"
                                                 data-nimg="1"
-                                                className="h-[200px] w-auto object-cover transition-all hover:scale-105 aspect-[3/4]"
+                                                className="h-[calc(20vh)] w-auto object-cover transition-all hover:scale-105 aspect-[3/4]"
                                                 src={image?.filePath}
                                                 style={{ "color": "transparent" }}
                                             />
-                                            <div className="absolute top-0 right-0">
+                                            <div className="absolute top-0 right-0 p-2 z-10 round-lg">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button className="rounded-full" variant="ghost" size="sm" aria-label="More options">
                                                             <MoreVertical className="h-3 w-3" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
-                                                    <DropdownMenuContent className="w-full h-full">
+                                                    <DropdownMenuContent className="w-full h-full bg-white">
                                                         <DropdownMenuLabel className="flex justify-center ">
-                                                            {/* {asset.assetName} */}
+                                                            {image.assetName}
                                                         </DropdownMenuLabel>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem asChild className="w-full h-full bg-white">
-                                                            <Dialog 
-                                                                // open={openRenameAssetDialog} 
-                                                                // onOpenChange={setOpenRenameAssetDialog}
+                                                            <Dialog
+                                                            open={openRenameAssetDialog} 
+                                                            onOpenChange={setOpenRenameAssetDialog}
                                                             >
                                                                 <DialogTrigger className="w-full h-full">
                                                                     <Button className="w-full" variant="ghost" size="sm" aria-label="Rename">
@@ -412,21 +430,21 @@ export default function ImagePage() {
                                                                     </Button>
                                                                 </DialogTrigger>
 
-                                                                <DialogContent className="sm:max-w-md" >
+                                                                <DialogContent className="sm:max-w-md " >
                                                                     <DialogHeader>
                                                                         <DialogTitle>Edit asset title</DialogTitle>
                                                                         <DialogDescription>
                                                                             Enter a new title for this asset.
                                                                         </DialogDescription>
                                                                     </DialogHeader>
-                                                                    <form 
-                                                                        // onSubmit={(e) => handleRenameAsset(e, asset.id)} className="space-y-4"
+                                                                    <form
+                                                                    // onSubmit={(e) => handleRenameAsset(e, asset.id)} className="space-y-4"
                                                                     >
                                                                         <Input
                                                                             required
                                                                             maxLength={30}
                                                                             minLength={5}
-                                                                            // placeholder={asset.assetName}
+                                                                            placeholder={image.assetName}
                                                                             onChange={(e) => {
                                                                                 // setNewAssetName(e.target.value)
                                                                             }}
@@ -437,27 +455,22 @@ export default function ImagePage() {
                                                                                     Cancel
                                                                                 </Button>
                                                                             </DialogClose>
-                                                                            <Button type="submit" 
-                                                                                // disabled={loadingAssetRenameInput}
+                                                                            <Button type="submit"
+                                                                            disabled={loadingAssetRenameInput}
                                                                             >
-                                                                                {/* {loadingAssetRenameInput ? "Renaming..." : "Submit"} */}
+                                                                                {loadingAssetRenameInput ? "Renaming..." : "Submit"}
                                                                             </Button>
                                                                         </DialogFooter>
                                                                     </form>
                                                                 </DialogContent>
                                                             </Dialog>
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            // onClick={(e) => handleEditAsset(e, asset.filePath)} 
-                                                            asChild className="w-full h-full flex justify-center cursor-pointer font-medium">
-                                                            <span><FilePenLine className="h-4 w-4 mr-4 border-0" /> Edit Asset</span>
-                                                        </DropdownMenuItem>
                                                         <DropdownMenuItem asChild className="w-full h-full">
                                                             <ConfirmModal
                                                                 header="Delete Asset?"
                                                                 description="This will delete the asset from the database."
                                                                 onConfirm={() => {
-                                                                    // handleDeleteAsset(asset.id);
+                                                                    handleDeleteAsset(image.id, dateCreated);
                                                                 }}>
                                                                 <Button className="w-full" variant="ghost" size="sm" aria-label="Delete">
                                                                     <Trash2 className="h-4 w-4 mr-4" />Delete
