@@ -564,16 +564,17 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                     <div className="relative flex w-auto h-auto p-[30px]">
                         <canvas
                             ref={canvasRef}
-                            width={`${screen.width > 2000 ? 1800 : 900}`}
-                            height={`${screen.width > 2000 ? 1200 : 600}`}
-                            className
-                            ="shadow-gray-100
-                                shadow-sm border-[1px] 
-                                border-[#e6e6e8] 
-                                rounded-md 
-                                relative 
-                                bg-gray-100
-                            "
+                            width={window.innerWidth > 2000 ? 1800 : window.innerWidth > 1000 ? 900 : window.innerWidth * 0.8}
+                            height={window.innerWidth > 2000 ? 1200 : window.innerWidth > 1000 ? 600 : window.innerWidth * 0.533}
+                            className="shadow-gray-100
+                                       shadow-sm border-[1px] 
+                                       border-[#e6e6e8] 
+                                       rounded-md 
+                                       relative 
+                                       bg-gray-100
+                                       w-full
+                                       h-auto
+                                    "
                         >
                         </canvas>
                         <div ref={pulseAreaRef} className={`${screen.width > 2000 ? 'w-[1800px] h-[1200px]' : 'w-[900px] h-[600px]'} bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse `}><span>Click to crop</span></div>
