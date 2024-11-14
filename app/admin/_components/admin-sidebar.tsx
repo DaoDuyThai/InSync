@@ -434,7 +434,7 @@ export function AdminSidebar() {
                       <SidebarMenuSubItem >
                         <Dialog open={isCreateCategoryDialogOpen} onOpenChange={setIsCreateCategoryDialogOpen}>
                           <DialogTrigger asChild>
-                            <Button size={"sm"} variant={"outline"} className="cursor-pointer">New Document Category</Button>
+                            <Button size={"sm"} variant={"outline"} className="cursor-pointer">New Category</Button>
                           </DialogTrigger>
 
                           <DialogContent>
