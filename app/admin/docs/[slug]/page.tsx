@@ -28,7 +28,7 @@ type Doc = {
 };
 
 const AdminDocSlug = () => {
-    const { slug } = useParams();
+    const { slug } = useParams<{ slug: string }>() ?? {};
     const [documentData, setDocumentData] = React.useState<Doc | null>(null);
     const [value, setValue] = React.useState<any>("");
     const [loading, setLoading] = React.useState<boolean>(true);
