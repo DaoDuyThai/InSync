@@ -128,9 +128,6 @@ const AdminLayout = ({ children }: Props) => {
         const pageSlugMatch = pathname.match(/pages\/([^/]+)/); // Match the slug for pages
         const docsSlugMatch = pathname.match(/docs\/([^/]+)/); // Match the slug for docs
         const docsCategoryIdMatch = pathname.match(/docscategory\/([^/]+)/); // Match the slug for docs category
-
-
-
         if (pageSlugMatch) {
             // If we are on a page slug, set breadcrumb to the page title
             const slug = pageSlugMatch[1];
