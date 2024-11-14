@@ -41,7 +41,7 @@ type Docs = {
 }
 
 const AdminDocsCategoryPage = () => {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>() ?? {};
     const [loading, setLoading] = React.useState<boolean>(true);
     const [pageData, setPageData] = React.useState<Category | null>(null);
     const [docs, setDocs] = React.useState<Docs[] | null>(null);
