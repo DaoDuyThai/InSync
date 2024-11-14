@@ -35,7 +35,7 @@ export const ProjectSidebar = () => {
 
     // Projects ComboBox
     const searchParams = useSearchParams();
-    const favorites = searchParams.get("favorites");
+    const favorites = searchParams ? searchParams.get("favorites") : null;
 
     const { user, isLoaded } = useUser();
     const [isSubscribed, setIsSubscribed] = React.useState(null);
