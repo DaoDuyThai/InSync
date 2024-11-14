@@ -170,7 +170,8 @@ const AdminLayout = ({ children }: Props) => {
                     setBreadcrumbTitle2("Subscriptions Management");
                     break;
                 default:
-                    setBreadcrumbTitle2("Admin Dashboard"); // Default breadcrumb
+                    setBreadcrumbTitle1("Admin Dashboard"); // Default breadcrumb
+                    setBreadcrumbTitle2(""); // Default breadcrumb
             }
         }
     }, [pathname, pages, categories]);
@@ -559,14 +560,14 @@ const AdminLayout = ({ children }: Props) => {
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/admin">Administration</BreadcrumbLink>
+                                    <Link href="/admin">Administration</Link>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator>
                                     <ChevronRight />
                                 </BreadcrumbSeparator>
                                 {breadcrumbTitle1 === "" ? null : (
                                     <BreadcrumbItem>
-                                        <BreadcrumbLink href={BreadcrumbUrl1}>{breadcrumbTitle1}</BreadcrumbLink>
+                                        <Link href={BreadcrumbUrl1}>{breadcrumbTitle1}</Link>
                                         <BreadcrumbSeparator>
                                             <ChevronRight />
                                         </BreadcrumbSeparator>
@@ -574,7 +575,7 @@ const AdminLayout = ({ children }: Props) => {
 
                                 )}
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href={fullUrl}>{breadcrumbTitle2}</BreadcrumbLink>
+                                    <Link href={fullUrl}>{breadcrumbTitle2}</Link>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
