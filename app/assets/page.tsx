@@ -1,12 +1,16 @@
 'use client'
 
-import { Loading } from "@/components/loading";
-import { set } from "date-fns";
-import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon } from "lucide-react";
+import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon, FilePenLine, LucideCirclePlus, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import uploadImage from "./_components/uploadImage";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { ConfirmModal } from "@/components/confirm-modal";
 
 
 interface ImageInterface {
@@ -41,6 +45,11 @@ export default function ImagePage() {
     const [notFound, setNotFound] = useState(false);
     const [projectId, setProjectId] = useState("");
     const [openModal, setOpenModal] = useState(false);
+    const [openRenameAssetDialog, setOpenRenameAssetDialog] = useState<boolean>(false);
+    const [loadingAssetRenameInput, setLoadingAssetRenameInput] = useState<boolean>(false);
+    const [assetName, setAssetName] = useState<string>("");
+    const [assetId, setAssetId] = useState<string>("");
+    const [newAssetName, setNewAssetName] = useState<string>("");
 
     useEffect(() => {
         // Set page title
@@ -146,64 +155,24 @@ export default function ImagePage() {
 
         let filteredImagesByDate = filteredImagesByNameFunction(images);
 
-        const handleAction = (e: React.MouseEvent<SVGSVGElement>) => {
-            const element = e.currentTarget as SVGSVGElement;
-            const settings = document.querySelectorAll('.settings');
-            const settingList = document.querySelectorAll('.setting-list');
-            settings.forEach((setting, index) => {
-                if (setting === element) {
-                    settingList[index].classList.toggle('hidden');
-
-                }
-            });
-        };
-
-        /**
-         * @description Delete image
-         * @param e 
-         * @param dateCreated 
-         */
-        const handleDelete = (e: React.MouseEvent<HTMLLIElement>, dateCreated: string) => {
-            const element = e.currentTarget as HTMLLIElement;
-            element.parentElement?.classList.contains('hidden') ? element.parentElement?.classList.remove('hidden') : element.parentElement?.classList.add('hidden');
-
-            try {
-                let deleteSettings = document.querySelectorAll(`.date-${dateCreated}`);
-
-                deleteSettings.forEach((setting, index) => {
-                    if (setting === element) {
-                        const imageArray = images[dateCreated];
-                        if (imageArray && imageArray[index]) {
-                            const assetId = imageArray[index].id;
-                            if (assetId) {
-                                fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${assetId}`, { method: "DELETE" })
-                                    .then(res => {
-                                        if (res.status === 200) {
-                                            const updatedImages = images[dateCreated].filter((_, i) => i !== index);
-                                            setImages(prevImages => ({
-                                                ...prevImages,
-                                                [dateCreated]: updatedImages
-                                            }));
-                                            toast.success("Image deleted successfully");
-                                        } else {
-                                            toast.error("Failed to delete image");
-                                        }
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                        toast.error("An error occurred while deleting image");
-                                    });
-                            }
-                        }
+        const handleDeleteAsset = (id: string, dateCreated: string) => {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${id}`, { method: "DELETE" })
+                .then(res => {
+                    if (res.status === 200) {
+                        const updatedImages = images[dateCreated].filter((image, i) => image.id !== id);
+                        setImages(prevImages => ({
+                            ...prevImages,
+                            [dateCreated]: updatedImages
+                        }));
+                        toast.success("Image deleted successfully");
+                    } else {
+                        toast.error("Failed to delete image");
                     }
-
+                })
+                .catch(err => {
+                    console.log(err);
+                    toast.error("An error occurred while deleting asset");
                 });
-            } catch (error) {
-                console.log(error);
-                toast.error("An error occurred while deleting image");
-            } finally {
-                element.parentElement?.classList.remove('hidden');
-            }
         }
 
         const handleOpenModal = () => {
@@ -240,55 +209,140 @@ export default function ImagePage() {
             }
         }
 
-        return (
-            <div className="px-10 py-5 max-w-[1500px] image-loading">
+        const handleRenameAsset = (assetName: string, assetId: string) => {
+            setAssetName(assetName);
+            setAssetId(assetId);
+            setOpenRenameAssetDialog(true);
+        }
 
+        const handleRenameRequest = (e: MouseEvent) => {
+            e.preventDefault();
+            if (newAssetName === "") {
+                toast.error("Asset name cannot be empty");
+                return;
+            }
+            fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${assetId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    assetName: newAssetName, // Assuming newAssetName is a state variable or a ref for the new name
+                    id: assetId,
+                    type: "image",
+                })
+            }).then(res => {
+                if (res.status === 200) {
+                    toast.success("Asset renamed successfully");
+                    setOpenRenameAssetDialog(false);
+                } else {
+                    toast.error("Failed to rename asset");
+                    console.log(res.body);
+
+                }
+            }).catch(err => {
+                console.log(err);
+                toast.error("An error occurred while renaming asset");
+                setLoadingAssetRenameInput(false);
+            });
+        }
+
+
+        return (
+            <div className="px-10 py-5 h-[calc(100vh - 100px)] image-loading">
+                {openModal &&
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+                        <div className="bg-white w-[600px] h-[600px] rounded-lg z-50">
+                            <div className="p-4 relative">
+                                <div className="absolute top-0 right-0 p-4">
+                                    <button onClick={() => setOpenModal(false)} className="text-2xl font-semibold">&times;</button>
+                                </div>
+                                <h2 className="text-xl text-center font-semibold mb-4">Upload New Asset</h2>
+                                <form>
+                                    <div className="mb-4 flex flex-col items-center justify-center">
+                                        <div className="w-[450px] h-[450px] ">
+                                            <img className="w-full h-full" src="upload.svg" alt="upload-image" />
+                                        </div>
+                                    </div>
+                                    <div className="mb-4 hidden">
+                                        <input
+                                            id="file-upload"
+                                            onChange={(e) => handleUpload(e)}
+                                            type="file"
+                                            accept="image/*"
+                                            className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <button
+                                            type="submit"
+                                            onClick={(e) => handleClickUploadButton(e)}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        >
+                                            Upload
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>}
+                {openRenameAssetDialog &&
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+                        <div className="bg-white w-auto h-auto rounded-lg z-50">
+                            <div className="p-4 relative">
+                                <div className="absolute top-0 right-0">
+                                    <button onClick={() => setOpenRenameAssetDialog(false)} className="text-2xl font-semibold mx-5">&times;</button>
+                                </div>
+
+                                <form className="w-[400px] px-5">
+                                    <h2 className="text-xl text-center font-semibold mb-4">Rename Asset</h2>
+                                    <div className="mb-4">
+                                        <input
+                                            onChange={(e) => setNewAssetName(e.target.value)}
+                                            placeholder={assetName}
+                                            type="text"
+                                            className="p-5 mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <button
+                                            type="submit"
+                                            onClick={(e) => { handleRenameRequest(e) }}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        >
+                                            Rename
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>}
                 {Object.keys(filteredImagesByDate).length === 0 ? (
-                    <div className="flex justify-center items-center h-[300px]">
-                        <div className="text-center">
-                            <img src="/logo.svg" alt="No assets found" className="w-[200px] h-[200px] mx-auto animate-pulse" />
-                            <h1 className="text-2xl">Assest - Insync</h1>
-                            <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
+                    <div className="h-calc(100vh - 100px)">
+                        <div className="flex gap-2 justify-end">
+                            <button
+                                onClick={() => handleOpenModal()}
+                                className="inline-flex items-center 
+                        justify-center gap-2 whitespace-nowrap 
+                        rounded-md text-sm font-medium transition-colors 
+                        focus-visible:outline-none focus-visible:ring-1 
+                        focus-visible:ring-ring disabled:pointer-events-none 
+                        disabled:opacity-50 [&amp;_svg]:pointer-events-none 
+                        [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary 
+                        text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+                                Add asset</button>
+                        </div>
+                        <div className="flex justify-center items-center h-[calc(100vh - 100px)] w-aut">
+                            <div className="text-center">
+                                <img src="/loading-asset.svg" alt="No assets found" className="w-auto h-[300px] mx-auto animate-pulse" />
+                                <h1 className="text-2xl">Assest - Insync</h1>
+                                <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
+                            </div>
                         </div>
                     </div>
                 ) :
                     <div className="relative">
-                        {openModal &&
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
-                                <div className="bg-white w-[600px] h-[600px] rounded-lg z-50">
-                                    <div className="p-4 relative">
-                                        <div className="absolute top-0 right-0 p-4">
-                                            <button onClick={() => setOpenModal(false)} className="text-2xl font-semibold">&times;</button>
-                                        </div>
-                                        <h2 className="text-xl text-center font-semibold mb-4">Upload New Asset</h2>
-                                        <form>
-                                            <div className="mb-4 flex flex-col items-center justify-center">
-                                                <div className="w-[450px] h-[450px] ">
-                                                    <img className="w-full h-full" src="upload.svg" alt="upload-image" />
-                                                </div>
-                                            </div>
-                                            <div className="mb-4 hidden">
-                                                <input
-                                                    id="file-upload"
-                                                    onChange={(e) => handleUpload(e)}
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-                                                />
-                                            </div>
-                                            <div className="flex justify-center">
-                                                <button
-                                                    type="submit"
-                                                    onClick={(e) => handleClickUploadButton(e)}
-                                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                >
-                                                    Upload
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>}
+
                         <div className="flex gap-2 absolute top-0 right-0 justify-end">
                             <button
                                 onClick={() => handleOpenModal()}
@@ -344,7 +398,7 @@ export default function ImagePage() {
                                 {
                                     <div className="flex items-center justify-between my-2">
                                         <div className="space-y-1">
-                                            <h2 className="text-2xl font-semibold tracking-tight">{dateCreated}</h2>
+                                            <h2 className="text-2xl 2xl:text-5xl font-semibold tracking-tight">{dateCreated}</h2>
                                         </div>
                                     </div>
                                 }
@@ -359,29 +413,48 @@ export default function ImagePage() {
                                                 loading="lazy"
                                                 decoding="async"
                                                 data-nimg="1"
-                                                className="h-[200px] w-auto object-cover transition-all hover:scale-105 aspect-[3/4]"
+                                                className="h-[calc(20vh)] w-auto object-cover transition-all hover:scale-105 aspect-[3/4]"
                                                 src={image?.filePath}
                                                 style={{ "color": "transparent" }}
                                             />
-                                            <div
-                                                key={index}
-                                                className="rounded-xl bg-white absolute top-2 right-2 p-[7px]">
-                                                <div className="relative">
-                                                    <EllipsisVerticalIcon
-                                                        className="settings"
-                                                        onClick={(e) => { handleAction(e) }}
-                                                        size={15} />
-                                                    <span className="bg-white hidden w-auto h-auto setting-list absolute top-2 right-2 cursor-pointer">
-                                                        <ul className="list-none">
-                                                            <li className="hover:bg-gray-100 p-2"><button>Rename</button></li>
-                                                            <li
-                                                                className={`hover:bg-gray-100 p-2 date-${dateCreated}`}
-                                                                onClick={(e) => { handleDelete(e, dateCreated) }}
-                                                            ><button>Delete</button></li>
-                                                        </ul>
-                                                    </span>
-                                                </div>
-
+                                            <div className="absolute top-0 right-0 p-2 z-10 round-lg">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button className="rounded-full" variant="ghost" size="sm" aria-label="More options">
+                                                            <MoreVertical className="h-3 w-3" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent className="w-full h-full bg-white">
+                                                        <DropdownMenuLabel className="flex justify-center ">
+                                                            {image.assetName}
+                                                        </DropdownMenuLabel>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem asChild className="w-full h-full bg-white">
+                                                            <Dialog
+                                                                open={openRenameAssetDialog}
+                                                                onOpenChange={setOpenRenameAssetDialog}
+                                                            >
+                                                                <Button
+                                                                    onClick={() => { handleRenameAsset(image.assetName, image.id) }}
+                                                                    className="w-full" variant="ghost" size="sm" aria-label="Rename">
+                                                                    <Pencil className="h-4 w-4 mr-4" />Rename
+                                                                </Button>
+                                                            </Dialog>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem asChild className="w-full h-full">
+                                                            <ConfirmModal
+                                                                header="Delete Asset?"
+                                                                description="This will delete the asset from the database."
+                                                                onConfirm={() => {
+                                                                    handleDeleteAsset(image.id, dateCreated);
+                                                                }}>
+                                                                <Button className="w-full" variant="ghost" size="sm" aria-label="Delete">
+                                                                    <Trash2 className="h-4 w-4 mr-4" />Delete
+                                                                </Button>
+                                                            </ConfirmModal>
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </div>
                                         </div>))}
                                 </div>
@@ -402,3 +475,4 @@ export default function ImagePage() {
         renderImages(images)
     )
 }
+

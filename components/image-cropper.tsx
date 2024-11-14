@@ -273,14 +273,17 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             else if (isRadarButtonClicked) {
                 let currentX = e.offsetX;
                 let currentY = e.offsetY;
+                
                 const realStartX = (currentX - scale * imageX) / scale;
                 const realStartY = (currentY - scale * imageY) / scale;
                 // Set the position of the popup above the mouse
                 if (popup && realStartX >= 0 && realStartY >= 0) {
                     const mouseX = e.clientX;
                     const mouseY = e.clientY;
+                    console.log(`Current X: ${mouseX}, Current Y: ${mouseY}`);
                     popup.style.left = `${mouseX}px`;
                     popup.style.top = `${mouseY - popup.offsetHeight - 10}px`;
+                    console.warn(`left ${popup.style.left}, top ${popup.style.top}`);
                     popup.textContent = `X: ${Math.ceil(realStartX)}, Y: ${Math.ceil(realStartY)}`;
                     popup.classList.remove('hidden');
                 }
@@ -341,10 +344,13 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
             canvas.width = rect.width / scale;
             canvas.height = rect.height / scale;
-            canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas');
+            canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas', );
+            canvas.style.width = '120px';
+            canvas.style.height = '100px';
+            canvas.style.objectFit = 'contain';
             // add event listener to choose cropped image
             canvas.addEventListener('click', () => {
-                canvas.classList.toggle('border-4');
+                canvas.classList.toggle('border-2');
                 canvas.classList.toggle('border-green-500');
                 canvas.classList.toggle('selected-cropped-image');
                 seletedCroppedImage = Array.from(document.querySelectorAll<HTMLCanvasElement>('.selected-cropped-image'));
@@ -555,11 +561,11 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                             </Hint>
                         </div>
                     </div>
-                    <div className="relative flex max-w-[1000px] max-h-[800px] p-[30px]">
+                    <div className="relative flex w-auto h-auto p-[30px]">
                         <canvas
                             ref={canvasRef}
-                            width="900"
-                            height="600"
+                            width={`${screen.width > 2000 ? 1800 : 900}`}
+                            height={`${screen.width > 2000 ? 1200 : 600}`}
                             className
                             ="shadow-gray-100
                                 shadow-sm border-[1px] 
@@ -570,7 +576,7 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                             "
                         >
                         </canvas>
-                        <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
+                        <div ref={pulseAreaRef} className={`${screen.width > 2000 ? 'w-[1800px] h-[1200px]' : 'w-[900px] h-[600px]'} bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse `}><span>Click to crop</span></div>
                     </div>
 
 
@@ -580,7 +586,7 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             <div
                 className={`popup flex items-center fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 z-50 ${openPopup ? 'block' : 'hidden'}`}
             >
-                <div className="popup-content bg-white w-[500px] h-[500px] max-h-[600px] m-auto p-5 rounded-md">
+                <div className="popup-content bg-white w-[700px] h-[500px] max-h-[600px] m-auto p-5 rounded-md">
                     <div className="flex justify-between max-h-[500px]">
                         <span className="font-semibold">Choose image to upload</span>
                         <button className="hover:border-2 hover:border-black px-2 rounded-sm">

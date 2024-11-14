@@ -28,7 +28,6 @@ import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
-import Image from "next/image";
 import CloudinaryUploadWidget from "@/components/cloudinary-upload-widget";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"
@@ -141,7 +140,7 @@ export const Canvas = ({
         if (projectId !== "") {
             fetchAssets();
         }
-    }, [projectId]);
+    }, [projectId, assets]);
 
     // Update filtered assets based on search term
     React.useEffect(() => {
@@ -729,9 +728,9 @@ export const Canvas = ({
             {assetFilePath
                 && (<div id="image-cropper-area">
                     <div onClick={(e) => handleHiddenModal(e)} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div className="relative flex items-center justify-center h-fit">
+                        {/* <div className="relative flex items-center justify-center h-fit"> */}
                             <ImageCropper imgURL={assetFilePath} id="image-cropper" className="block bg-white rounded-sm z-10" />
-                        </div>
+                        {/* </div> */}
                     </div>
                 </div>)}
         </div >
