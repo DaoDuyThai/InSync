@@ -25,7 +25,7 @@ type Page = {
 };
 
 const PageSlug = () => {
-    const { slug } = useParams();
+    const { slug } = useParams() as { slug: string };
     const router = useRouter();
     const [pageData, setPageData] = React.useState<Page | null>(null);
     const [value, setValue] = React.useState<any>("");
