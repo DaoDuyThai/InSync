@@ -70,7 +70,9 @@ export default function LogPage() {
                 setProjectId(projectId);
         }, 500);
         if (projectId) {
-            setSearchKey(searchParams.get("search"));
+            if (searchParams) {
+                setSearchKey(searchParams.get("search"));
+            }
             const fetchScenariosId = async () => {
                 if (projectId === '') return;
                 console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`);
