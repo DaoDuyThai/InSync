@@ -46,6 +46,11 @@ const DocsLayout = ({ children }: Props) => {
 
     const pathname = usePathname()
 
+    const [mounted, setMounted] = React.useState(false);
+    React.useEffect(() => {
+        setMounted(true); // Set to true only after component mounts
+    }, []);
+
     // Get the full domain (protocol + domain + port)
     const fullDomain = typeof window !== 'undefined' ? window.location.origin : ''
 
@@ -61,7 +66,7 @@ const DocsLayout = ({ children }: Props) => {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`)
             if (response.ok) {
                 const data = await response.json()
-                console.log(data.data)
+                // console.log(data.data)
                 setCategories(data.data)
             } else {
                 console.error("Error fetching documents")
@@ -197,21 +202,27 @@ const DocsLayout = ({ children }: Props) => {
                                 <BreadcrumbItem>
                                     <Link href="/docs">Documentation</Link>
                                 </BreadcrumbItem>
-                                <BreadcrumbSeparator>
-                                    <ChevronRight />
-                                </BreadcrumbSeparator>
-                                {breadcrumbTitle1 === "" ? null : (
-                                    <BreadcrumbItem>
-                                        <Link href={BreadcrumbUrl1}>{breadcrumbTitle1}</Link>
+                                {mounted && (
+                                    <>
+
                                         <BreadcrumbSeparator>
                                             <ChevronRight />
                                         </BreadcrumbSeparator>
-                                    </BreadcrumbItem>
-
+                                        {breadcrumbTitle1 === "" ? null : (
+                                            <div className="flex items-center gap-2">
+                                                <BreadcrumbItem>
+                                                    <Link href={BreadcrumbUrl1}>{breadcrumbTitle1}</Link>
+                                                </BreadcrumbItem>
+                                                <BreadcrumbSeparator>
+                                                    <ChevronRight />
+                                                </BreadcrumbSeparator>
+                                            </div>
+                                        )}
+                                        <BreadcrumbItem>
+                                            <Link href={fullUrl}>{breadcrumbTitle2}</Link>
+                                        </BreadcrumbItem>
+                                    </>
                                 )}
-                                <BreadcrumbItem>
-                                    <Link href={fullUrl}>{breadcrumbTitle2}</Link>
-                                </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
