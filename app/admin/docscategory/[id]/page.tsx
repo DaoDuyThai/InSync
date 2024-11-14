@@ -158,6 +158,7 @@ const AdminDocsCategoryPage = () => {
                 body: JSON.stringify({
                     title: createDocumentTitle,
                     slug: createDocumentSlug,
+                    order: 1,
                     categoryId: id,
                 }),
             });
@@ -303,7 +304,7 @@ const AdminDocsCategoryPage = () => {
                                     setEditedDocumentNote(document.note)
                                     setIsEditDocumentDialogOpen(true)
                                 }}>
-                                    <Settings className="h-4 w-4 mr-2" />Change Document Settings
+                                    <Settings className="h-4 w-4 mr-2" />Settings
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -351,6 +352,7 @@ const AdminDocsCategoryPage = () => {
                                     onChange={(e) => setEditedCategoryOrder(Number(e.target.value))}
                                     className="col-span-3"
                                     required
+                                    min={1}
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
@@ -432,6 +434,7 @@ const AdminDocsCategoryPage = () => {
                                     onChange={(e) => setEditedDocumentOrder(Number(e.target.value))}
                                     className="col-span-3"
                                     required
+                                    min={1}
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
