@@ -255,6 +255,8 @@ export const Canvas = ({
         }
     };
 
+    const UNIQUE_BLOCK_TYPE = 'scenario';
+
     React.useEffect(() => {
         if (!workspaceRef.current && blocklyDivRef.current) {
             Blockly.common.defineBlocks(blocks);
@@ -296,6 +298,17 @@ export const Canvas = ({
 
             workspace.addChangeListener((e) => {
                 if (e.isUiEvent) return;
+
+                // Get all blocks of the specific type
+                const blocksOfType = workspace.getBlocksByType(UNIQUE_BLOCK_TYPE, false);
+
+                // If a block of the specific type already exists, remove any other block of the same type
+                if (blocksOfType.length > 1) {
+                    // Delete the last created block
+                    blocksOfType[blocksOfType.length - 1].dispose(true);
+                    toast.error('Only one scenario block is allowed');
+                }
+
                 save(workspace);
                 runCode();
             });
@@ -365,14 +378,14 @@ export const Canvas = ({
     }
 
     React.useEffect(() => {
-            const logsRef = ref(db);
-            onValue(logsRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    setLogData(data);
-                }
-            })
-        }, []);
+        const logsRef = ref(db);
+        onValue(logsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setLogData(data);
+            }
+        })
+    }, []);
 
     const handleEditAsset = (e: React.MouseEvent, filePath: string) => {
         try {
@@ -385,7 +398,7 @@ export const Canvas = ({
     const handleHiddenModal = (e: React.MouseEvent) => {
         console.log(e.target);
         console.log(e.currentTarget);
-        
+
         if (e.target === e.currentTarget) {
             setAssetFilePath("");
         }
