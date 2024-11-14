@@ -129,6 +129,8 @@ const AdminLayout = ({ children }: Props) => {
     }, [])
 
     React.useEffect(() => {
+        if (!pathname) return;
+
         const pageSlugMatch = pathname.match(/pages\/([^/]+)/); // Match the slug for pages
         const docsSlugMatch = pathname.match(/docs\/([^/]+)/); // Match the slug for docs
         const docsCategoryIdMatch = pathname.match(/docscategory\/([^/]+)/); // Match the slug for docs category

@@ -82,6 +82,7 @@ const DocsLayout = ({ children }: Props) => {
     }, [])
 
     React.useEffect(() => {
+        if(!pathname) return;
         const docsSlugMatch = pathname.match(/docs\/([^/]+)/); // Match the slug for docs
         if (docsSlugMatch) {
             // If we are on a docs slug, set breadcrumb to the doc title
