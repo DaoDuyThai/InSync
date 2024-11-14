@@ -15,6 +15,10 @@ export const toolbox = {
     },
     {
       'kind': 'block',
+      'type': 'if'
+    },
+    {
+      'kind': 'block',
       'type': 'for'
     },
     {

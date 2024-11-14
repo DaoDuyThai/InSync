@@ -49,7 +49,9 @@ const DocSlug = () => {
                 setEditedSlug(data.slug);
             } else if (response.status === 404) {
                 toast.error("Document not found");
-                window.location.href = "/admin";
+                setTimeout(() => {
+                    window.location.href = "/docs";
+                }, 2000);
             } else {
                 console.error("Error fetching data");
             }

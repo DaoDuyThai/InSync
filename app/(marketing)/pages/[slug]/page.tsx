@@ -49,7 +49,7 @@ const PageSlug = () => {
                 toast.error("Page not found");
                 setTimeout(() => {
                     window.location.href = "/";
-                }, 3000);
+                }, 2000);
             } else {
                 console.error("Error fetching data");
             }

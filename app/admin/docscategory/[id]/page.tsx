@@ -134,7 +134,7 @@ const AdminDocsCategoryPage = () => {
                 setIsEditCategoryDialogOpen(false);
                 setTimeout(() => {
                     window.location.href = "/admin";
-                }, 3000)
+                }, 2000)
             } else {
                 toast.error("Failed to delete category");
             }
@@ -403,7 +403,7 @@ const AdminDocsCategoryPage = () => {
                                 <Input
                                     type="text"
                                     id="title"
-                                    placeholder={editedDocumentTitle}
+                                    value={editedDocumentTitle}
                                     onChange={(e) => setEditedDocumentTitle(e.target.value)}
                                     className="col-span-3"
                                     required
@@ -415,7 +415,7 @@ const AdminDocsCategoryPage = () => {
                                 <Input
                                     type="text"
                                     id="slug"
-                                    placeholder={editedDocumentSlug}
+                                    value={editedDocumentSlug}
                                     onChange={(e) => setEditedDocumentSlug(e.target.value)}
                                     className="col-span-3"
                                     required
@@ -428,7 +428,7 @@ const AdminDocsCategoryPage = () => {
                                 <Input
                                     type="number"
                                     id="order"
-                                    placeholder={editedDocumentOrder.toString()}
+                                    value={editedDocumentOrder.toString()}
                                     onChange={(e) => setEditedDocumentOrder(Number(e.target.value))}
                                     className="col-span-3"
                                     required
@@ -438,10 +438,9 @@ const AdminDocsCategoryPage = () => {
                                 <Label htmlFor="note" className="text-right">Note</Label>
                                 <Input
                                     id="order"
-                                    placeholder={editedDocumentNote}
+                                    value={editedDocumentNote}
                                     onChange={(e) => setEditedDocumentNote(e.target.value)}
                                     className="col-span-3"
-                                    required
                                     minLength={2}
                                 />
                             </div>

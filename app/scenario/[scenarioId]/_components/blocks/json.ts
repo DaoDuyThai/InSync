@@ -1,5 +1,4 @@
 import * as Blockly from 'blockly';
-import { toast } from 'sonner';
 
 //Blockly block color
 Blockly.utils.colour.setHsvSaturation(0.8) // 0 (inclusive) to 1 (exclusive), defaulting to 0.45
@@ -18,7 +17,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "colour": 0,
         "tooltip": "Defines a sequence of actions in a scenario.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-scenario"
     },
     {
         "type": "open_app",
@@ -52,10 +51,62 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 35,
+        "colour": 30,
         "mutator": "open_app_mutator",
         "tooltip": "Opens a specified app.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-open-app"
+    },
+    {
+        "type": "if",
+        "message0": "if %1 exists (tries: %2)",
+        "args0": [
+            {
+                "type": "field_image_drop",
+                "name": "IMAGE",
+                "src": "/drop-image-here.png",
+                "width": 50,
+                "height": 50,
+                "alt": "Drag image here"
+            },
+            {
+                "type": "field_number",
+                "name": "TRIES",
+                "value": 3,
+                "min": 1,
+                "precision": 1
+            }
+        ],
+        "message1": "then %1",
+        "args1": [
+            {
+                "type": "input_statement",
+                "name": "TRUEACTIONS"
+            }
+        ],
+        "message2": "else %1",
+        "args2": [
+            {
+                "type": "input_statement",
+                "name": "FALSEACTIONS"
+            }
+        ],
+        "message3": "log %1",
+        "args3": [
+            {
+                "type": "field_dropdown",
+                "name": "ISLOG",
+                "options": [
+                    ["false", "FALSE"],
+                    ["true", "TRUE"]
+                ]
+            }
+        ],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": 60,
+        "mutator": "if_mutator",
+        "tooltip": "Executes actions based on image existence condition.",
+        "helpUrl": "/docs/block-if"
     },
     {
         "type": "for",
@@ -86,10 +137,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 70,
+        "colour": 90,
         "mutator": "for_mutator",
         "tooltip": "Repeats a sequence of actions a specified number of times.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-for"
     },
     {
         "type": "delay",
@@ -116,10 +167,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 105,
+        "colour": 120,
         "mutator": "delay_mutator",
         "tooltip": "Pauses the scenario for a specified duration.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-delay"
     },
     {
         "type": "click_smart",
@@ -127,7 +178,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "args0": [
             {
                 "type": "field_image_drop",
-                "name": "ON",
+                "name": "IMAGE",
                 "src": "/drop-image-here.png",
                 "width": 50,
                 "height": 50,
@@ -154,10 +205,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 140,
+        "colour": 150,
         "mutator": "click_smart_mutator",
         "tooltip": "Clicks on the specified element for a set duration.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-smart-click"
     },
     {
         "type": "click_xy",
@@ -198,10 +249,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 175,
+        "colour": 180,
         "mutator": "click_xy_mutator",
         "tooltip": "Clicks at specific x and y coordinates.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-xy-click"
     },
     {
         "type": "zoom",
@@ -239,7 +290,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         "colour": 210,
         "mutator": "zoom_mutator",
         "tooltip": "Zooms in or out for a specified duration.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-zoom"
     },
     {
         "type": "swipe",
@@ -276,10 +327,10 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 245,
+        "colour": 240,
         "mutator": "swipe_mutator",
         "tooltip": "Performs a swipe action in a specified direction for a set duration.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-swipe"
     },
     {
         "type": "rotate",
@@ -322,14 +373,14 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 280,
+        "colour": 270,
         "mutator": "rotate_mutator",
         "tooltip": "Rotates in the specified direction by a given number of degrees and duration.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-rotate"
     },
     {
         "type": "paste",
-        "message0": "Input %1",
+        "message0": "input %1",
         "args0": [
             {
                 "type": "field_input",
@@ -350,14 +401,14 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 315,
+        "colour": 300,
         "mutator": "paste_mutator",
         "tooltip": "Inputs specified text content.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-paste"
     },
     {
         "type": "log",
-        "message0": "Log: %1",
+        "message0": "log: %1",
         "args0": [
             {
                 "type": "field_input",
@@ -367,9 +418,9 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
         ],
         "previousStatement": null,
         "nextStatement": null,
-        "colour": 350,
+        "colour": 330,
         "tooltip": "Logs a message with specified content.",
-        "helpUrl": ""
+        "helpUrl": "/docs/block-log"
     }
 ]);
 
@@ -438,6 +489,62 @@ Blockly.Extensions.registerMutator('open_app_mutator', {
 });
 /* ============================================================================================= */
 /* ==================================== OPEN APP ACTION END ==================================== */
+/* ============================================================================================= */
+
+/* ============================================================================================= */
+/* ===================================== IF ACTION START ======================================= */
+/* ============================================================================================= */
+// Register if_mutator for dynamic log message field
+Blockly.Extensions.registerMutator('if_mutator', {
+    mutationToDom: function () {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        container.setAttribute('is_log', isLog.toString());
+
+        // Save IMAGE_EXIST field value in mutation
+        const imageExistField = this.getFieldValue('IMAGE') || '';
+        container.setAttribute('image', imageExistField);
+
+        return container;
+    },
+    domToMutation: function (xmlElement: Element) {
+        const isLog = (xmlElement.getAttribute('is_log') === 'true');
+        this.updateShape(isLog);
+
+        // Restore IMAGE_EXIST field value from mutation
+        const imageExistField = xmlElement.getAttribute('image') || '';
+        if (imageExistField) {
+            this.setFieldValue(imageExistField, 'IMAGE');
+        }
+    },
+    updateShape: function (isLog: boolean) {
+        const tries = this.getFieldValue('TRIES') || 3;
+        const defaultLogContent = `Check image existence with ${tries} tries`;
+
+        if (isLog) {
+            if (!this.getInput('LOGCONTENT_INPUT')) {
+                this.appendDummyInput('LOGCONTENT_INPUT')
+                    .appendField('with content')
+                    .appendField(new Blockly.FieldTextInput(defaultLogContent), 'LOGCONTENT');
+            } else {
+                const currentLogContent = this.getFieldValue('LOGCONTENT');
+                if (currentLogContent === defaultLogContent) {
+                    this.setFieldValue(defaultLogContent, 'LOGCONTENT');
+                }
+            }
+        } else {
+            if (this.getInput('LOGCONTENT_INPUT')) {
+                this.removeInput('LOGCONTENT_INPUT');
+            }
+        }
+    },
+    onchange: function () {
+        const isLog = this.getFieldValue('ISLOG') === 'TRUE';
+        this.updateShape(isLog);
+    }
+});
+/* ============================================================================================= */
+/* ===================================== IF ACTION END ========================================= */
 /* ============================================================================================= */
 
 
@@ -543,8 +650,8 @@ Blockly.Extensions.registerMutator('click_smart_mutator', {
         container.setAttribute('is_log', isLog.toString());
 
         // Save ON field value in mutation
-        const onFieldValue = this.getFieldValue('ON') || '';
-        container.setAttribute('on_field', onFieldValue);
+        const onFieldValue = this.getFieldValue('IMAGE') || '';
+        container.setAttribute('image_field', onFieldValue);
 
         return container;
     },
@@ -553,9 +660,9 @@ Blockly.Extensions.registerMutator('click_smart_mutator', {
         this.updateShape(isLog);
 
         // Restore ON field value from mutation
-        const onFieldValue = xmlElement.getAttribute('on_field') || '';
+        const onFieldValue = xmlElement.getAttribute('image_field') || '';
         if (onFieldValue) {
-            this.setFieldValue(onFieldValue, 'ON');
+            this.setFieldValue(onFieldValue, 'IMAGE');
         }
     },
     updateShape: function (isLog: boolean) {
@@ -612,9 +719,9 @@ class FieldImageDrop extends Blockly.FieldImage {
                     this.setValue(url);
                     // Ensure the ON field is set on the block
                     if (this.sourceBlock_) {
-                        this.sourceBlock_.setFieldValue(url, 'ON');
+                        this.sourceBlock_.setFieldValue(url, 'IMAGE');
                         if (this.sourceBlock_ && this.sourceBlock_.onchange) {
-                            this.sourceBlock_.onchange(new Blockly.Events.BlockChange(this.sourceBlock_, 'field', 'ON', '', url));
+                            this.sourceBlock_.onchange(new Blockly.Events.BlockChange(this.sourceBlock_, 'field', 'IMAGE', '', url));
                         }
                     }
                 } else {

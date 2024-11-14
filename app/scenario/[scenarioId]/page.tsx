@@ -61,7 +61,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             toast.error("Scenario not found. Redirecting...");
             setTimeout(() => {
                 window.location.href = '/dashboard'; // Redirects to the previous page after 3 seconds
-            }, 3000);
+            }, 2000);
         } finally {
             setLoading(false);
         }

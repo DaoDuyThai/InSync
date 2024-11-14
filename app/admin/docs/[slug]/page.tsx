@@ -115,7 +115,7 @@ const AdminDocSlug = () => {
             setIsEditDialogOpen(false); // Close dialog only after update completes
             setTimeout(() => {
                 window.location.href = "/admin";
-            }, 3000);
+            }, 2000);
         }
     }
 
@@ -152,7 +152,7 @@ const AdminDocSlug = () => {
             setIsEditDialogOpen(false); // Close dialog only after update completes
             setTimeout(() => {
                 window.location.href = "/admin";
-            }, 3000);
+            }, 2000);
         }
 
     };

@@ -59,6 +59,45 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 };
 /* ==================================== OPEN APP ACTION END ==================================== */
 
+/* ====================================== IF ACTION START ====================================== */
+jsonGenerator.forBlock['if'] = function (block, generator) {
+  const imageExist = block.getFieldValue('IMAGE');
+  const tries = block.getFieldValue('TRIES');
+  const isLog = block.getFieldValue('ISLOG') === 'TRUE';
+  const trueActions = generator.statementToCode(block, 'TRUEACTIONS');
+  const falseActions = generator.statementToCode(block, 'FALSEACTIONS');
+
+  const defaultLogContent = `Checking image existence`;
+  let code = `{
+        "actionType": "IF",
+        "imageExist": "${imageExist}",
+        "isLog": ${isLog},
+        "tries": ${tries},
+        "logContent": "",
+        "trueActions": [${trueActions}],
+        "falseActions": [${falseActions}],
+        "duration": 100
+    }`;
+
+  if (isLog) {
+    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    code = `{
+        "actionType": "IF",
+        "imageExist": "${imageExist}",
+        "isLog": true,
+        "tries": ${tries},
+        "logContent": "${logContent}",
+        "trueActions": [${trueActions}],
+        "falseActions": [${falseActions}],
+        "duration": 100
+    }`;
+  }
+
+  return code;
+};
+/* ====================================== IF ACTION END ======================================== */
+
+
 /* ===================================== FOR ACTION START ====================================== */
 jsonGenerator.forBlock['for'] = function (block, generator) {
   const times = block.getFieldValue('TIMES');           // Number of repetitions
@@ -121,7 +160,7 @@ jsonGenerator.forBlock['delay'] = function (block) {
 
 /* ================================= SMART CLICK ACTION START ================================== */
 jsonGenerator.forBlock['click_smart'] = function (block) {
-  const element = block.getFieldValue('ON');
+  const element = block.getFieldValue('IMAGE');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Click on ${element} for ${duration} ms`;
