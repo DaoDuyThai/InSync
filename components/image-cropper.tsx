@@ -273,14 +273,17 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             else if (isRadarButtonClicked) {
                 let currentX = e.offsetX;
                 let currentY = e.offsetY;
+                
                 const realStartX = (currentX - scale * imageX) / scale;
                 const realStartY = (currentY - scale * imageY) / scale;
                 // Set the position of the popup above the mouse
                 if (popup && realStartX >= 0 && realStartY >= 0) {
                     const mouseX = e.clientX;
                     const mouseY = e.clientY;
+                    console.log(`Current X: ${mouseX}, Current Y: ${mouseY}`);
                     popup.style.left = `${mouseX}px`;
                     popup.style.top = `${mouseY - popup.offsetHeight - 10}px`;
+                    console.warn(`left ${popup.style.left}, top ${popup.style.top}`);
                     popup.textContent = `X: ${Math.ceil(realStartX)}, Y: ${Math.ceil(realStartY)}`;
                     popup.classList.remove('hidden');
                 }
@@ -558,11 +561,11 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                             </Hint>
                         </div>
                     </div>
-                    <div className="relative flex max-w-[1000px] max-h-[800px] p-[30px]">
+                    <div className="relative flex w-auto h-auto p-[30px]">
                         <canvas
                             ref={canvasRef}
-                            width="900"
-                            height="600"
+                            width={`${screen.width > 2000 ? 1800 : 900}`}
+                            height={`${screen.width > 2000 ? 1200 : 600}`}
                             className
                             ="shadow-gray-100
                                 shadow-sm border-[1px] 
@@ -573,7 +576,7 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                             "
                         >
                         </canvas>
-                        <div ref={pulseAreaRef} className="w-[900px] h-[600px] bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse "><span>Click to crop</span></div>
+                        <div ref={pulseAreaRef} className={`${screen.width > 2000 ? 'w-[1800px] h-[1200px]' : 'w-[900px] h-[600px]'} bg-white bg-opacity-45 absolute text-4xl flex items-center justify-center animate-pulse `}><span>Click to crop</span></div>
                     </div>
 
 
