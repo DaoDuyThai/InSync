@@ -14,6 +14,7 @@ import { Loading } from "@/components/loading"
 import { set } from "date-fns"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
+import { usePathname, useSearchParams } from "next/navigation"
 
 type Page = {
   id: string
@@ -65,6 +66,15 @@ export function AdminSidebar() {
   const [newCreateCategoryOrder, setNewCreateCategoryOrder] = React.useState<string>("")
   const [newCreateCategoryDescription, setNewCreateCategoryDescription] = React.useState<string>("")
   const [createCategoryButtonPending, setCreateCategoryButtonPending] = React.useState<boolean>(false)
+
+  const pathname = usePathname()
+
+  // Get the full domain (protocol + domain + port)
+  const fullDomain = typeof window !== 'undefined' ? window.location.origin : ''
+
+  // Construct the full URL (domain + pathname + query params)
+  const fullUrl = `${fullDomain}${pathname}`
+
 
   const fetchCategories = async () => {
     setPageLoading(true)
@@ -212,7 +222,7 @@ export function AdminSidebar() {
 
               <SidebarMenuItem>
                 <Link href="/admin">
-                  <SidebarMenuButton>
+                  <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin`}>
                     <Hint label="Overview" side="right">
                       <ChartSpline />
                     </Hint>
@@ -263,7 +273,7 @@ export function AdminSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <Link href="/admin/projects">
-                  <SidebarMenuButton>
+                  <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/projects`}>
                     <Hint label="Projects Management" side="right">
                       <FolderCog />
                     </Hint>
@@ -280,7 +290,7 @@ export function AdminSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <Link href="/admin/subscriptions">
-                  <SidebarMenuButton>
+                  <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/subscriptions`}>
                     <Hint label="Subscriptions Management" side="right">
                       <CalendarCog />
                     </Hint>
@@ -312,9 +322,11 @@ export function AdminSidebar() {
                       <Hint label={`/pages/${page.slug}`} key={page.id} side="right">
                         <SidebarMenuSub >
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton className="cursor-pointer" href={`/admin/pages/${page.slug}`}>
-                              {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
-                            </SidebarMenuSubButton>
+                            <Link href={`/admin/pages/${page.slug}`}>
+                              <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/pages/${page.slug}`} className="cursor-pointer" >
+                                {page.title.length >= 20 ? `${page.title.substring(0, 17)}...` : page.title}
+                              </SidebarMenuButton>
+                            </Link>
                           </SidebarMenuSubItem>
                         </SidebarMenuSub>
                       </Hint>
@@ -392,24 +404,26 @@ export function AdminSidebar() {
                       <Collapsible key={category.id} defaultOpen className="group/collapsible">
                         <SidebarMenuSub>
                           <SidebarMenuSubItem>
-                            <CollapsibleTrigger asChild>
-                              <SidebarMenuSubButton className="cursor-pointer">
-                                <Link href={`/admin/docscategory/${category.id}`}>
-                                  {category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}
-                                </Link>
-                                {category.documents?.length === 0 ? null : <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />}
-                              </SidebarMenuSubButton>
-                            </CollapsibleTrigger>
+                            <Link href={`/admin/docscategory/${category.id}`}>
+                              <SidebarMenuButton isActive={fullUrl === `${fullDomain}/admin/docscategory/${category.id}`} className="cursor-pointer">
+                                {category.title.length >= 20 ? `${category.title.substring(0, 17)}...` : category.title}
+                                <CollapsibleTrigger asChild>
+                                  {category.documents?.length === 0 ? null : <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />}
+                                </CollapsibleTrigger>
+                              </SidebarMenuButton>
+                            </Link>
                             <CollapsibleContent className="ml-2">
                               {category.documents?.map((doc) => (
-                                <SidebarMenuSubItem key={doc.id}>
-                                  <SidebarMenuSubButton
-                                    className="cursor-pointer"
-                                    href={`/admin/docs/${doc.id}`}
-                                  >
-                                    {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
+                                <SidebarMenuSub key={doc.id}>
+                                  <Link href={`/admin/docs/${doc.slug}`}>
+                                    <SidebarMenuButton
+                                      isActive={fullUrl === `${fullDomain}/admin/docs/${doc.slug}`}
+                                      className="cursor-pointer"
+                                    >
+                                      {doc.title.length >= 20 ? `${doc.title.substring(0, 17)}...` : doc.title}
+                                    </SidebarMenuButton>
+                                  </Link>
+                                </SidebarMenuSub>
                               ))}
                             </CollapsibleContent>
                           </SidebarMenuSubItem>

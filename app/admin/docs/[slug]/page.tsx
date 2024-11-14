@@ -14,20 +14,22 @@ import { ConfirmModal } from "@/components/confirm-modal";
 import { Trash2 } from "lucide-react";
 import '@/components/rich-text.css';
 
-type Page = {
+type Doc = {
     id: string;
     slug: string;
     title: string;
     content: string;
     note: string | null;
+    order: number
+    categoryId: string
+    categoryName: string | null
     dateCreated: string | null;
     dateUpdated: string | null;
 };
 
-const AdminPageSlug = () => {
+const AdminDocSlug = () => {
     const { slug } = useParams();
-    const router = useRouter();
-    const [pageData, setPageData] = React.useState<Page | null>(null);
+    const [documentData, setDocumentData] = React.useState<Doc | null>(null);
     const [value, setValue] = React.useState<any>("");
     const [loading, setLoading] = React.useState<boolean>(true);
     const [pending, setPending] = React.useState<boolean>(false);
@@ -38,15 +40,15 @@ const AdminPageSlug = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`);
             if (response.ok) {
                 const data = await response.json();
-                setPageData(data);
+                setDocumentData(data);
                 setValue(data.content);
                 setEditedTitle(data.title);
                 setEditedSlug(data.slug);
             } else if (response.status === 404) {
-                toast.error("Page not found");
+                toast.error("Document not found");
                 window.location.href = "/admin";
             } else {
                 console.error("Error fetching data");
@@ -63,50 +65,51 @@ const AdminPageSlug = () => {
     }, [slug]);
 
     const handleSaveContent = async () => {
-        if (!pageData) {
-            toast.error("No page data available");
+        if (!documentData) {
+            toast.error("No document data available");
             return;
         }
         setPending(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    id: pageData.id,
-                    slug: pageData.slug,
-                    title: pageData.title,
+                    id: documentData.id,
+                    slug: documentData.slug,
+                    title: documentData.title,
                     content: value,
-                    note: pageData.note,
+                    note: documentData.note,
+                    categoryId: documentData.categoryId
                 }),
             });
-            if (!response.ok) throw new Error("Failed to save page.");
-            toast.success("Page saved successfully");
+            if (!response.ok) throw new Error("Failed to save Document.");
+            toast.success("Document saved successfully");
         } catch (error) {
-            console.error("Error saving page:", error);
-            toast.error("Failed to save page");
+            console.error("Error saving Document:", error);
+            toast.error("Failed to save Document");
         } finally {
             setPending(false);
         }
     };
 
-    const handleDeletePage = async () => {
-        if (!pageData) {
-            toast.error("No page data available");
+    const handleDeleteDocument = async () => {
+        if (!documentData) {
+            toast.error("No Document data available");
             return;
         }
         setPending(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/${pageData.id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${documentData.id}`, {
                 method: "DELETE",
             });
-            if (!response.ok) throw new Error("Failed to delete page.");
-            toast.success("Page deleted successfully");
+            if (!response.ok) throw new Error("Failed to delete Document.");
+            toast.success("Document deleted successfully");
         } catch (error) {
-            console.error("Error deleting page:", error);
-            toast.error("Failed to delete page");
+            console.error("Error deleting Document:", error);
+            toast.error("Failed to delete Document");
         } finally {
             setPending(false);
             setIsEditDialogOpen(false); // Close dialog only after update completes
@@ -118,30 +121,31 @@ const AdminPageSlug = () => {
 
     const handleEditSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!pageData) {
-            toast.error("No page data available");
+        if (!documentData) {
+            toast.error("No Document data available");
             return;
         }
         setPending(true);
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`, {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    id: pageData.id,
+                    id: documentData.id,
                     slug: editedSlug,
                     title: editedTitle,
-                    content: pageData.content,
-                    note: pageData.note,
+                    content: documentData.content,
+                    note: documentData.note,
+                    categoryId: documentData.categoryId
                 }),
             });
 
-            toast.success("Page settings updated");
+            toast.success("Document settings updated");
             setIsEditDialogOpen(false); // Close dialog only after update completes
         } catch (error) {
-            console.error("Error updating page settings:", error);
+            console.error("Error updating Document settings:", error);
             toast.error("Failed to update settings");
         } finally {
             setPending(false);
@@ -154,15 +158,15 @@ const AdminPageSlug = () => {
     };
 
     if (loading) return <Loading />;
-    if (!pageData) return <div className="text-center mt-4">Page not found</div>;
+    if (!documentData) return <div className="text-center mt-4">Document not found</div>;
 
     return (
         <div className="w-full h-[calc(100vh-100px)] overflow-hidden flex flex-col">
             <MinimalTiptapEditor
                 value={value}
                 onChange={setValue}
-                className="w-full flex-1 overflow-y-auto my-4 rich-text"
-                editorContentClassName="h-full p-5 border-none"
+                className="w-full flex-1 overflow-y-auto my-4 rich-text "
+                editorContentClassName="p-5"
                 output="html"
                 placeholder="Type your description here..."
                 autofocus={true}
@@ -171,7 +175,7 @@ const AdminPageSlug = () => {
             />
             <div className="flex justify-center my-2 gap-4">
                 <Button variant="ghost" onClick={() => setIsEditDialogOpen(true)}>
-                    Page Settings
+                    Document Settings
                 </Button>
                 <Button disabled={pending} onClick={handleSaveContent}>
                     Save
@@ -181,7 +185,7 @@ const AdminPageSlug = () => {
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Edit Page Settings</DialogTitle>
+                        <DialogTitle>Edit Document Settings</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleEditSave} className="grid py-4 gap-4">
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -213,9 +217,9 @@ const AdminPageSlug = () => {
                                 </Button>
                             </DialogClose>
                             <ConfirmModal
-                                header="Delete page?"
-                                description="This will delete the page and all of its contents."
-                                onConfirm={handleDeletePage}
+                                header="Delete Document?"
+                                description="This will delete the Document and all of its contents."
+                                onConfirm={handleDeleteDocument}
                             >
                                 <Button
                                     variant="redBg"
@@ -237,4 +241,4 @@ const AdminPageSlug = () => {
     );
 };
 
-export default AdminPageSlug;
+export default AdminDocSlug;
