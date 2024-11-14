@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import uploadImage from "./_components/uploadImage";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
 import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
@@ -47,7 +47,9 @@ export default function ImagePage() {
     const [openModal, setOpenModal] = useState(false);
     const [openRenameAssetDialog, setOpenRenameAssetDialog] = useState<boolean>(false);
     const [loadingAssetRenameInput, setLoadingAssetRenameInput] = useState<boolean>(false);
-
+    const [assetName, setAssetName] = useState<string>("");
+    const [assetId, setAssetId] = useState<string>("");
+    const [newAssetName, setNewAssetName] = useState<string>("");
 
     useEffect(() => {
         // Set page title
@@ -153,66 +155,6 @@ export default function ImagePage() {
 
         let filteredImagesByDate = filteredImagesByNameFunction(images);
 
-        const handleAction = (e: React.MouseEvent<SVGSVGElement>) => {
-            const element = e.currentTarget as SVGSVGElement;
-            const settings = document.querySelectorAll('.settings');
-            const settingList = document.querySelectorAll('.setting-list');
-            settings.forEach((setting, index) => {
-                if (setting === element) {
-                    settingList[index].classList.toggle('hidden');
-
-                }
-            });
-        };
-
-        /**
-         * @description Delete image
-         * @param e 
-         * @param dateCreated 
-         */
-        const handleDelete = (e: React.MouseEvent<HTMLLIElement>, dateCreated: string) => {
-            const element = e.currentTarget as HTMLLIElement;
-            element.parentElement?.classList.contains('hidden') ? element.parentElement?.classList.remove('hidden') : element.parentElement?.classList.add('hidden');
-
-            try {
-                let deleteSettings = document.querySelectorAll(`.date-${dateCreated}`);
-
-                deleteSettings.forEach((setting, index) => {
-                    if (setting === element) {
-                        const imageArray = images[dateCreated];
-                        if (imageArray && imageArray[index]) {
-                            const assetId = imageArray[index].id;
-                            if (assetId) {
-                                fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${assetId}`, { method: "DELETE" })
-                                    .then(res => {
-                                        if (res.status === 200) {
-                                            const updatedImages = images[dateCreated].filter((_, i) => i !== index);
-                                            setImages(prevImages => ({
-                                                ...prevImages,
-                                                [dateCreated]: updatedImages
-                                            }));
-                                            toast.success("Image deleted successfully");
-                                        } else {
-                                            toast.error("Failed to delete image");
-                                        }
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                        toast.error("An error occurred while deleting image");
-                                    });
-                            }
-                        }
-                    }
-
-                });
-            } catch (error) {
-                console.log(error);
-                toast.error("An error occurred while deleting image");
-            } finally {
-                element.parentElement?.classList.remove('hidden');
-            }
-        }
-
         const handleDeleteAsset = (id: string, dateCreated: string) => {
             fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${id}`, { method: "DELETE" })
                 .then(res => {
@@ -267,7 +209,44 @@ export default function ImagePage() {
             }
         }
 
-        
+        const handleRenameAsset = (assetName: string, assetId: string) => {
+            setAssetName(assetName);
+            setAssetId(assetId);
+            setOpenRenameAssetDialog(true);
+        }
+
+        const handleRenameRequest = (e: MouseEvent) => {
+            e.preventDefault();
+            if (newAssetName === "") {
+                toast.error("Asset name cannot be empty");
+                return;
+            }
+            fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${assetId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    assetName: newAssetName, // Assuming newAssetName is a state variable or a ref for the new name
+                    id: assetId,
+                    type: "image",
+                })
+            }).then(res => {
+                if (res.status === 200) {
+                    toast.success("Asset renamed successfully");
+                    setOpenRenameAssetDialog(false);
+                } else {
+                    toast.error("Failed to rename asset");
+                    console.log(res.body);
+
+                }
+            }).catch(err => {
+                console.log(err);
+                toast.error("An error occurred while renaming asset");
+                setLoadingAssetRenameInput(false);
+            });
+        }
+
 
         return (
             <div className="px-10 py-5 h-[calc(100vh - 100px)] image-loading">
@@ -301,6 +280,37 @@ export default function ImagePage() {
                                             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
                                             Upload
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>}
+                {openRenameAssetDialog &&
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20">
+                        <div className="bg-white w-auto h-auto rounded-lg z-50">
+                            <div className="p-4 relative">
+                                <div className="absolute top-0 right-0">
+                                    <button onClick={() => setOpenRenameAssetDialog(false)} className="text-2xl font-semibold mx-5">&times;</button>
+                                </div>
+
+                                <form className="w-[400px] px-5">
+                                    <h2 className="text-xl text-center font-semibold mb-4">Rename Asset</h2>
+                                    <div className="mb-4">
+                                        <input
+                                            onChange={(e) => setNewAssetName(e.target.value)}
+                                            placeholder={assetName}
+                                            type="text"
+                                            className="p-5 mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <button
+                                            type="submit"
+                                            onClick={(e) => { handleRenameRequest(e) }}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        >
+                                            Rename
                                         </button>
                                     </div>
                                 </form>
@@ -421,48 +431,14 @@ export default function ImagePage() {
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem asChild className="w-full h-full bg-white">
                                                             <Dialog
-                                                            open={openRenameAssetDialog} 
-                                                            onOpenChange={setOpenRenameAssetDialog}
+                                                                open={openRenameAssetDialog}
+                                                                onOpenChange={setOpenRenameAssetDialog}
                                                             >
-                                                                <DialogTrigger className="w-full h-full">
-                                                                    <Button className="w-full" variant="ghost" size="sm" aria-label="Rename">
-                                                                        <Pencil className="h-4 w-4 mr-4" />Rename
-                                                                    </Button>
-                                                                </DialogTrigger>
-
-                                                                <DialogContent className="sm:max-w-md " >
-                                                                    <DialogHeader>
-                                                                        <DialogTitle>Edit asset title</DialogTitle>
-                                                                        <DialogDescription>
-                                                                            Enter a new title for this asset.
-                                                                        </DialogDescription>
-                                                                    </DialogHeader>
-                                                                    <form
-                                                                    // onSubmit={(e) => handleRenameAsset(e, asset.id)} className="space-y-4"
-                                                                    >
-                                                                        <Input
-                                                                            required
-                                                                            maxLength={30}
-                                                                            minLength={5}
-                                                                            placeholder={image.assetName}
-                                                                            onChange={(e) => {
-                                                                                // setNewAssetName(e.target.value)
-                                                                            }}
-                                                                        />
-                                                                        <DialogFooter>
-                                                                            <DialogClose asChild>
-                                                                                <Button type="button" variant="outline">
-                                                                                    Cancel
-                                                                                </Button>
-                                                                            </DialogClose>
-                                                                            <Button type="submit"
-                                                                            disabled={loadingAssetRenameInput}
-                                                                            >
-                                                                                {loadingAssetRenameInput ? "Renaming..." : "Submit"}
-                                                                            </Button>
-                                                                        </DialogFooter>
-                                                                    </form>
-                                                                </DialogContent>
+                                                                <Button
+                                                                    onClick={() => { handleRenameAsset(image.assetName, image.id) }}
+                                                                    className="w-full" variant="ghost" size="sm" aria-label="Rename">
+                                                                    <Pencil className="h-4 w-4 mr-4" />Rename
+                                                                </Button>
                                                             </Dialog>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem asChild className="w-full h-full">
@@ -499,3 +475,4 @@ export default function ImagePage() {
         renderImages(images)
     )
 }
+
