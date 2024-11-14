@@ -27,8 +27,8 @@ const DashboardPage = () => {
   const [projectList, setProjectList] = React.useState<Project[]>([]);
   const { user, isLoaded } = useUser();
   const searchParams = useSearchParams();
-  const search = searchParams.get("search") || undefined;
-  const favorites = searchParams.get("favorites") || undefined
+  const search = searchParams ? searchParams.get("search") || undefined : undefined;
+  const favorites = searchParams ? searchParams.get("favorites") || undefined : undefined;
   const hasProjects = projectList.length > 0;
   const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
   const dispatch = useDispatch<AppDispatch>();
