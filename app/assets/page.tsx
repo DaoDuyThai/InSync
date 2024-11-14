@@ -54,7 +54,7 @@ export default function ImagePage() {
     useEffect(() => {
         // Set page title
         document.title = "InSync - Assets Management";
-        const search = searchParams.get('search');
+        const search = searchParams ? searchParams.get('search') : "";
         const id = localStorage.getItem("selectedProjectId");
         setProjectId(id || "");
         setSearchKey(search || "");
