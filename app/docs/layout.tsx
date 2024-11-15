@@ -198,7 +198,7 @@ const DocsLayout = ({ children }: Props) => {
                     <div className="flex gap-2 items-center ">
                         <SidebarTrigger className="ml-1" />
                         <Separator orientation="vertical" className="mr-2 h-4" />
-                        <Breadcrumb>
+                        <Breadcrumb className="hidden md:block">
                             <BreadcrumbList>
                                 <BreadcrumbItem>
                                     <Link href="/docs">Documentation</Link>
@@ -232,7 +232,7 @@ const DocsLayout = ({ children }: Props) => {
                     </ClerkLoading>
                     <ClerkLoaded>
                         <SignedIn >
-                            <div className="flex align-middle gap-2 items-center justify-between md:w-fit w-full">
+                            <div className="flex align-middle gap-2 items-center justify-between w-fit">
                                 <div className="h-10 px-4 py-2 hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                                     <SignOutButton redirectUrl="/"></SignOutButton>
                                 </div>

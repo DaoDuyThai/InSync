@@ -25,11 +25,11 @@ export default function WhatIsSection() {
                     </div>
                     <div>
                         <div className="font-normal text-base md:text-xl text-neutral-500 text-justify">
-                            InSync is an advanced automation tool designed for Android applications, enabling you to create, customize, and execute automation scripts with ease.
+                            InSync is an advanced automation tool designed for Mobile applications, enabling you to create, customize, and execute automation scripts with ease.
                         </div>
                         <br />
                         <div className="font-normal text-base md:text-xl text-neutral-500 text-justify">
-                            By leveraging a powerful web-based interface and an intuitive Android client, InSync allows developers and testers to automate complex scenarios without relying on traditional ADB methods.
+                            By leveraging a powerful web-based interface and an intuitive Mobile client, InSync allows developers and testers to automate complex scenarios without relying on traditional ADB methods.
                         </div>
                     </div>
                 </div>
