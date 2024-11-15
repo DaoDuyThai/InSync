@@ -30,7 +30,6 @@ const AdminPage = () => {
       const response = await fetch('/api/clerk-users');
       if (response.ok) {
         const data = await response.json();
-        console.log('Data:', data);
         setUsers(data);
       } else {
         console.error('Error fetching user count from proxy:', response.statusText);
@@ -77,7 +76,6 @@ const AdminPage = () => {
       .sort((a, b) => (b.last_sign_in_at ?? 0) - (a.last_sign_in_at ?? 0)) // Sort by last_sign_in_at descending
       .slice(0, 8)); // Limit to the top 8 most recent sign-ins
 
-    console.log
   }, [users]);
 
   return (
@@ -126,8 +124,8 @@ const AdminPage = () => {
           </div>
           <div className="">
             {recentSignIns.map((user) => (
-              <>
-                <div className="flex justify-between items-center py-2">
+              
+                <div key={user.profile_image_url} className="flex justify-between items-center py-2">
                   <div className="flex gap-2 items-center">
                     <Avatar className="w-10 h-10">
                       <AvatarImage src={user.profile_image_url} alt="@shadcn" />
@@ -145,7 +143,7 @@ const AdminPage = () => {
                   <div className="text-sm">
                     Thu Nov 14
                   </div>
-                </div></>
+                </div>
             ))}
           </div>
         </div>
