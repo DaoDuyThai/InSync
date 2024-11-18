@@ -11,7 +11,7 @@ export default function IntroSection() {
             <div className="flex items-center justify-center flex-col">
                 <div className="mb-4 flex items-center border shadow-sm p-1 bg-amber-100 text-amber-700 rounded-full uppercase">
                     <Medal className="h-6 w-6 mr-2" />
-                    No 1 Automation Tool
+                    Top Automation Tool
                 </div>
                 <h1 className="text-3xl md:text-5xl text-center font-bold text-neutral-800 mb-6">
                     InSync - The ultimate tool for
@@ -24,7 +24,7 @@ export default function IntroSection() {
                 <Image src="/hero1.svg" width={400} height={400} alt="hero" />
             </div>
             <div className="text-sm md:text-lg text-neutral-400 mt-4 max-w-xs md:max-w-2xl text-center mx-auto">
-                Automate, optimize, and elevate your Android experience with InSync. Whether you&apos;re <span className="text-black">refining app tests or streamlining daily tasks,</span> InSync adapts to your needs—bringing seamless automation right to your fingertips.
+                Automate, optimize, and elevate your Mobile experience with InSync. Whether you&apos;re <span className="text-black">refining app tests or streamlining daily tasks,</span> InSync adapts to your needs—bringing seamless automation right to your fingertips.
             </div>
             <div className="p-10 flex flex-col">
                 <ClerkLoading >

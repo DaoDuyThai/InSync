@@ -3,16 +3,43 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import * as React from "react";
 import { toast } from "sonner";
+import RevenueChart from "./_components/revenue-chart";
 
 type User = {
   last_sign_in_at?: number;
-  last_active_at?: number;
+  last_active_at: number;
   created_at?: number;
   first_name?: string;
   last_name?: string;
   profile_image_url?: string;
   email_addresses?: { email_address: string }[]; // Array of objects with an email_address field
-  // Add other properties if needed
+}
+
+type dailyData = {
+  date: string;
+  gross: number;
+  net: number;
+  newCustomers: number;
+  mrr: number;
+  churnRate: number;
+  avgRevenuePerCustomer: number;
+  activeSubscriptions: number;
+  canceledSubscriptions: number;
+}
+
+type totals = {
+  gross: number;
+  net: number;
+  newCustomers: number;
+  currentMRR: number;
+  avgChurnRate: number;
+  customerLifetimeValue: number;
+  activeSubscriptions: number;
+}
+
+type revenueData = {
+  daily: dailyData[];
+  totals: totals;
 }
 
 const AdminPage = () => {
@@ -22,15 +49,33 @@ const AdminPage = () => {
   const [totalUsersCount, setTotalUsersCount] = React.useState(0);
   const [activeUsers, setActiveUsers] = React.useState(0);
   const [signUpsUsers, setSignUpsUsers] = React.useState(0);
-
+  const [revenueData, setRevenueData] = React.useState<revenueData | null>(null);
   const [recentSignIns, setRecentSignIns] = React.useState<User[]>([]);
+  const [dailyData, setDailyData] = React.useState<dailyData[]>([]);
+  const [totals, setTotals] = React.useState<totals | null>(null);
+
+  const fetchRevenueData = async () => {
+    try {
+      const response = await fetch('/api/stripe-volumes');
+      if (response.ok) {
+        const data = await response.json();
+        setRevenueData(data);
+        setDailyData(data.daily);
+        setTotals(data.totals);
+      } else {
+        console.error('Error fetching revenue data from proxy:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
 
   const fetchUsers = async () => {
     try {
       const response = await fetch('/api/clerk-users');
       if (response.ok) {
         const data = await response.json();
-        console.log('Data:', data);
         setUsers(data);
       } else {
         console.error('Error fetching user count from proxy:', response.statusText);
@@ -43,7 +88,16 @@ const AdminPage = () => {
 
   React.useEffect(() => {
     fetchUsers();
+    fetchRevenueData();
   }, []);
+
+  // React.useEffect(() => {
+  //   if (revenueData) {
+  //     setDailyData(revenueData.daily);
+  //     setTotals(revenueData.totals);
+  //   }
+  // }, [revenueData]);
+
 
   React.useEffect(() => {
     if (users.length > 0) {
@@ -77,12 +131,13 @@ const AdminPage = () => {
       .sort((a, b) => (b.last_sign_in_at ?? 0) - (a.last_sign_in_at ?? 0)) // Sort by last_sign_in_at descending
       .slice(0, 8)); // Limit to the top 8 most recent sign-ins
 
-    console.log
   }, [users]);
+
+
 
   return (
     <div className="w-full h-full overflow-y-auto py-4">
-      <h2 className="text-3xl font-bold">Users</h2>
+      <h2 className="text-3xl font-bold">Participations</h2>
       <div className="grid grid-cols-4 gap-4 py-4">
         <div className="col-span-1 gap-4 flex flex-col ">
           <div className="rounded-lg border flex flex-col h-full justify-start p-6 gap-1">
@@ -126,33 +181,61 @@ const AdminPage = () => {
           </div>
           <div className="">
             {recentSignIns.map((user) => (
-              <>
-                <div className="flex justify-between items-center py-2">
-                  <div className="flex gap-2 items-center">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src={user.profile_image_url} alt="@shadcn" />
-                      <AvatarFallback>User</AvatarFallback>
-                    </Avatar>
-                    <div className="text-sm">
-                      <div className="font-bold">
-                        {user.last_name} {user.first_name}
-                      </div>
-                      <div>
-                        {user.email_addresses?.[0].email_address}
-                      </div>
+
+              <div key={user.profile_image_url} className="flex justify-between items-center py-2">
+                <div className="flex gap-2 items-center">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={user.profile_image_url} alt="@shadcn" />
+                    <AvatarFallback>User</AvatarFallback>
+                  </Avatar>
+                  <div className="text-sm">
+                    <div className="font-bold">
+                      {user.last_name} {user.first_name}
+                    </div>
+                    <div>
+                      {user.email_addresses?.[0].email_address}
                     </div>
                   </div>
-                  <div className="text-sm">
-                    Thu Nov 14
-                  </div>
-                </div></>
+                </div>
+                <div className="text-sm">
+                  {new Date(user.last_active_at).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </div>
-      <h2 className="text-3xl font-bold">Revenue</h2>
-      <div>
+      <h2 className="text-3xl font-bold py-4">Revenue</h2>
+      <div className="grid grid-cols-5 gap-4 h-fit">
+        <div className="col-span-4">
+          <RevenueChart />
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="rounded-lg border flex flex-col justify-start p-6 gap-1 h-1/2">
+            <div className="text-xl font-semibold">
+              New Customers
+            </div>
+            <div className="">
+              Last 30 days
+            </div>
+            <div className="text-4xl font-semibold pt-2">
+              {totals?.newCustomers}
+            </div>
+          </div>
+          <div className="rounded-lg border flex flex-col justify-start p-6 gap-1 h-1/2">
+            <div className="text-xl font-semibold">
+              Active Subscriptions
+            </div>
+            <div className="">
+              Last 30 days
+            </div>
+            <div className="text-4xl font-semibold pt-2">
+              {totals?.activeSubscriptions}
+            </div>
+          </div>
 
+
+        </div>
       </div>
     </div>
   );
