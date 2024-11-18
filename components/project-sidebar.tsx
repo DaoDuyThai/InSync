@@ -169,7 +169,7 @@ export const ProjectSidebar = () => {
                 {/* TODO: Upgrade to Pro */}
 
                 {isSubscribed === null ? null : isSubscribed ? (
-                    <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                    <Button onClick={onClickPay} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                         <Banknote className="h-4 w-4 mr-2" />
                         My Billing & Plan
                     </Button>
