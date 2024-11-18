@@ -137,7 +137,7 @@ const AdminPage = () => {
 
   return (
     <div className="w-full h-full overflow-y-auto py-4">
-      <h2 className="text-3xl font-bold">Users</h2>
+      <h2 className="text-3xl font-bold">Participations</h2>
       <div className="grid grid-cols-4 gap-4 py-4">
         <div className="col-span-1 gap-4 flex flex-col ">
           <div className="rounded-lg border flex flex-col h-full justify-start p-6 gap-1">
