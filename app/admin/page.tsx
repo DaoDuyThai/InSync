@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 type User = {
   last_sign_in_at?: number;
-  last_active_at?: number;
+  last_active_at: number;
   created_at?: number;
   first_name?: string;
   last_name?: string;
@@ -124,33 +124,38 @@ const AdminPage = () => {
           </div>
           <div className="">
             {recentSignIns.map((user) => (
-              
-                <div key={user.profile_image_url} className="flex justify-between items-center py-2">
-                  <div className="flex gap-2 items-center">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src={user.profile_image_url} alt="@shadcn" />
-                      <AvatarFallback>User</AvatarFallback>
-                    </Avatar>
-                    <div className="text-sm">
-                      <div className="font-bold">
-                        {user.last_name} {user.first_name}
-                      </div>
-                      <div>
-                        {user.email_addresses?.[0].email_address}
-                      </div>
+
+              <div key={user.profile_image_url} className="flex justify-between items-center py-2">
+                <div className="flex gap-2 items-center">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={user.profile_image_url} alt="@shadcn" />
+                    <AvatarFallback>User</AvatarFallback>
+                  </Avatar>
+                  <div className="text-sm">
+                    <div className="font-bold">
+                      {user.last_name} {user.first_name}
+                    </div>
+                    <div>
+                      {user.email_addresses?.[0].email_address}
                     </div>
                   </div>
-                  <div className="text-sm">
-                    Thu Nov 14
-                  </div>
                 </div>
+                <div className="text-sm">
+                  {new Date(user.last_active_at).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </div>
       <h2 className="text-3xl font-bold">Revenue</h2>
       <div>
-
+        <div>
+          gross
+        </div>
+        <div>
+          
+        </div>
       </div>
     </div>
   );
