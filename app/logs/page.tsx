@@ -259,7 +259,7 @@ export default function LogPage() {
                         ) : (
                             <div className="flex justify-center items-center h-[calc(100vh - 70px)]">
                                 <div className="text-center">
-                                    <img src="/logs-loading.svg" alt="empty" className="w-auto h-[400px] mx-auto animate-pulse" />
+                                    <img src="/logs-loading.svg" alt="empty" className="w-auto h-[400px] mx-auto" />
                                     <h1 className="text-2xl">Logs - Insync</h1>
                                 </div>
                             </div>

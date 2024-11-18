@@ -564,8 +564,8 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                     <div className="relative flex w-auto h-auto p-[30px]">
                         <canvas
                             ref={canvasRef}
-                            width={window.innerWidth > 2000 ? 1800 : window.innerWidth > 1000 ? 900 : window.innerWidth * 0.8}
-                            height={window.innerWidth > 2000 ? 1200 : window.innerWidth > 1000 ? 600 : window.innerWidth * 0.533}
+                            width={window.innerWidth > 2000 ? 1350 : window.innerWidth > 1000 ? 900 : window.innerWidth * 0.8}
+                            height={window.innerWidth > 2000 ? 900 : window.innerWidth > 1000 ? 600 : window.innerWidth * 0.533}
                             className="shadow-gray-100
                                        shadow-sm border-[1px] 
                                        border-[#e6e6e8] 

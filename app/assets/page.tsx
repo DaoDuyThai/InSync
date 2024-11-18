@@ -334,7 +334,7 @@ export default function ImagePage() {
                         </div>
                         <div className="flex justify-center items-center h-[calc(100vh - 100px)] w-aut">
                             <div className="text-center">
-                                <img src="/loading-asset.svg" alt="No assets found" className="w-auto h-[300px] mx-auto animate-pulse" />
+                                <img src="/loading-asset.svg" alt="No assets found" className="w-auto h-[300px] mx-auto" />
                                 <h1 className="text-2xl">Assest - Insync</h1>
                                 <p className="text-muted-foreground">{notFound ? 'Asset is not found' : 'Powered by InSync'}</p>
                             </div>
