@@ -211,7 +211,7 @@ const AdminPage = () => {
           <RevenueChart />
         </div>
         <div className="flex flex-col gap-4">
-          <div className="rounded-lg border flex flex-col justify-center p-6 gap-1 h-1/2">
+          <div className="rounded-lg border flex flex-col justify-start p-6 gap-1 h-1/2">
             <div className="text-xl font-semibold">
               New Customers
             </div>
@@ -222,7 +222,7 @@ const AdminPage = () => {
               {totals?.newCustomers}
             </div>
           </div>
-          <div className="rounded-lg border flex flex-col justify-center p-6 gap-1 h-1/2">
+          <div className="rounded-lg border flex flex-col justify-start p-6 gap-1 h-1/2">
             <div className="text-xl font-semibold">
               Active Subscriptions
             </div>
