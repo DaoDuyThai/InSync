@@ -94,7 +94,7 @@ export const ProjectSidebar = () => {
             return;
         }
         try {
-            const portalLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_LINK_URL!}?prefilled_email=${user.primaryEmailAddress}`;
+            const portalLinkUrl = `${process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK_URL!}?prefilled_email=${user.primaryEmailAddress}`;
             window.open(portalLinkUrl, "_blank");
         } catch (error) {
             console.error(error);
@@ -169,7 +169,7 @@ export const ProjectSidebar = () => {
                 {/* TODO: Upgrade to Pro */}
 
                 {isSubscribed === null ? null : isSubscribed ? (
-                    <Button onClick={onClickPay} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
+                    <Button onClick={onClickPortal} disabled={pending} variant="ghost" size="lg" className="font-normal justify-start px-2 w-full">
                         <Banknote className="h-4 w-4 mr-2" />
                         My Billing & Plan
                     </Button>
