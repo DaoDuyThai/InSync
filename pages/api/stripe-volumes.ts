@@ -133,8 +133,8 @@ export default async function handler(
         dailyTotals[dateStr].gross += transaction.amount;
         dailyTotals[dateStr].net += transaction.net;
         
-        totals.gross += transaction.amount;
-        totals.net += transaction.net;
+        totals.gross += transaction.amount/100;
+        totals.net += transaction.net/100;
       }
     });
 
