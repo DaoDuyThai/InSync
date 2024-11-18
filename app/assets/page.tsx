@@ -96,7 +96,7 @@ export default function ImagePage() {
                 const [dayB, monthB, yearB] = b.split('-').map(Number);
                 const dateA = new Date(yearA, monthA - 1, dayA);
                 const dateB = new Date(yearB, monthB - 1, dayB);
-                return dateA.getTime() - dateB.getTime();
+                return dateB.getTime() - dateA.getTime();
             }).reduce((acc: GroupedImagesByDate, date) => {
                 acc[date] = grouped[date];
                 return acc;
@@ -144,7 +144,7 @@ export default function ImagePage() {
                     const [dayB, monthB, yearB] = b.split('-').map(Number);
                     const dateA = new Date(yearA, monthA - 1, dayA);
                     const dateB = new Date(yearB, monthB - 1, dayB);
-                    return dateB.getTime() - dateA.getTime();
+                    return dateA.getTime() - dateB.getTime();
                 }).reduce((acc: GroupedImagesByDate, date) => {
                     acc[date] = img[date];
                     return acc;
