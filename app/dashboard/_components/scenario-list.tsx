@@ -95,7 +95,13 @@ export const ScenarioList = ({
     const fetchScenarios = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${user?.id}`
+                `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${user?.id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
             );
             const data = await response.json();
             setScenarioList(data.data);
@@ -108,7 +114,13 @@ export const ScenarioList = ({
     const fetchTotalScenarios = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-user-clerk/${user?.id}`
+                `${process.env.NEXT_PUBLIC_API_URL!}/api/scenarios/scenarios-user-clerk/${user?.id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
             );
             const data = await response.json();
             setTotalScenarios(data.data.length);
@@ -120,7 +132,14 @@ export const ScenarioList = ({
     // Fetch subscription plans
     const fetchSubscriptionPlans = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            );
             if (!response.ok) throw new Error("Failed to fetch subscription plans");
             const data = await response.json();
             setSubscriptionPlans(data.data);
@@ -137,6 +156,12 @@ export const ScenarioList = ({
             }
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
             );
             if (!response.ok) {
                 console.error('Failed to fetch subscription status');
@@ -208,6 +233,7 @@ export const ScenarioList = ({
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                     },
                     body: JSON.stringify(
                         {
@@ -255,6 +281,7 @@ export const ScenarioList = ({
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     scenarioName: newTitle,
@@ -282,6 +309,7 @@ export const ScenarioList = ({
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
             });
             const data = await response.json();
@@ -304,6 +332,7 @@ export const ScenarioList = ({
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
             });
             const data = await response.json();

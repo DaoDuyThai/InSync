@@ -37,7 +37,14 @@ export const ProjectSettings = () => {
             return;
         }
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${selectedProjectId}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${selectedProjectId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            );
             const data = await response.json();
             setProject(data);
             // Set the input field to the current project name
@@ -66,6 +73,7 @@ export const ProjectSettings = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     projectName: newTitle,
@@ -97,6 +105,10 @@ export const ProjectSettings = () => {
         try {
             await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${selectedProjectId}`, {
                 method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                },
             });
             toast.success("Project deleted successfully!");
             // Clear the project from local state and Redux
