@@ -16,11 +16,4 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/p
 );
 
 
-
-{
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer 7e92bd34-b9d4-49ba-9dcf-00b39bbeee24`,
-              "jwt": jwt,
-            }
-          }
+z
