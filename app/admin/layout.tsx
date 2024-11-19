@@ -91,7 +91,14 @@ const AdminLayout = ({ children }: Props) => {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            )
             if (response.ok) {
                 const data = await response.json()
                 setCategories(data.data)
@@ -107,7 +114,14 @@ const AdminLayout = ({ children }: Props) => {
 
     const fetchPages = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            )
             if (response.ok) {
                 const data = await response.json()
 
@@ -193,6 +207,7 @@ const AdminLayout = ({ children }: Props) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify(newPage),
             })
@@ -228,6 +243,7 @@ const AdminLayout = ({ children }: Props) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify(newCategory),
             })

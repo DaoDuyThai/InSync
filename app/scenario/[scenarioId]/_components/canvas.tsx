@@ -63,6 +63,7 @@ export const Canvas = ({
     saveScenario,
     projectId
 }: CanvasProps) => {
+    const UNIQUE_BLOCK_TYPE = 'scenario';
     const blocklyDivRef = React.useRef<HTMLDivElement | null>(null);
     const workspaceRef = React.useRef<Blockly.WorkspaceSvg | null>(null);
     const [code, setCode] = React.useState<string>("");
@@ -120,7 +121,13 @@ export const Canvas = ({
     const fetchAssets = async () => {
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${projectId}`
+                `${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${projectId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    },
+                }
             );
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -254,7 +261,6 @@ export const Canvas = ({
         }
     };
 
-    const UNIQUE_BLOCK_TYPE = 'scenario';
 
     React.useEffect(() => {
         if (!workspaceRef.current && blocklyDivRef.current) {
@@ -325,6 +331,7 @@ export const Canvas = ({
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     assetName: newAssetName, // Assuming newAssetName is a state variable or a ref for the new name
@@ -357,6 +364,10 @@ export const Canvas = ({
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assets/${assetId}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                }
             });
 
             if (!response.ok) {
@@ -729,7 +740,7 @@ export const Canvas = ({
                 && (<div id="image-cropper-area">
                     <div onClick={(e) => handleHiddenModal(e)} className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                         {/* <div className="relative flex items-center justify-center h-fit"> */}
-                            <ImageCropper imgURL={assetFilePath} id="image-cropper" className="block bg-white rounded-sm z-10" />
+                        <ImageCropper imgURL={assetFilePath} id="image-cropper" className="block bg-white rounded-sm z-10" />
                         {/* </div> */}
                     </div>
                 </div>)}

@@ -67,7 +67,14 @@ const AdminDocsCategoryPage = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/${id}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/${id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            );
             if (response.ok) {
                 const data = await response.json();
                 setPageData(data);
@@ -100,6 +107,7 @@ const AdminDocsCategoryPage = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     title: editedCategoryTitle,
@@ -128,6 +136,10 @@ const AdminDocsCategoryPage = () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/${id}`, {
                 method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                }
             });
             if (response.ok) {
                 toast.success("Category deleted successfully");
@@ -154,6 +166,7 @@ const AdminDocsCategoryPage = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     title: createDocumentTitle,
@@ -185,6 +198,7 @@ const AdminDocsCategoryPage = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: isEditDocumentId,
@@ -215,6 +229,10 @@ const AdminDocsCategoryPage = () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${isEditDocumentId}`, {
                 method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                }
             });
             if (response.ok) {
                 toast.success("Document deleted successfully");

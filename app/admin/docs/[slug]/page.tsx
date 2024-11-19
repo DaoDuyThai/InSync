@@ -40,7 +40,14 @@ const AdminDocSlug = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            );
             if (response.ok) {
                 const data = await response.json();
                 setDocumentData(data);
@@ -75,6 +82,7 @@ const AdminDocSlug = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: documentData.id,
@@ -104,6 +112,10 @@ const AdminDocSlug = () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${documentData.id}`, {
                 method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                }
             });
             if (!response.ok) throw new Error("Failed to delete Document.");
             toast.success("Document deleted successfully");
@@ -131,6 +143,7 @@ const AdminDocSlug = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: documentData.id,

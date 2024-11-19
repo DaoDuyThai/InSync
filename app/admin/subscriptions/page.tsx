@@ -44,7 +44,14 @@ const SubscriptionsPage = () => {
 
   const fetchSubscriptionPlans = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+          }
+        }
+      );
       if (!response.ok) throw new Error("Failed to fetch subscription plans");
       const data = await response.json();
       setSubscriptionPlans(data.data);
@@ -62,6 +69,7 @@ const SubscriptionsPage = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
         },
         body: JSON.stringify(updatedSubscriptionPlan),
       });

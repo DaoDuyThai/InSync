@@ -39,7 +39,14 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             localStorage.removeItem("jsonWeb");
             localStorage.removeItem("jsonMobile");
             const selectedProjectId = localStorage.getItem("selectedProjectId");
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/${params.scenarioId}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/${params.scenarioId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            );
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -102,6 +109,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     scenarioName: newTitle,
@@ -128,6 +136,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
             });
             const data = await response.json();
@@ -153,14 +162,20 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
             // Save Web JSON
             const responseWeb = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-web-json/${params.scenarioId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`
+                },
                 body: JSON.stringify(jsonWeb)
             });
 
             // Save Android JSON
             const responseAndroid = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/update-android-json/${params.scenarioId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`
+                },
                 body: JSON.stringify(jsonMobile) // Use jsonMobile directly from the Textarea
             });
 

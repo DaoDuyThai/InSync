@@ -35,7 +35,14 @@ const ProjectsPage = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/pagination`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/pagination`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+          }
+        }
+      );
       if (!response.ok) throw new Error("Failed to fetch projects");
       const data = await response.json();
       setProjects(data.data);
@@ -55,6 +62,10 @@ const ProjectsPage = () => {
     try {
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${projectId}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+        }
       });
       toast.success("Project deleted successfully!");
       fetchProjects()

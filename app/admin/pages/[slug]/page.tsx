@@ -38,7 +38,14 @@ const AdminPageSlug = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            );
             if (response.ok) {
                 const data = await response.json();
                 setPageData(data);
@@ -73,6 +80,7 @@ const AdminPageSlug = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: pageData.id,
@@ -101,6 +109,10 @@ const AdminPageSlug = () => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/${pageData.id}`, {
                 method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                }
             });
             if (!response.ok) throw new Error("Failed to delete page.");
             toast.success("Page deleted successfully");
@@ -128,6 +140,7 @@ const AdminPageSlug = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: pageData.id,
