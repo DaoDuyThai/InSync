@@ -50,7 +50,14 @@ export function DocsSidebar() {
     const fetchCategories = async () => {
         setPageLoading(true)
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+                    }
+                }
+            )
             if (response.ok) {
                 const data = await response.json()
                 console.log(data.data)

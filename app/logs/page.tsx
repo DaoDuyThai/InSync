@@ -75,8 +75,14 @@ export default function LogPage() {
             }
             const fetchScenariosId = async () => {
                 if (projectId === '') return;
-                console.log(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`);
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`)
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scenarios/scenarios-project-useridclerk/${projectId}?userIdClerk=${userId}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        }
+                    }
+                )
                     .then(response => response.json())
                     .then(data => {
                         setScenarios(data.data);
@@ -269,7 +275,7 @@ export default function LogPage() {
 
 
             )
-        } 
+        }
         // else {
         //     return <Loading />
         // }
