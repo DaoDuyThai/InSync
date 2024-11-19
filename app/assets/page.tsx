@@ -108,7 +108,14 @@ export default function ImagePage() {
             try {
                 const selectedProjectId = localStorage.getItem("selectedProjectId");
                 if (selectedProjectId) {
-                    await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${selectedProjectId}`)
+                    await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/asset-project/${selectedProjectId}`,
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                            }
+                        }
+                    )
                         .then(res => res.json()).then(data => {
                             setImages(groupImagesByDate(data.data))
                         }).catch(err => console.log(err));
@@ -156,7 +163,16 @@ export default function ImagePage() {
         let filteredImagesByDate = filteredImagesByNameFunction(images);
 
         const handleDeleteAsset = (id: string, dateCreated: string) => {
-            fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${id}`, { method: "DELETE" })
+            fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                },
+
+            )
                 .then(res => {
                     if (res.status === 200) {
                         const updatedImages = images[dateCreated].filter((image, i) => image.id !== id);
@@ -224,7 +240,8 @@ export default function ImagePage() {
             fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/assets/${assetId}`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     assetName: newAssetName, // Assuming newAssetName is a state variable or a ref for the new name
