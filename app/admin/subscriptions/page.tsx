@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { toast } from "sonner";
+import { useAuth } from "@clerk/nextjs";
 
 type SubscriptionPlan = {
   id: string,
@@ -41,14 +42,20 @@ const SubscriptionsPage = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [selectedPlanId, setSelectedPlanId] = React.useState<string | null>(null);
+  const { getToken } = useAuth();
 
   const fetchSubscriptionPlans = async () => {
+    const jwt = await getToken({ template: "InSyncRoleToken" });
+    if (!jwt) {
+      throw new Error("Failed to retrieve JWT token.");
+    }
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`,
         {
           headers: {
             "Content-Type": "application/json",
             "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+            Authorization: `Bearer ${jwt}`,
           }
         }
       );
@@ -65,11 +72,16 @@ const SubscriptionsPage = () => {
   const handleEdit = async (subscriptionPlanId: string, updatedSubscriptionPlan: Partial<SubscriptionPlan>) => {
     setIsLoading(true);
     try {
+      const jwt = await getToken({ template: "InSyncRoleToken" });
+      if (!jwt) {
+        throw new Error("Failed to retrieve JWT token.");
+      }
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/${subscriptionPlanId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+          Authorization: `Bearer ${jwt}`,
         },
         body: JSON.stringify(updatedSubscriptionPlan),
       });

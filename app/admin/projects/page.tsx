@@ -13,6 +13,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { toast } from "sonner";
+import { useAuth } from "@clerk/nextjs";
 
 type Project = {
   id: string;
@@ -32,14 +33,20 @@ const ProjectsPage = () => {
   const [projects, setProjects] = React.useState<Project[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { getToken } = useAuth();
 
   const fetchProjects = async () => {
     try {
+      const jwt = await getToken({ template: "InSyncRoleToken" });
+      if (!jwt) {
+        throw new Error("Failed to retrieve JWT token.");
+      }
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/pagination`,
         {
           headers: {
             "Content-Type": "application/json",
             "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+            Authorization: `Bearer ${jwt}`,
           }
         }
       );
@@ -60,11 +67,16 @@ const ProjectsPage = () => {
   const handleDelete = async (projectId: string) => {
     setIsLoading(true);
     try {
+      const jwt = await getToken({ template: "InSyncRoleToken" });
+      if (!jwt) {
+        throw new Error("Failed to retrieve JWT token.");
+      }
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/projects/${projectId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+          Authorization: `Bearer ${jwt}`,
         }
       });
       toast.success("Project deleted successfully!");

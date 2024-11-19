@@ -13,6 +13,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { Trash2 } from "lucide-react";
 import '@/components/rich-text.css';
+import { useAuth } from "@clerk/nextjs";
 
 type Page = {
     id: string;
@@ -34,15 +35,21 @@ const AdminPageSlug = () => {
     const [isEditDialogOpen, setIsEditDialogOpen] = React.useState<boolean>(false);
     const [editedTitle, setEditedTitle] = React.useState<string>("");
     const [editedSlug, setEditedSlug] = React.useState<string>("");
+    const { getToken } = useAuth();
 
     const fetchData = async () => {
         setLoading(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
                         "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        Authorization: `Bearer ${jwt}`,
                     }
                 }
             );
@@ -76,11 +83,16 @@ const AdminPageSlug = () => {
         }
         setPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     id: pageData.id,
@@ -107,11 +119,16 @@ const AdminPageSlug = () => {
         }
         setPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/${pageData.id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 }
             });
             if (!response.ok) throw new Error("Failed to delete page.");
@@ -136,11 +153,16 @@ const AdminPageSlug = () => {
         }
         setPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages/slug/${slug}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     id: pageData.id,

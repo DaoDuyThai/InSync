@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@clerk/nextjs";
 
 type Category = {
     id: string
@@ -64,14 +65,20 @@ const AdminDocsCategoryPage = () => {
     const [createDocumentTitle, setCreateDocumentTitle] = React.useState<string>("");
     const [createDocumentSlug, setCreateDocumentSlug] = React.useState<string>("");
 
+    const { getToken } = useAuth();
     const fetchData = async () => {
         setLoading(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/${id}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
                         "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        Authorization: `Bearer ${jwt}`,
                     }
                 }
             );
@@ -103,11 +110,16 @@ const AdminDocsCategoryPage = () => {
         e.preventDefault();
         setButtonCategoryDialogPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     title: editedCategoryTitle,
@@ -134,11 +146,16 @@ const AdminDocsCategoryPage = () => {
     const handleDeleteCategory = async () => {
         setButtonCategoryDialogPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 }
             });
             if (response.ok) {
@@ -162,11 +179,16 @@ const AdminDocsCategoryPage = () => {
         e.preventDefault();
         setButtonCreateDocumentDialogPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     title: createDocumentTitle,
@@ -194,11 +216,16 @@ const AdminDocsCategoryPage = () => {
         e.preventDefault();
         setButtonDocumentDialogPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${isEditDocumentId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     id: isEditDocumentId,
@@ -227,11 +254,16 @@ const AdminDocsCategoryPage = () => {
     const handleDeleteDocument = async () => {
         setButtonDocumentDialogPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${isEditDocumentId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 }
             });
             if (response.ok) {

@@ -13,6 +13,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { Trash2 } from "lucide-react";
 import '@/components/rich-text.css';
+import { useAuth } from "@clerk/nextjs";
 
 type Doc = {
     id: string;
@@ -36,15 +37,21 @@ const AdminDocSlug = () => {
     const [isEditDialogOpen, setIsEditDialogOpen] = React.useState<boolean>(false);
     const [editedTitle, setEditedTitle] = React.useState<string>("");
     const [editedSlug, setEditedSlug] = React.useState<string>("");
+    const { getToken } = useAuth();
 
     const fetchData = async () => {
         setLoading(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+        if (!jwt) {
+            throw new Error("Failed to retrieve JWT token.");
+        }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
                         "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        Authorization: `Bearer ${jwt}`,
                     }
                 }
             );

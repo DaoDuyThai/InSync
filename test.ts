@@ -9,11 +9,10 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/p
     {
         headers: {
             "Content-Type": "application/json",
-            "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+            Authorization: `Bearer ${jwt}`,
             "x-api-key": jwt,
         }
     }
 );
 
 
-z

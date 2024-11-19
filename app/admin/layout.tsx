@@ -3,7 +3,7 @@
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignUpButton, useAuth, UserButton } from "@clerk/nextjs"
 import * as React from "react"
 import { CalendarCog, ChartSpline, Loader, ChevronRight, CircleDollarSign, FileCog, FolderCog, House, UserCog, } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from "@/components/ui/collapsible"
@@ -87,15 +87,21 @@ const AdminLayout = ({ children }: Props) => {
     const [breadcrumbTitle1, setBreadcrumbTitle1] = React.useState<string>("")
     const [BreadcrumbUrl1, setBreadcrumbUrl1] = React.useState<string>("")
     const [breadcrumbTitle2, setBreadcrumbTitle2] = React.useState<string>("")
+    const { getToken } = useAuth();
 
 
     const fetchCategories = async () => {
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument/pagination`,
                 {
                     headers: {
                         "Content-Type": "application/json",
                         "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        Authorization: `Bearer ${jwt}`,
                     }
                 }
             )
@@ -114,11 +120,16 @@ const AdminLayout = ({ children }: Props) => {
 
     const fetchPages = async () => {
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`,
                 {
                     headers: {
                         "Content-Type": "application/json",
                         "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        Authorization: `Bearer ${jwt}`,
                     }
                 }
             )
@@ -203,11 +214,16 @@ const AdminLayout = ({ children }: Props) => {
         }
 
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify(newPage),
             })
@@ -239,11 +255,16 @@ const AdminLayout = ({ children }: Props) => {
         }
 
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categorydocument`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify(newCategory),
             })
