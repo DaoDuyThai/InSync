@@ -21,7 +21,14 @@ export default function PricingPlanSection() {
     useEffect(() => {
         const fetchPricingPlans = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/SubscriptionPlans`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/SubscriptionPlans`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        }
+                    }
+                );
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
