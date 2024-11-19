@@ -42,7 +42,7 @@ const AdminPageSlug = () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     }
                 }
             );
@@ -80,7 +80,7 @@ const AdminPageSlug = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: pageData.id,
@@ -111,7 +111,7 @@ const AdminPageSlug = () => {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 }
             });
             if (!response.ok) throw new Error("Failed to delete page.");
@@ -140,7 +140,7 @@ const AdminPageSlug = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: pageData.id,

@@ -41,7 +41,7 @@ export const ProjectSettings = () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     }
                 }
             );
@@ -73,7 +73,7 @@ export const ProjectSettings = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     projectName: newTitle,
@@ -107,7 +107,7 @@ export const ProjectSettings = () => {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
             });
             toast.success("Project deleted successfully!");

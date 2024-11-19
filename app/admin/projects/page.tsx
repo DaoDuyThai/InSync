@@ -39,7 +39,7 @@ const ProjectsPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+            "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
           }
         }
       );
@@ -64,7 +64,7 @@ const ProjectsPage = () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+          "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
         }
       });
       toast.success("Project deleted successfully!");

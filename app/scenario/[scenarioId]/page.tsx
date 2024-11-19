@@ -43,7 +43,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     }
                 }
             );
@@ -109,7 +109,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     scenarioName: newTitle,
@@ -136,7 +136,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
             });
             const data = await response.json();

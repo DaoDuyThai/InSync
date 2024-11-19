@@ -48,7 +48,7 @@ const SubscriptionsPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+            "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
           }
         }
       );
@@ -69,7 +69,7 @@ const SubscriptionsPage = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+          "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
         },
         body: JSON.stringify(updatedSubscriptionPlan),
       });

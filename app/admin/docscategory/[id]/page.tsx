@@ -71,7 +71,7 @@ const AdminDocsCategoryPage = () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     }
                 }
             );
@@ -107,7 +107,7 @@ const AdminDocsCategoryPage = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     title: editedCategoryTitle,
@@ -138,7 +138,7 @@ const AdminDocsCategoryPage = () => {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 }
             });
             if (response.ok) {
@@ -166,7 +166,7 @@ const AdminDocsCategoryPage = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     title: createDocumentTitle,
@@ -198,7 +198,7 @@ const AdminDocsCategoryPage = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     id: isEditDocumentId,
@@ -231,7 +231,7 @@ const AdminDocsCategoryPage = () => {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 }
             });
             if (response.ok) {

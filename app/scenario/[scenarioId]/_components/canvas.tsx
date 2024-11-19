@@ -125,7 +125,7 @@ export const Canvas = ({
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     },
                 }
             );
@@ -331,7 +331,7 @@ export const Canvas = ({
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify({
                     assetName: newAssetName, // Assuming newAssetName is a state variable or a ref for the new name
@@ -366,7 +366,7 @@ export const Canvas = ({
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 }
             });
 

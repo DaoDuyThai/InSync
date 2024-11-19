@@ -69,7 +69,7 @@ export const ProjectSelector = () => {
                     {
                         headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                            "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                         }
                     }
                 );
@@ -98,7 +98,7 @@ export const ProjectSelector = () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     }
                 }
             );
@@ -120,7 +120,7 @@ export const ProjectSelector = () => {
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     }
                 }
             );
@@ -179,7 +179,7 @@ export const ProjectSelector = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                     },
                     body: JSON.stringify(body),
                 });
