@@ -49,6 +49,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify(body),
             });
@@ -116,7 +117,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                     </div>
                 ) : (
                     <button
-                        onClick={() =>{
+                        onClick={() => {
                             setLoading(true);
                             initializeCloudinaryWidget();
                         }}
@@ -127,7 +128,7 @@ const CloudinaryUploadWidget: React.FC<CloudinaryUploadWidgetProps> = ({ uwConfi
                         <p className="text-sm text-white font-light">New Asset</p>
                     </button>
                 )}
-                {children} 
+                {children}
             </div>
         </CloudinaryScriptContext.Provider>
     );

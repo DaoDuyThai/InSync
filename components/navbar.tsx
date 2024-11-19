@@ -36,6 +36,12 @@ export const Navbar = (
 
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+                {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                  }
             );
 
             if (!response.ok) {

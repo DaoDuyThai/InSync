@@ -61,11 +61,18 @@ export const ProjectSelector = () => {
     const { user, isLoaded } = useUser();
     const selectedProject = useSelector((state: RootState) => state.project.selectedProject);
     const dispatch = useDispatch<AppDispatch>();
-    
+
     const fetchProjects = async () => {
         if (user && isLoaded) {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                        }
+                    }
+                );
                 const data = await response.json();
                 if (data?.data?.length > 0) {
                     // Sort projects by dateCreated in descending order, treating dateCreated as a string
@@ -87,7 +94,14 @@ export const ProjectSelector = () => {
 
     const fetchSubscriptionPlans = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/subscriptionplans/pagination`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
+            );
             if (!response.ok) throw new Error("Failed to fetch subscription plans");
             const data = await response.json();
             setSubscriptionPlans(data.data);
@@ -103,6 +117,12 @@ export const ProjectSelector = () => {
             }
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/usersubscriptions/check-non-expired/${user.id}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    }
+                }
             );
             if (!response.ok) {
                 console.error('Failed to fetch subscription status');
@@ -159,6 +179,7 @@ export const ProjectSelector = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
                     },
                     body: JSON.stringify(body),
                 });

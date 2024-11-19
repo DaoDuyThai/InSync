@@ -32,22 +32,17 @@ const DashboardPage = () => {
   const hasProjects = projectList.length > 0;
   const selectedProjectId = useSelector((state: RootState) => state.project.selectedProject);
   const dispatch = useDispatch<AppDispatch>();
-  const { getToken } = useAuth();
 
   // Fetch projects when user is loaded
   const fetchProjects = async () => {
     if (user && isLoaded) {
       try {
-        const jwt = await getToken({template: "InSyncRoleToken"});
-        if (!jwt) {
-          throw new Error("Failed to retrieve JWT token.");
-        }
+        
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/api/projects/project-user-clerk-is-publish/${user.id}`,
           {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`,
-              "x-api-key": jwt,
             }
           }
         );
