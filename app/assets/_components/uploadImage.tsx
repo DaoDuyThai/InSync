@@ -42,7 +42,12 @@ async function uploadImageToDB(imgURL: string) {
     "filePath": imgURL
   };
   await axios
-    .post(url, data)
+    .post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": process.env.NEXT_PUBLIC_API_KEY!,
+      }
+    })
     .then((response) => {
       console.log(response.data);
     })
