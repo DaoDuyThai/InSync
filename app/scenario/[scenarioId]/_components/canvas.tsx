@@ -9,17 +9,9 @@ import './blockly.css';
 import { toast } from "sonner";
 import { Loading } from "@/components/loading";
 import ImageCropper from "@/components/image-cropper";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, Plus, MoreVertical, FilePenLine, RefreshCcw } from "lucide-react"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { Undo, Redo, Trash, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, MoreVertical, FilePenLine, RefreshCcw } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Hint } from "@/components/hint";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +21,7 @@ import { ConfirmModal } from "@/components/confirm-modal";
 import CodeMirror from "@uiw/react-codemirror";
 import { json } from "@codemirror/lang-json";
 import CloudinaryUploadWidget from "@/components/cloudinary-upload-widget";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { HoverCard, HoverCardContent, HoverCardTrigger, } from "@/components/ui/hover-card"
 import { ref, onValue } from "firebase/database";
 import 'firebase/database'

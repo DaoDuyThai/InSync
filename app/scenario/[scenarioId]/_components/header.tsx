@@ -1,31 +1,15 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignOutButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
-import { ArrowRight, File, Lightbulb, Loader, MoreHorizontal, Settings } from "lucide-react"
+import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
+import { File, Lightbulb, Loader, } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
 import { cn } from "@/lib/utils"
-import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-    navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle, } from "@/components/ui/navigation-menu"
 import React from "react"
 import { Poppins } from "next/font/google"
 import { Badge } from "@/components/ui/badge"
-import { Actions } from "@/components/actions"
 
 const font = Poppins({
     subsets: ["latin"],

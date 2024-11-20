@@ -1,4 +1,4 @@
-import { getUnixTime, set } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import * as React from "react";
 import { EmptyFavorites } from "./empty-favorites";
 import { EmptyScenario } from "./empty-scenario";

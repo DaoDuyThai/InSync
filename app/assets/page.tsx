@@ -1,15 +1,13 @@
 'use client'
 
-import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, EllipsisVerticalIcon, FilePenLine, LucideCirclePlus, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import uploadImage from "./_components/uploadImage";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
-import { DialogFooter, DialogHeader } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { Dialog} from "@radix-ui/react-dialog";
 import { ConfirmModal } from "@/components/confirm-modal";
 
 

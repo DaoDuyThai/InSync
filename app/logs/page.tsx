@@ -1,5 +1,4 @@
 'use client';
-import { Loading } from "@/components/loading";
 import { useAuth } from "@clerk/nextjs";
 import { MouseEvent, useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";

@@ -4,7 +4,7 @@ import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { EmptyProject } from "./_components/empty-project";
 import { ScenarioList } from "./_components/scenario-list";
-import { useAuth, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { selectProject } from "@/store/projectSlice";
