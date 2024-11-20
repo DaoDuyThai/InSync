@@ -185,8 +185,8 @@ const AdminDocSlug = () => {
             <MinimalTiptapEditor
                 value={value}
                 onChange={setValue}
-                className="w-full flex-1 overflow-y-auto my-4 rich-text "
-                editorContentClassName="p-5"
+                className="w-full flex-1 overflow-y-auto my-4"
+                editorContentClassName="p-5 rich-text"
                 output="html"
                 placeholder="Type your description here..."
                 autofocus={true}

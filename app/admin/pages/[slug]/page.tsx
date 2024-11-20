@@ -196,13 +196,13 @@ const AdminPageSlug = () => {
             <MinimalTiptapEditor
                 value={value}
                 onChange={setValue}
-                className="w-full flex-1 overflow-y-auto my-4 rich-text"
+                className="w-full flex-1 overflow-y-auto my-4 "
                 editorContentClassName="h-full p-5 border-none rich-text"
                 output="html"
                 placeholder="Type your description here..."
                 autofocus={true}
                 editable={true}
-                editorClassName="focus:outline-none rich-text"
+                editorClassName="focus:outline-none "
             />
             <div className="flex justify-center my-2 gap-4">
                 <Button variant="ghost" onClick={() => setIsEditDialogOpen(true)}>
