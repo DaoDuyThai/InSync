@@ -164,7 +164,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify(jsonWeb)
             });
@@ -174,7 +174,7 @@ const ScenarioIdPage = ({ params }: ScenarioIdPageProps) => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY!}`
+                    "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
                 },
                 body: JSON.stringify(jsonMobile) // Use jsonMobile directly from the Textarea
             });

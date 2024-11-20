@@ -11,7 +11,7 @@ import { Loading } from "@/components/loading";
 import ImageCropper from "@/components/image-cropper";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, Plus, MoreVertical, FilePenLine } from "lucide-react"
+import { Undo, Redo, Trash, MoreHorizontal, ZoomOut, ZoomIn, Minimize, Maximize, Move, Save, Link, SquarePen, Pencil, Trash2, Plus, MoreVertical, FilePenLine, RefreshCcw } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -147,7 +147,7 @@ export const Canvas = ({
         if (projectId !== "") {
             fetchAssets();
         }
-    }, [projectId, assets]);
+    }, [projectId]);
 
     // Update filtered assets based on search term
     React.useEffect(() => {
@@ -559,13 +559,18 @@ export const Canvas = ({
                     </div>
 
                     <TabsContent value="assets" className="flex-1 overflow-hidden m-0">
-                        <div className="w-full px-4">
+                        <div className="w-full px-4 flex gap-4">
                             <Input
                                 placeholder="Search assets"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full" // Add margin for spacing
                             />
+                            <Button size={"icon"} variant={"ghost"} onClick={() => {
+                                fetchAssets();
+                            }}>
+                                <RefreshCcw className="h-4 w-4" />
+                            </Button>
                         </div>
                         <div className="w-full max-h-[calc(100vh-119px)] overflow-y-auto text-muted-foreground grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 p-4">
                             <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={handlePublicId} projectId={projectId}>
