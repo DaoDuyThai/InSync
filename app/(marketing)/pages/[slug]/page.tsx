@@ -78,10 +78,9 @@ const PageSlug = () => {
     )
 
     return (
-        <div className="container">
-            <h1 className="font-bold text-center text-2xl uppercase">{pageData?.title}</h1>
+        <div className="container rich-text">
+            <h1 className=" text-center uppercase ">{pageData?.title}</h1>
             <div
-                className="rich-text"
                 dangerouslySetInnerHTML={{ __html: pageData?.content || '' }}
             />
 

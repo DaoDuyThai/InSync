@@ -120,7 +120,7 @@ const SubscriptionsPage = () => {
       <Table className="text-center">
         <TableHeader>
           <TableRow>
-            <TableHead className="text-center">Property</TableHead>
+            <TableHead className="text-center font-black">Property</TableHead>
             {subscriptionPlans.map((plan) => (
               <TableHead key={plan.id}>
                 <Button
@@ -128,7 +128,7 @@ const SubscriptionsPage = () => {
                   size="icon"
                   onClick={() => copyToClipboard(plan.id)}
                   title="Copy ID"
-                  className="w-full"
+                  className="w-full font-black"
                 >
                   {plan.subscriptionsName}
 
@@ -257,7 +257,7 @@ const EditDialog: React.FC<EditDialogProps> = ({ plan, onEdit, isLoading, open, 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="flex items-center gap-2 w-full">
+        <Button size="sm" className="flex items-center gap-2 w-full">
           <Pencil className="h-4 w-4" />
           Edit
         </Button>

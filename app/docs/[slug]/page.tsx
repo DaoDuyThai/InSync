@@ -80,10 +80,9 @@ const DocSlug = () => {
     )
 
     return (
-        <div className="py-4">
-            <h1 className="font-bold text-center text-2xl uppercase">{documentData?.title}</h1>
+        <div className="py-4 rich-text">
+            <h1 className=" text-center uppercase">{documentData?.title}</h1>
             <div
-                className="rich-text"
                 dangerouslySetInnerHTML={{ __html: documentData?.content || '' }}
             />
 
