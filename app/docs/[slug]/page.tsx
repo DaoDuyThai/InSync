@@ -1,17 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Loading } from "@/components/loading";
-import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { ConfirmModal } from "@/components/confirm-modal";
-import { Trash2 } from "lucide-react";
+
 import '@/components/rich-text.css';
 
 type Doc = {
@@ -30,12 +23,7 @@ type Doc = {
 const DocSlug = () => {
     const { slug } = useParams() as { slug: string };
     const [documentData, setDocumentData] = React.useState<Doc | null>(null);
-    const [value, setValue] = React.useState<any>("");
     const [loading, setLoading] = React.useState<boolean>(true);
-    const [pending, setPending] = React.useState<boolean>(false);
-    const [isEditDialogOpen, setIsEditDialogOpen] = React.useState<boolean>(false);
-    const [editedTitle, setEditedTitle] = React.useState<string>("");
-    const [editedSlug, setEditedSlug] = React.useState<string>("");
 
     const fetchData = async () => {
         setLoading(true);
@@ -51,9 +39,7 @@ const DocSlug = () => {
             if (response.ok) {
                 const data = await response.json();
                 setDocumentData(data);
-                setValue(data.content);
-                setEditedTitle(data.title);
-                setEditedSlug(data.slug);
+
             } else if (response.status === 404) {
                 toast.error("Document not found");
                 setTimeout(() => {
@@ -85,8 +71,6 @@ const DocSlug = () => {
             <div
                 dangerouslySetInnerHTML={{ __html: documentData?.content || '' }}
             />
-
-
         </div>
     );
 };

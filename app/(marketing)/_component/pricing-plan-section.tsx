@@ -11,7 +11,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { loadEnvConfig } from "@next/env";
 import Link from "next/link";
 
 
