@@ -107,7 +107,7 @@ export const ProModal = () => {
               <Loading />
             ) : SubscriptionPlans[1] ? (
               <ul className="text-md space-y-1 list-disc">
-                <li>Price: {SubscriptionPlans[1].price}/month</li>
+                <li>Price: {SubscriptionPlans[1].price}.000 VNĐ/month</li>
                 <li>Max Projects: {SubscriptionPlans[1].maxProjects}</li>
                 <li>Max Scenarios: {SubscriptionPlans[1].maxScenarios}</li>
                 <li>Support Level: {SubscriptionPlans[1].supportLevel}</li>
