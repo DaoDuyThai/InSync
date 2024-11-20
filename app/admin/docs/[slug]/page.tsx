@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Loading } from "@/components/loading";
 import { MinimalTiptapEditor } from "@/components/minimal-tiptap";
 import { toast } from "sonner";
@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { ConfirmModal } from "@/components/confirm-modal";
-import { Trash2 } from "lucide-react";
 import '@/components/rich-text.css';
 import { useAuth } from "@clerk/nextjs";
 

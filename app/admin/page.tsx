@@ -2,7 +2,6 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import * as React from "react";
-import { toast } from "sonner";
 import RevenueChart from "./_components/revenue-chart";
 
 type User = {
@@ -90,13 +89,6 @@ const AdminPage = () => {
     fetchUsers();
     fetchRevenueData();
   }, []);
-
-  // React.useEffect(() => {
-  //   if (revenueData) {
-  //     setDailyData(revenueData.daily);
-  //     setTotals(revenueData.totals);
-  //   }
-  // }, [revenueData]);
 
 
   React.useEffect(() => {
@@ -233,8 +225,6 @@ const AdminPage = () => {
               {totals?.activeSubscriptions}
             </div>
           </div>
-
-
         </div>
       </div>
     </div>

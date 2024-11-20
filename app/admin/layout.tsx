@@ -2,23 +2,21 @@
 
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, SignInButton, SignUpButton, useAuth, UserButton } from "@clerk/nextjs"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, useAuth, UserButton } from "@clerk/nextjs"
 import * as React from "react"
-import { CalendarCog, ChartSpline, Loader, ChevronRight, CircleDollarSign, FileCog, FolderCog, House, UserCog, } from "lucide-react"
+import { CalendarCog, ChartSpline, Loader, ChevronRight, CircleDollarSign, FileCog, FolderCog, UserCog, } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, } from "@/components/ui/collapsible"
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarRail, } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem, SidebarRail, } from "@/components/ui/sidebar"
 import Image from "next/image"
 import Link from "next/link"
 import { Hint } from "@/components/hint"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Loading } from "@/components/loading"
-import { set } from "date-fns"
 import { toast } from "sonner"
 import { Label } from "@/components/ui/label"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 
 type Props = {

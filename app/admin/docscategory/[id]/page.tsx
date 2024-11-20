@@ -3,13 +3,12 @@
 import * as React from "react";
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "@/components/data-table";
-import { Eye, ListOrdered, LucidePencilRuler, MoreHorizontal, Pencil, Plus, Settings, SortAsc, Trash2 } from "lucide-react"
+import { Eye, LucidePencilRuler, Pencil, Plus, Settings, } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import { Checkbox } from "@/components/ui/checkbox"
 import { Loading } from "@/components/loading";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ConfirmModal } from "@/components/confirm-modal";
 import { toast } from "sonner";
