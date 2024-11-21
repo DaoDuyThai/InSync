@@ -42,9 +42,9 @@ const AdminDocSlug = () => {
         setLoading(true);
         try {
             const jwt = await getToken({ template: "InSyncRoleToken" });
-        if (!jwt) {
-            throw new Error("Failed to retrieve JWT token.");
-        }
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`,
                 {
                     headers: {
@@ -84,11 +84,16 @@ const AdminDocSlug = () => {
         }
         setPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     id: documentData.id,
@@ -116,11 +121,16 @@ const AdminDocSlug = () => {
         }
         setPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/${documentData.id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 }
             });
             if (!response.ok) throw new Error("Failed to delete Document.");
@@ -145,11 +155,16 @@ const AdminDocSlug = () => {
         }
         setPending(true);
         try {
+            const jwt = await getToken({ template: "InSyncRoleToken" });
+            if (!jwt) {
+                throw new Error("Failed to retrieve JWT token.");
+            }
             await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/documents/slug/${slug}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     "api-key": `${process.env.NEXT_PUBLIC_API_KEY!}`,
+                    Authorization: `Bearer ${jwt}`,
                 },
                 body: JSON.stringify({
                     id: documentData.id,
