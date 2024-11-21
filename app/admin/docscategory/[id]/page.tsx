@@ -423,8 +423,8 @@ const AdminDocsCategoryPage = () => {
                                     </Button>
                                 </DialogClose>
                                 <ConfirmModal
-                                    header="Delete page?"
-                                    description="This will delete the page and all of its contents."
+                                    header="Delete Category?"
+                                    description="This will delete the category and all of its contents."
                                     onConfirm={handleDeleteCategory}
                                 >
                                     <Button
