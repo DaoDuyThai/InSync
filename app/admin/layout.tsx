@@ -567,6 +567,7 @@ const AdminLayout = ({ children }: Props) => {
                                                                         placeholder="Order"
                                                                         onChange={(e) => setNewCreateCategoryOrder(e.target.value)}
                                                                         minLength={2}
+                                                                        min={1}
                                                                         required
                                                                         className="col-span-3"
                                                                     />
