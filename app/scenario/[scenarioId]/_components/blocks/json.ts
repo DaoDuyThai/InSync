@@ -64,8 +64,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "type": "field_image_drop",
                 "name": "IMAGE",
                 "src": "/drop-image-here.png",
-                "width": 50,
-                "height": 50,
+                "width": 70,
+                "height": 70,
                 "alt": "Drag image here"
             },
             {
@@ -73,6 +73,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "TRIES",
                 "value": 3,
                 "min": 1,
+                "max": 1000,
                 "precision": 1
             }
         ],
@@ -117,6 +118,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "TIMES",
                 "value": 3,
                 "min": 1,
+                "max":1000,
                 "precision": 1
             },
             {
@@ -150,7 +152,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "type": "field_number",
                 "name": "DURATION",
                 "value": 1000,
-                "min": 0,
+                "min": 100,
+                "max": 1000000000,
                 "precision": 1
             }
         ],
@@ -180,8 +183,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "type": "field_image_drop",
                 "name": "IMAGE",
                 "src": "/drop-image-here.png",
-                "width": 50,
-                "height": 50,
+                "width": 70,
+                "height": 70,
                 "alt": "Drag image here"
             },
             {
@@ -189,6 +192,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "DURATION",
                 "value": 100,
                 "min": 0,
+                "max": 1000000000,
                 "precision": 1
             }
         ],
@@ -219,6 +223,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "X",
                 "value": 0,
                 "min": 0,
+                "max": 100000,
                 "precision": 1
             },
             {
@@ -226,6 +231,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "Y",
                 "value": 0,
                 "min": 0,
+                "max": 100000,
                 "precision": 1
             },
             {
@@ -233,6 +239,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "DURATION",
                 "value": 100,
                 "min": 0,
+                "max": 1000000000,
                 "precision": 1
             }
         ],
@@ -271,6 +278,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "DURATION",
                 "value": 100,
                 "min": 0,
+                "max": 1000000000,
                 "precision": 1
             }
         ],
@@ -311,6 +319,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "DURATION",
                 "value": 100,
                 "min": 0,
+                "max": 1000000000,
                 "precision": 1
             }
         ],
@@ -349,6 +358,7 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                 "name": "DURATION",
                 "value": 100,
                 "min": 0,
+                "max": 1000000000,
                 "precision": 1
             },
             {
