@@ -291,7 +291,7 @@ export default function LogPage() {
                                     ))}
                                 </div>
                                 <div className={`fixed inset-0 ${openPopUp ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-50`}>
-                                    <div className="bg-white p-5 rounded shadow-lg w-[800px] h-[calc(100vh-420px)] max-h-[1000px] mx-auto z-10 relative overflow-y-auto">
+                                    <div className="bg-white p-5 rounded shadow-lg w-auto h-auto min-w-[400px] min-h-[200px] max-h-[800px] xl:max-h-[1000w] mx-auto z-10 relative overflow-y-auto">
                                         <XIcon className="absolute top-1 right-1" size={24} onClick={() => {setOpenPopUp(false)}}/>
                                         <div id="popUp" className="" >{popUpContent ? parse(popUpContent) : 'No data'}</div>
                                         
