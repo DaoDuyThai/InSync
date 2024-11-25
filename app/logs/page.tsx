@@ -4,8 +4,12 @@ import { MouseEvent, useEffect, useState } from "react";
 import { ref, onValue } from "firebase/database";
 import 'firebase/database'
 import { db } from "@/firebase/database-firebase";
-import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon } from "lucide-react";
+import { ArrowDownWideNarrowIcon, ArrowUpWideNarrowIcon, Icon, XIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { log } from "console";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@radix-ui/react-hover-card";
+import parse from 'html-react-parser';
 
 interface LogsSessions {
     [key: string]: LogsSessionsObject
@@ -60,6 +64,8 @@ export default function LogPage() {
     const searchParams = useSearchParams();
     const [searchKey, setSearchKey] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [openPopUp, setOpenPopUp] = useState<boolean>(false);
+    const [popUpContent, setPopUpContent] = useState<string | null>(null);
 
 
     useEffect(() => {
@@ -149,16 +155,20 @@ export default function LogPage() {
             try {
                 const target = e.target as HTMLDivElement;
                 const parentTarget = target.parentElement;
-                console.log(parentTarget);
+                const popUp = document.querySelector("#popUp");
+                console.log(popUp);
+                
 
                 const logSessionsRef = document.querySelectorAll(".log-sessions");
                 const logsRef = document.querySelectorAll(".logs");
                 if (parentTarget) {
                     const index = Array.from(logSessionsRef).indexOf(parentTarget);
-                    if (index !== -1) {
-                        logsRef[index].classList.toggle("hidden");
+                    if (index !== -1 && popUp) {
+                        setPopUpContent(logsRef[index].innerHTML);
+                        setOpenPopUp(!openPopUp);
                     }
                 }
+                
 
             } catch (error) {
                 console.warn(error);
@@ -237,16 +247,36 @@ export default function LogPage() {
                                             <div className="logs border-[#e1e8f0] border-[1px] hidden overflow-y-auto h-[300px] bg-white rounded shadow-lg transform
                                  scale-95 transition-all duration-200 ease-out origin-top mt-2 z-10 absolute top-full left-0 w-full">
                                                 {logs.filter(log => log.session_id === session.session_id).map(log => (
-                                                    <div key={log.session_id} className="ml-[50px] mt-5 flex gap-2 z-10">
-                                                        <div>{formatTime(log.date_created)}</div>
-                                                        <div className="w-[1px] h-[100px] border-black border-2"></div>
-                                                        <div>
-                                                            <div>{log.description}</div>
-                                                            <div>{log.log_scenarios_id}</div>
-                                                            <div>{log.note}</div>
-                                                            <div>{log.status}</div>
-                                                        </div>
-                                                    </div>
+                                                    // <div key={log.session_id} className="ml-[50px] mt-5 flex gap-2 z-10">
+                                                    //     <div>{formatTime(log.date_created)}</div>
+                                                    //     <div className="w-[1px] h-[100px] border-black border-2"></div>
+                                                    //     <div>
+                                                    //         <div>{log.description}</div>
+                                                    //         <div>{log.log_scenarios_id}</div>
+                                                    //         <div>{log.note}</div>
+                                                    //         <div>{log.status}</div>
+                                                    //     </div>
+                                                    // </div>
+                                                    <TableRow key={log.session_id} className="h-fit border-none w-full bg-white shadow-md rounded-md">
+                                                        <HoverCard>
+                                                            <HoverCardTrigger>
+                                                                <TableCell className="text-base font-mono h-fit py-1 w-[50px] bg-gray-100 rounded">
+                                                                    {new Date(log.date_created).toLocaleTimeString(undefined, {
+                                                                        hour: "2-digit",
+                                                                        minute: "2-digit",
+                                                                        second: "2-digit",
+                                                                        fractionalSecondDigits: 3,
+                                                                    })}
+                                                                </TableCell>
+                                                            </HoverCardTrigger>
+                                                            <HoverCardContent className="p-2 bg-gray-50 rounded shadow-lg">
+                                                                <pre className="whitespace-pre-wrap text-gray-800">{log.description}</pre>
+                                                            </HoverCardContent>
+                                                        </HoverCard>
+                                                        <TableCell className="text-lg font-mono w-full py-1 bg-gray-100 rounded">
+                                                            {log.note}. {log.description}
+                                                        </TableCell>
+                                                    </TableRow>
                                                 ))}
                                             </div>
 
@@ -260,6 +290,14 @@ export default function LogPage() {
                                         </button>
                                     ))}
                                 </div>
+                                <div className={`fixed inset-0 ${openPopUp ? 'flex' : 'hidden'} items-center justify-center bg-black bg-opacity-50`}>
+                                    <div className="bg-white p-5 rounded shadow-lg w-[800px] h-[calc(100vh-420px)] max-h-[1000px] mx-auto z-10 relative overflow-y-auto">
+                                        <XIcon className="absolute top-1 right-1" size={24} onClick={() => {setOpenPopUp(false)}}/>
+                                        <div id="popUp" className="" >{popUpContent ? parse(popUpContent) : 'No data'}</div>
+                                        
+                                    </div>
+                                </div>
+
                             </div>
                         ) : (
                             <div className="flex justify-center items-center h-[calc(100vh - 70px)]">
