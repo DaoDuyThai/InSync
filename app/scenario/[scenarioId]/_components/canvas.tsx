@@ -661,7 +661,8 @@ export const Canvas = ({
                                             const today = new Date();
                                             const isToday = logDate.toDateString() === today.toDateString();
 
-                                            if (logSession.scenario_id !== id || !isToday) {
+                                            //TODO: chú ý đoạn code này, sửa lại ngay lập tức để hiển thị được log
+                                            if (!logSession || logSession.scenario_id !== id || !isToday) {
                                                 return null;
                                             }
 
