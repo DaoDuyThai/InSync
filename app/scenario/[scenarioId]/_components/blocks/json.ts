@@ -952,8 +952,8 @@ Blockly.Extensions.registerMutator('paste_mutator', {
         this.updateShape(isLog);
     },
     updateShape: function (isLog: boolean) {
-        const pasteContent = this.getFieldValue('PASTE_CONTENT') || "text";
-        const defaultLogMessage = `Input "${pasteContent}"`;
+        const pasteContent = this.getFieldValue('PASTE_CONTENT') || 'text';
+        const defaultLogMessage = `Input '${pasteContent}'`;
 
         if (isLog) {
             if (!this.getInput('LOGCONTENT_INPUT')) {

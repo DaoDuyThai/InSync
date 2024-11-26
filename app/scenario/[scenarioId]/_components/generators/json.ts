@@ -27,14 +27,14 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 
   let appName = appChoice;
   if (appChoice === 'OTHER') {
-    appName = block.getFieldValue('CUSTOM_APP_NAME'); // Fetch custom app name
+    appName = JSON.stringify(block.getFieldValue('CUSTOM_APP_NAME')).slice(1, -1); // Fetch custom app name
     if (!appName) {
       appName = 'Custom App';  // Default to 'Custom App' if the field is empty
     }
   }
 
   // Default log content
-  const defaultLogContent = `Open the app ${appName}`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Open the app ${appName}`)).slice(1, -1);
   // Generate base JSON for the open app
   let
     code = `{
@@ -46,7 +46,7 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 
   // If logging is enabled, add log content
   if (isLog === 'TRUE') {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
         "actionType": "OPEN_APP",
         "open": "${appName}",
@@ -61,13 +61,13 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 
 /* ====================================== IF ACTION START ====================================== */
 jsonGenerator.forBlock['if'] = function (block, generator) {
-  const imageExist = block.getFieldValue('IMAGE');
+  const imageExist = JSON.stringify(block.getFieldValue(block.getFieldValue('IMAGE'))).slice(1, -1);
   const tries = block.getFieldValue('TRIES');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const trueActions = generator.statementToCode(block, 'TRUEACTIONS');
   const falseActions = generator.statementToCode(block, 'FALSEACTIONS');
 
-  const defaultLogContent = `Checking image existence`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Checking image existence`)).slice(1, -1);
   let code = `{
         "actionType": "IF",
         "imageExist": "${imageExist}",
@@ -80,7 +80,7 @@ jsonGenerator.forBlock['if'] = function (block, generator) {
     }`;
 
   if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
         "actionType": "IF",
         "imageExist": "${imageExist}",
@@ -106,7 +106,7 @@ jsonGenerator.forBlock['for'] = function (block, generator) {
   // Get isLog value
 
   // Default log content if not specified
-  const defaultLogContent = `Repeat ${times} times`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Repeat ${times} times`)).slice(1, -1);
   let code = `{
         "actionType": "FOR",
         "executeActions": [${actions}], 
@@ -116,7 +116,7 @@ jsonGenerator.forBlock['for'] = function (block, generator) {
     }`;
 
   if (isLog === 'TRUE') {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
         "actionType": "FOR",
         "executeActions": [${actions}], 
@@ -145,7 +145,7 @@ jsonGenerator.forBlock['delay'] = function (block) {
 
   // If logging is enabled, add log content
   if (isLog === 'TRUE') {
-    const logContent = block.getFieldValue('LOGCONTENT') || 'Log Content';
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || 'Log Content';
     code = `{
         "actionType": "DELAY",
         "isLog": true,
@@ -160,10 +160,10 @@ jsonGenerator.forBlock['delay'] = function (block) {
 
 /* ================================= SMART CLICK ACTION START ================================== */
 jsonGenerator.forBlock['click_smart'] = function (block) {
-  const element = block.getFieldValue('IMAGE');
+  const element = JSON.stringify(block.getFieldValue(block.getFieldValue('IMAGE'))).slice(1, -1);
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
-  const defaultLogContent = `Click on ${element} for ${duration} ms`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Click on ${element} for ${duration} ms`)).slice(1, -1);
 
   let code = `{
         "actionType": "CLICK_SMART",
@@ -174,7 +174,7 @@ jsonGenerator.forBlock['click_smart'] = function (block) {
     }`;
 
   if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
         "actionType": "CLICK",
         "on": "${element}",
@@ -194,7 +194,7 @@ jsonGenerator.forBlock['click_xy'] = function (block) {
   const y = block.getFieldValue('Y');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
-  const defaultLogContent = `Click at (${x}, ${y}) for ${duration} ms`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Click at (${x}, ${y}) for ${duration} ms`)).slice(1, -1);
 
   let code = `{
         "actionType": "CLICK_XY",
@@ -206,7 +206,7 @@ jsonGenerator.forBlock['click_xy'] = function (block) {
     }`;
 
   if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
         "actionType": "CLICK_XY",
         "x": ${x},
@@ -226,7 +226,7 @@ jsonGenerator.forBlock['zoom'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
-  const defaultLogContent = `Zoom ${direction} for ${duration} ms`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Zoom ${direction} for ${duration} ms`)).slice(1, -1);
 
   let code = `{
         "actionType": "ZOOM",
@@ -237,7 +237,7 @@ jsonGenerator.forBlock['zoom'] = function (block) {
     }`;
 
   if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
           "actionType": "ZOOM",
           "direction": "${direction}",
@@ -256,7 +256,7 @@ jsonGenerator.forBlock['swipe'] = function (block) {
   const direction = block.getFieldValue('DIRECTION');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
-  const defaultLogContent = `Swipe ${direction} for ${duration} ms`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Swipe ${direction} for ${duration} ms`)).slice(1, -1);
 
   let
     code = `{
@@ -268,7 +268,7 @@ jsonGenerator.forBlock['swipe'] = function (block) {
     }`;
 
   if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
         "actionType": "SWIPE",
         "direction": "${direction}",
@@ -288,7 +288,7 @@ jsonGenerator.forBlock['rotate'] = function (block) {
   const duration = block.getFieldValue('DURATION');
   const degrees = block.getFieldValue('DEGREES');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
-  const defaultLogContent = `Rotate ${direction} for ${duration} ms by ${degrees} degrees`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Rotate ${direction} for ${duration} ms by ${degrees} degrees`)).slice(1, -1);
 
   let code = `{
         "actionType": "ROTATE",
@@ -300,7 +300,7 @@ jsonGenerator.forBlock['rotate'] = function (block) {
     }`;
 
   if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
         "actionType": "ROTATE",
         "direction": "${direction}",
@@ -317,9 +317,9 @@ jsonGenerator.forBlock['rotate'] = function (block) {
 
 /* ==================================== PASTE ACTION START ===================================== */
 jsonGenerator.forBlock['paste'] = function (block) {
-  const pasteContent = block.getFieldValue('PASTE_CONTENT');
+  const pasteContent = JSON.stringify(block.getFieldValue(block.getFieldValue('PASTE_CONTENT'))).slice(1, -1);
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
-  const defaultLogContent = `Input "${pasteContent}"`;
+  const defaultLogContent = JSON.stringify(block.getFieldValue(`Input '${pasteContent}'`)).slice(1, -1);
 
   let code = `{
         "actionType": "PASTE",
@@ -329,7 +329,7 @@ jsonGenerator.forBlock['paste'] = function (block) {
   }`;
 
   if (isLog) {
-    const logContent = block.getFieldValue('LOGCONTENT') || defaultLogContent;
+    const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || defaultLogContent;
     code = `{
           "actionType": "PASTE",
           "pasteContent": "${pasteContent}",
@@ -342,7 +342,7 @@ jsonGenerator.forBlock['paste'] = function (block) {
 };
 /* ===================================== PASTE ACTION END ====================================== */
 jsonGenerator.forBlock['log'] = function (block) {
-  const logContent = block.getFieldValue('LOGCONTENT') || 'Enter log content';
+  const logContent = JSON.stringify(block.getFieldValue('LOGCONTENT')).slice(1, -1) || 'Enter log content';
 
   // Generate the JSON structure for the log action
   const code = `{
