@@ -31,9 +31,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
                     ["Facebook", "com.facebook.katana"],
                     ["Instagram", "com.instagram.android"],
                     ["Twitter", "com.twitter.android"],
-                    ["TikTok", "com.zhiliaoapp.musically"],
+                    ["TikTok", "com.ss.android.ugc.trill"],
                     ["Zoom", "us.zoom.videomeetings"],
-                    ["Google Meet", "com.google.android.apps.meetings"],
                     ["Other", "OTHER"]
                 ]
             }
