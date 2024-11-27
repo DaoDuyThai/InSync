@@ -61,7 +61,7 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 
 /* ====================================== IF ACTION START ====================================== */
 jsonGenerator.forBlock['if'] = function (block, generator) {
-  const imageExist = JSON.stringify(block.getFieldValue(block.getFieldValue('IMAGE'))).slice(1, -1);
+  const imageExist = JSON.stringify(block.getFieldValue('IMAGE')).slice(1, -1);
   const tries = block.getFieldValue('TRIES');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const trueActions = generator.statementToCode(block, 'TRUEACTIONS');
@@ -160,7 +160,7 @@ jsonGenerator.forBlock['delay'] = function (block) {
 
 /* ================================= SMART CLICK ACTION START ================================== */
 jsonGenerator.forBlock['click_smart'] = function (block) {
-  const element = JSON.stringify(block.getFieldValue(block.getFieldValue('IMAGE'))).slice(1, -1);
+  const element = JSON.stringify(block.getFieldValue('IMAGE')).slice(1, -1);
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = JSON.stringify(block.getFieldValue(`Click on ${element} for ${duration} ms`)).slice(1, -1);
