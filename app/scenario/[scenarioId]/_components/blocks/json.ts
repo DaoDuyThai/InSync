@@ -150,8 +150,8 @@ export const blocks = Blockly.common.createBlockDefinitionsFromJsonArray([
             {
                 "type": "field_number",
                 "name": "DURATION",
-                "value": 1000,
-                "min": 100,
+                "value": 100,
+                "min": 10,
                 "max": 1000000000,
                 "precision": 1
             }
