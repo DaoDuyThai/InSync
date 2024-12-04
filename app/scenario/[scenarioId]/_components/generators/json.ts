@@ -69,7 +69,7 @@ jsonGenerator.forBlock['open_app'] = function (block) {
 
 /* ====================================== IF ACTION START ====================================== */
 jsonGenerator.forBlock['if'] = function (block, generator) {
-  const imageExist = JSON.stringify(block.getFieldValue('IMAGE')).slice(1, -1);
+  const imageExist = textValidation(block.getFieldValue('IMAGE'), ''); 
   const tries = block.getFieldValue('TRIES');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const trueActions = generator.statementToCode(block, 'TRUEACTIONS');
@@ -169,7 +169,7 @@ jsonGenerator.forBlock['delay'] = function (block) {
 
 /* ================================= SMART CLICK ACTION START ================================== */
 jsonGenerator.forBlock['click_smart'] = function (block) {
-  const element = JSON.stringify(block.getFieldValue('IMAGE')).slice(1, -1);
+  const element = textValidation(block.getFieldValue('IMAGE'), '');
   const duration = block.getFieldValue('DURATION');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Click on ${element} for ${duration} ms`;
@@ -326,7 +326,7 @@ jsonGenerator.forBlock['rotate'] = function (block) {
 
 /* ==================================== PASTE ACTION START ===================================== */
 jsonGenerator.forBlock['paste'] = function (block) {
-  const pasteContent = JSON.stringify(block.getFieldValue(block.getFieldValue('PASTE_CONTENT'))).slice(1, -1);
+  const pasteContent = textValidation(block.getFieldValue('PASTE_CONTENT'), '');
   const isLog = block.getFieldValue('ISLOG') === 'TRUE';
   const defaultLogContent = `Input '${pasteContent}'`;
 
