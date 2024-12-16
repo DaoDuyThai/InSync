@@ -423,7 +423,7 @@ export default function ImagePage() {
                                             key={index}
                                             className="overflow-hidden relative">
                                             <img
-                                                onClick={() => handleClick(image.id, image.filePath)}
+                                                onClick={() => handleClick(image.id, image.filePath, image.assetName)}
                                                 alt="Collection of captured images"
                                                 loading="lazy"
                                                 decoding="async"
@@ -481,8 +481,9 @@ export default function ImagePage() {
         );
     };
 
-    const handleClick = (id: string, imgURL: string) => {
+    const handleClick = (id: string, imgURL: string, imgName: string) => {
         localStorage.setItem("imageURL", imgURL);
+        localStorage.setItem("imageName", imgName);
         router?.push(`/assets/${id}`);
     }
 

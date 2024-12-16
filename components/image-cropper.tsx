@@ -85,11 +85,11 @@ import { Hint } from "./hint";
 interface props {
     id?: string;
     imgURL?: string;
+    imageName?: string;
     className?: string;
 }
 
-export default function ImageCopper({ id, imgURL, className }: props): JSX.Element {
-    // const {id} = useParams();
+export default function ImageCopper({ id, imgURL, imageName, className }: props): JSX.Element {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const zoomInRef = useRef<HTMLButtonElement>(null);
     const zoomOutRef = useRef<HTMLButtonElement>(null);
@@ -136,6 +136,11 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
         let isMoving = false;
         let lastMovingX = 0;
         let lastMovingY = 0;
+        let scaleX: number = 1, scaleY: number = 1;
+
+        function isNumeric(value: any) {
+            return !isNaN(value) && !isNaN(parseFloat(value));
+        }
 
         // Initialize values 
         totalImagesElement?.parentElement?.classList.add('hidden');
@@ -153,8 +158,21 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
         }
         fixedSizeImage.crossOrigin = "Anonymous";
         fixedSizeImage.onload = function () {
-            fixedSizeCanvas.width = fixedSizeImage.width;
-            fixedSizeCanvas.height = fixedSizeImage.height;
+            try {
+                const elements = imageName?.split("-");
+                if (elements && elements.length >= 2) {
+                    console.log(`IsNumber ${isNumeric(elements[0])} element[0] ${elements[0]}`);
+                    let imgWidth = fixedSizeImage.width
+                    let imgHeight = fixedSizeImage.height
+                    console.log(`imgWidth: ${imgWidth} imgHeight: ${imgHeight}`);
+                    scaleX = isNumeric(elements[0]) ? parseFloat(elements[0] || fixedSizeImage.width.toString()) / imgWidth : 1;
+                    scaleY = isNumeric(elements[1]) ? parseFloat(elements[1] || fixedSizeImage.height.toString()) / imgHeight : 1;
+                    console.log(`ScaleX ${scaleX} ScaleY: ${scaleY}`);
+
+                }
+            } catch (error) { console.error(error) }
+            fixedSizeCanvas.width = fixedSizeImage.width * scaleX;
+            fixedSizeCanvas.height = fixedSizeImage.height * scaleY;
             fixedSizeCtx?.drawImage(fixedSizeImage, 0, 0, fixedSizeImage.width, fixedSizeImage.height);
             fixedSizeCanvas.classList.add('hidden');
         }
@@ -171,8 +189,8 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
         // Draw the image on the canvas once it's loaded
         img.crossOrigin = "Anonymous";
         img.onload = function () {
-            if (img.height !== 600) {
-                scale = 600 / img.height;
+            if (img.height !== 600 && scaleY > 0) {
+                scale = 600 / (img.height * scaleY);
             }
             drawImageAndRectangles(ctx, canvas, img, rectangles);
         };
@@ -273,7 +291,7 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             else if (isRadarButtonClicked) {
                 let currentX = e.offsetX;
                 let currentY = e.offsetY;
-                
+
                 const realStartX = (currentX - scale * imageX) / scale;
                 const realStartY = (currentY - scale * imageY) / scale;
                 // Set the position of the popup above the mouse
@@ -340,11 +358,11 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
             const rect = rectangles[length - 1]
             let canvas = document.createElement("canvas");
             let canvasContext = canvas.getContext('2d');
-            let imageData2 = fixedSizeCtx?.getImageData(rect.realStartX / scale, rect.realStartY / scale, rect.width / scale, rect.height / scale);
+            let imageData2 = fixedSizeCtx?.getImageData(rect.realStartX / (scale * scaleX), rect.realStartY / (scale * scaleY), rect.width / scale, rect.height / scale);
             let imageData = ctx?.getImageData(rect.startX, rect.startY, rect.width, rect.height);
             canvas.width = rect.width / scale;
             canvas.height = rect.height / scale;
-            canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas', );
+            canvas.classList.add('shadow-gray-300', 'shadow-xl', 'cropped-canvas',);
             canvas.style.width = '120px';
             canvas.style.height = '100px';
             canvas.style.objectFit = 'contain';
@@ -404,7 +422,7 @@ export default function ImageCopper({ id, imgURL, className }: props): JSX.Eleme
                 ctx.save();
                 ctx.scale(scale, scale);
                 // ctx.drawImage(img, centerMoveX, centerMoveY);
-                ctx.drawImage(img, imageX, imageY, img.width, img.height);
+                ctx.drawImage(img, imageX, imageY, img.width * scaleX, img.height * scaleY);
                 ctx.restore();
             }
         };
